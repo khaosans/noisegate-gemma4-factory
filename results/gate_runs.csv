@@ -1,0 +1,10 @@
+gate_run,kaggle_run_id,date,baseline,candidate,solved,in_budget,empty_diff,edit_fail,logic_mismatch,timeout,over_28_calls,paired_net_vs_baseline,verdict
+v1,363369436,2026-10-29,V8,V8,9,8,7,2,11,1,16,,baseline
+v1,363369436,2026-10-29,V8,V11,13,10,5,2,8,2,15,,not trusted (calibration run)
+v1,363369436,2026-10-29,V8,V12,11,8,2,4,11,2,16,-1,not trusted (calibration run)
+v4,363560117,2026-10-29,V8,V8,8,6,9,3,9,1,18,,baseline
+v4,363560117,2026-10-29,V8,V14,10,6,6,3,10,1,16,0,HOLD
+v5,364060907,2026-10-31,V15,V15,11,7,8,1,6,4,14,,baseline
+v5,364060907,2026-10-31,V15,V16,8,6,9,2,3,6,14,-1,HOLD
+v6,364167955,2026-10-31,V15,V15,14,10,5,2,8,1,13,,baseline
+v6,364167955,2026-10-31,V15,V17,11,7,9,0,9,1,14,-3,HOLD

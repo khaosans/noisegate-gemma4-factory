@@ -1,0 +1,5 @@
+version,kaggle_run_id,submitted_utc,public_score,change,notes
+V8,362553010,TBD,0.18,base config,current base (best scored)
+V11,362967896,TBD,0.15,V8 with thinking budget cut,
+V12,363360165,2026-10-29 03:33,0.15,variant of V11,scored 2026-10-30
+V15,363956732,2026-10-30 13:10,0.17,exact copy of public 0.22 notebook (flexonafft; credited),scored 2026-10-31; shows leaderboard noise ~±0.05

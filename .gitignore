@@ -1,0 +1,14 @@
+# secrets
+kaggle.json
+.env
+*.key
+# build / runtime
+submission.zip
+__pycache__/
+.pytest_cache/
+*.pyc
+.ipynb_checkpoints/
+# never commit competition data or weights
+data/
+*.safetensors
+wheelhouse/
