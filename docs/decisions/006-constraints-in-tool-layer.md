@@ -11,6 +11,11 @@ counter, so a deadline stated in the prompt is not something it can track.
 If the submission format allows, surface the budget to the agent inside tool results
 (e.g. "call 19 of 28") rather than as a prompt rule.
 
+## Update (2026-11-11)
+Implemented in the local LangGraph supervisor (decision 007): every tool result starts with
+`[call N of 28 | S s left]`, and the budget is enforced in code. Whether the Kaggle runtime
+allows the same remains open.
+
 ## Open question
 Whether the competition's agent config lets a submission change tool-result text. Investigate
 without GPU before adding it to the queue.

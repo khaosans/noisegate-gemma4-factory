@@ -12,3 +12,5 @@ __pycache__/
 data/
 *.safetensors
 wheelhouse/
+# supervisor run logs (may contain repo content)
+runs/

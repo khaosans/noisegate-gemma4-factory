@@ -1,0 +1,4 @@
+# Optional: live Gemma runs and AgentOps extras (docs/agentops.md)
+langchain-openai>=0.3      # OpenAI-compatible client for Ollama / vLLM
+langsmith>=0.3             # tracing (LANGSMITH_TRACING=true)
+duckdb>=1.1                # python -m agentops query
