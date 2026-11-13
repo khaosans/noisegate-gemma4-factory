@@ -1,0 +1,7 @@
+{
+  "task_id": "tinycalc_add",
+  "repo": ".",
+  "issue": "add(2, 3) returns -1 instead of 5. Expected add to return the sum of its arguments.",
+  "test_cmd": "python -m pytest -q",
+  "gold_files": ["calc.py"]
+}

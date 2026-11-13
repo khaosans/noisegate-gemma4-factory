@@ -43,6 +43,11 @@ the patch. Kaggle allows one submission per day; scoring takes ~1.5 days; final 
 | [`product/`](product/) | The submitted agent config, build script, and every candidate's one change |
 | [`harness/`](harness/) | Trajectory parser, evaluators E1–E9, and the SUBMIT/HOLD decision rule (tested) |
 | [`harness/eval-gate/`](harness/eval-gate/) | The Kaggle evaluation notebook and its environment notes |
+| [`supervisor/`](supervisor/) | LangGraph supervisor: runs Gemma one tool call at a time, with guardrails, budgets and human escalation |
+| [`guardrails/`](guardrails/) | Tool policy, budgets, patch checks, untrusted-text handling (plain Python, tested) |
+| [`agentops/`](agentops/) | JSONL run logs, the safety-plan metrics, and a query CLI; optional LangSmith tracing |
+| [`evals/`](evals/) | Fixture repo and the adversarial prompt-injection cases G6–G17 |
+| [`docs/safety-plan.md`](docs/safety-plan.md) | Checkpoint 6.1 commitments → code → test |
 | [`factory/`](factory/) | The loop: runbook, Project instructions, and four Claude Skills |
 | [`results/`](results/) | Every gate run and leaderboard score, plus the calibration log |
 | [`docs/decisions/`](docs/decisions/) | Decision records, including one we reversed |
@@ -68,7 +73,9 @@ Full tables: [`results/`](results/). Lessons: [`docs/lessons.md`](docs/lessons.m
 
 ```bash
 pip install -r requirements.txt
-pytest -q                                  # decision rule + parser tests
+pytest -q                                  # decision rule, parser, guardrails, supervisor, safety eval
+python -m evals.safety.run                 # adversarial cases: block rate + false positives
+python -m agentops metrics                 # metrics over runs/ (see docs/agentops.md)
 python product/build_submission.py         # rebuild submission.zip, print SHA-256s
 ```
 

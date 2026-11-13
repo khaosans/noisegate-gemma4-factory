@@ -30,6 +30,9 @@ Each row points to code or data, not just a claim. Rows marked *not used* are de
 | Statistical rigor | `harness/decision_rule.py`, `docs/decisions/005` | same config moves ±3 tasks; two runs + paired test required |
 | Calibration | `results/README.md` | 1 of 2 decisive points agreed with the leaderboard |
 | Guardrails & cost control | `factory/runbook.md` | ~11 GPU-h per run, 2 runs/week |
+| Runtime guardrails (agent) | `guardrails/`, `supervisor/graph.py` | 55/55 adversarial attempts stopped by the policy, 0/29 benign blocked (`evals/safety`); OS sandbox tested in `tests/test_sandbox.py` |
+| Observability / AgentOps | `agentops/`, `docs/agentops.md` | every step logged with its guard verdict; 7 checkpoint metrics |
 | Human-in-the-loop | `factory/runbook.md`, `docs/decisions/004` | rollback to V8 was a human call |
+| Human-in-the-loop (agent) | `supervisor/graph.py` `escalate` node | LangGraph interrupt on boundary actions, repeated blocks, failing or high-impact patches |
 | Self-improving systems | `factory/` | qualified: it proposes and tests; humans decide what ships |
-| Multi-agent / supervisor | *not used in the submission* | the product is one Gemma agent with a fixed call plan |
+| Multi-agent / supervisor | `supervisor/` (LangGraph), *not in the Kaggle submission* | code supervises Gemma: guard, execute, verify, escalate nodes; see `docs/decisions/007` |

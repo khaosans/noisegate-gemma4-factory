@@ -1,2 +1,5 @@
 pydantic>=2
 pytest>=8
+# supervisor (decision 007)
+langgraph>=1.2,<2
+langchain-core>=1.4.7,<2
