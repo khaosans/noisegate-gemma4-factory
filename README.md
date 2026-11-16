@@ -1,9 +1,9 @@
-# A Software Factory for a Gemma 4 Coding Agent
+# NoiseGate — A Software Factory for a Gemma 4 Coding Agent
 
-**Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI · Kaggle *Google DeepMind Gemma 4 Developer Agent*
+**Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI (Fall 2026) · Kaggle *Google DeepMind Gemma 4 Developer Agent*
 
 We built two systems. The **product** is a Gemma 4 coding agent that fixes real GitHub issues.
-The **factory** is a Claude-run loop that proposes, builds, evaluates, and ships new versions of
+The **factory** is a Claude-run climb loop that proposes, builds, evaluates, and ships new versions of
 that agent, with humans controlling the decisions that matter. Our main finding: in a self-improving
 system, the evaluation harness matters more than the generator. Most of the differences we measured
 were noise, and the factory's most useful act was refusing to ship.
@@ -13,17 +13,20 @@ were noise, and the factory's most useful act was refusing to ship.
 | Best public score | **0.18** (V8, current base) |
 | Versions evaluated / held by our gate | 7 / 3 (V14, V16, V17) |
 | Measured noise | ±2–3 tasks per 30 locally · ±0.05 on the leaderboard |
+| Competition deadline | **2026-12-02** 23:59 UTC |
+
+Class wiki (demo story, architecture, requirements map): [`docs/wiki/Home.md`](docs/wiki/Home.md).
 
 ## The challenge
 
 A Gemma 4 agent (`gemma-4-31b-it`, fixed by the rules) gets a repository (fastapi, requests, rich, …)
 and an issue, and must produce a patch within **28 tool calls and ~8 minutes**. Hidden tests score
-the patch. Kaggle allows one submission per day; scoring takes ~1.5 days; final deadline Dec 2, 2026.
+the patch. Kaggle allows one submission per UTC day; scoring takes ~1.5 days.
 
 ## Two systems
 
 ```
-┌─────────────────────────── FACTORY (Claude, scheduled wakes) ───────────────────────────┐
+┌─────────────────────────── FACTORY (Claude Cowork, scheduled wakes) ────────────────────┐
 │  queue ─► build candidate ─► Eval Gate (2 runs) ─► decision rule ─► submit ─► score     │
 │              (base + 1 change)    4× L4, 30 tasks     code + tests     ≤1/week   │       │
 │                     ▲                                                            │       │
@@ -36,25 +39,72 @@ the patch. Kaggle allows one submission per day; scoring takes ~1.5 days; final 
 └──────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+| | Product | Factory |
+|---|---|---|
+| Model | `gemma-4-31b-it` (competition-fixed) | Claude (Cowork / Project) |
+| Job | Fix issues under the call/time budget | Propose one change, gate it, maybe ship |
+| Memory | Context window only | `results/` + Skills |
+| Submit path | ADK `submission.zip` on Kaggle | Humans approve; ≤1 gated submit / week |
+
+## How we ran it (primary loop)
+
+The production climb path is **Claude Project + scheduled wakes**, not the Streamlit console.
+
+1. **Claude Cowork / Project** loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` on every wake.
+2. **Skills** in [`factory/skills/`](factory/skills/) are the agentic procedures: `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
+3. **Cadence (UTC):** Sat build + Gate Run A · Sun Gate Run B · Mon decide + optional submit · other wakes status-only.
+4. Login-heavy Kaggle UI (notebook commit, gate start, CreateSubmission) stays on Claude because that is where the authenticated browser session lives.
+
+Cowork project artifact (external): [claude.ai/artifact/1Ldx2khByugozsHH5cuLfa](https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa). In-repo detail: [`docs/wiki/Claude-Cowork-Loop.md`](docs/wiki/Claude-Cowork-Loop.md).
+
+## Local path (query / demo without Claude login)
+
+For class demos and local operator queries we use:
+
+- **Streamlit factory console** at **`:8765`** — [`factory_console/`](factory_console/), see [`docs/factory-console.md`](docs/factory-console.md)
+- **Ollama** (optional chat backend) — OpenAI-compatible tools over the same `factory_console/actions.py` handlers
+- **Offline mode** — keyword router when no live LLM is available
+
+```bash
+pip install -r requirements-console.txt -r requirements-agent.txt
+streamlit run factory_console/app.py --server.port 8765
+# open http://127.0.0.1:8765
+```
+
+The console may query records, replay the decision rule, run pytest / safety eval / zip build, and
+(optionally) one supervised agent session. It **must not** start a Kaggle gate run, CreateSubmission,
+or change the base config. Writes via `record_score` wait for an **Approve** click.
+
+On the Mac demo host, a LaunchAgent (`com.noisegate.factory-console`) can KeepAlive the app on `:8765`.
+Ollama chat (`FACTORY_CONSOLE_BACKEND`) and the climb/Kaggle read-only bridge (`CMU_AGENTIC_AI_ROOT`) are on `main` (#3, #4).
+
+More: [`docs/wiki/Local-And-Streamlit.md`](docs/wiki/Local-And-Streamlit.md).
+
+## Requirements map
+
+Course concepts → code: [`CONCEPTS.md`](CONCEPTS.md). Safety commitments → tests: [`docs/safety-plan.md`](docs/safety-plan.md).
+HITL and competition constraints summarized for graders: [`docs/wiki/Requirements-Compliance.md`](docs/wiki/Requirements-Compliance.md).
+
+Graded Kaggle ship path remains the **ADK agent zip**. The LangGraph supervisor in `supervisor/` is
+course evidence (guardrails, budgets, escalate) and is **not** inside the competition submission.
+
 ## Repository map
 
 | Path | What it is |
 |---|---|
-| [`product/`](product/) | The submitted agent config, build script, and every candidate's one change |
-| [`harness/`](harness/) | Trajectory parser, evaluators E1–E9, and the SUBMIT/HOLD decision rule (tested) |
-| [`harness/eval-gate/`](harness/eval-gate/) | The Kaggle evaluation notebook and its environment notes |
-| [`supervisor/`](supervisor/) | LangGraph supervisor: runs Gemma one tool call at a time, with guardrails, budgets and human escalation |
-| [`guardrails/`](guardrails/) | Tool policy, budgets, patch checks, untrusted-text handling (plain Python, tested) |
-| [`agentops/`](agentops/) | JSONL run logs, the safety-plan metrics, and a query CLI; optional LangSmith tracing |
-| [`factory_console/`](factory_console/) | Streamlit demo of the loop plus an operator chatbot that queries and runs the factory ([docs](docs/factory-console.md)) |
-| [`evals/`](evals/) | Fixture repo and the adversarial prompt-injection cases G6–G17 |
-| [`docs/safety-plan.md`](docs/safety-plan.md) | Checkpoint 6.1 commitments → code → test |
-| [`factory/`](factory/) | The loop: runbook, Project instructions, and four Claude Skills |
-| [`results/`](results/) | Every gate run and leaderboard score, plus the calibration log |
-| [`docs/decisions/`](docs/decisions/) | Decision records, including one we reversed |
-| [`GOALS.md`](GOALS.md) | Objectives and key results, with status |
-| [`CONCEPTS.md`](CONCEPTS.md) | Course concepts → where each one lives in the code |
-| [`presentation/`](presentation/) | Slides, video link, and the slide → repo map |
+| [`product/`](product/) | Submitted agent config, build script, and every candidate's one change |
+| [`harness/`](harness/) | Trajectory parser, evaluators E1–E9, SUBMIT/HOLD decision rule (tested) |
+| [`harness/eval-gate/`](harness/eval-gate/) | Kaggle evaluation notebook and environment notes |
+| [`supervisor/`](supervisor/) | LangGraph supervisor (course slice; not in the Kaggle zip) |
+| [`guardrails/`](guardrails/) | Tool policy, budgets, patch checks, untrusted-text handling |
+| [`agentops/`](agentops/) | JSONL run logs, safety-plan metrics, query CLI |
+| [`factory_console/`](factory_console/) | Streamlit demo + operator chatbot ([docs](docs/factory-console.md)) |
+| [`factory/`](factory/) | Runbook, Project instructions, four Claude Skills |
+| [`evals/`](evals/) | Fixture repo + adversarial cases G6–G17 |
+| [`results/`](results/) | Gate runs, leaderboard scores, calibration log |
+| [`docs/wiki/`](docs/wiki/) | Class demo wiki (this pack) |
+| [`docs/decisions/`](docs/decisions/) | Decision records |
+| [`GOALS.md`](GOALS.md) · [`CONCEPTS.md`](CONCEPTS.md) | OKRs · concept → code map |
 
 ## Results
 
@@ -78,11 +128,7 @@ pytest -q                                  # decision rule, parser, guardrails, 
 python -m evals.safety.run                 # adversarial cases: block rate + false positives
 python -m agentops metrics                 # metrics over runs/ (see docs/agentops.md)
 python product/build_submission.py         # rebuild submission.zip, print SHA-256s
-```
 
-Demo app and operator chatbot (default port in docs: 8765):
-
-```bash
 pip install -r requirements-console.txt -r requirements-agent.txt
 # Optional local LLM: ollama serve && ollama pull llama3.2:3b
 # FACTORY_CONSOLE_BACKEND=ollama OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=llama3.2:3b
@@ -104,6 +150,23 @@ print(decide([RunSummary.from_results(cand)], V8_HISTORY + [RunSummary.from_resu
              run_b_paired_net=paired_net(cand, v8),
              zip_sha_ok=True, one_change_off_base=True, never_scored=True))
 ```
+
+## Console backends (merged)
+
+| PR | Status | What it adds |
+|---|---|---|
+| [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3) | Merged | Local Ollama OpenAI-compatible chat backend (`FACTORY_CONSOLE_BACKEND`) |
+| [#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4) | Merged | Read-only climb/Kaggle scoreboard bridge (`CMU_AGENTIC_AI_ROOT`); no CreateSubmission |
+
+## Future work
+
+- Keep submit HITL; use Ollama + climb bridge for local query only.
+- Propose `record_score` from COMPLETE Kaggle rows (Approve still required).
+- Frugal local Gemma supervisor demos (sandbox-required), separate from the Kaggle zip.
+- Calibration: more decisive gate↔leaderboard points; re-measure noise.
+- Optional course fallback evidence pack (traces + one guardrail + 3–5 golden cases) if needed.
+
+Longer rationale: [`docs/wiki/Future-Work.md`](docs/wiki/Future-Work.md).
 
 ## What is not in this repo
 
