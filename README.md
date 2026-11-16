@@ -15,7 +15,7 @@ were noise, and the factory's most useful act was refusing to ship.
 | Measured noise | ±2–3 tasks per 30 locally · ±0.05 on the leaderboard |
 | Competition deadline | **2026-12-02** 23:59 UTC |
 
-Class wiki (demo story, architecture, requirements map): [`docs/wiki/Home.md`](docs/wiki/Home.md).
+Class wiki (demo story, architecture, requirements map): [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki) (preferred viewer). Source of truth in-repo: [`docs/wiki/`](docs/wiki/).
 
 ## The challenge
 
@@ -102,7 +102,7 @@ course evidence (guardrails, budgets, escalate) and is **not** inside the compet
 | [`factory/`](factory/) | Runbook, Project instructions, four Claude Skills |
 | [`evals/`](evals/) | Fixture repo + adversarial cases G6–G17 |
 | [`results/`](results/) | Gate runs, leaderboard scores, calibration log |
-| [`docs/wiki/`](docs/wiki/) | Class demo wiki (this pack) |
+| [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki) · [`docs/wiki/`](docs/wiki/) | Class demo wiki (GitHub Wiki preferred; docs/wiki SoT) |
 | [`docs/decisions/`](docs/decisions/) | Decision records |
 | [`GOALS.md`](GOALS.md) · [`CONCEPTS.md`](CONCEPTS.md) | OKRs · concept → code map |
 

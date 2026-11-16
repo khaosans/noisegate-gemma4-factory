@@ -1,5 +1,8 @@
 # NoiseGate class wiki
 
+> **Preferred viewer:** [https://github.com/khaosans/noisegate-gemma4-factory/wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki). This `docs/wiki/` tree remains the in-repo source of truth; edit here, then sync to the GitHub Wiki.
+
+
 **60-second story.** We ship a Gemma 4 coding agent (the product) and a Claude-run factory that tries to improve it one change at a time. The factory’s Eval Gate and decision rule refuse to ship noise — V14, V16, and V17 were held; the live base remains **V8 at public 0.18**. For demos, open the Streamlit console at `:8765` (query/replay without Claude login). For the real climb, Claude Cowork + Skills own the Kaggle login path.
 
 | | |
