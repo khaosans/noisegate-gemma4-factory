@@ -14,3 +14,4 @@ data/
 wheelhouse/
 # supervisor run logs (may contain repo content)
 runs/
+.venv/

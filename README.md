@@ -46,6 +46,7 @@ the patch. Kaggle allows one submission per day; scoring takes ~1.5 days; final 
 | [`supervisor/`](supervisor/) | LangGraph supervisor: runs Gemma one tool call at a time, with guardrails, budgets and human escalation |
 | [`guardrails/`](guardrails/) | Tool policy, budgets, patch checks, untrusted-text handling (plain Python, tested) |
 | [`agentops/`](agentops/) | JSONL run logs, the safety-plan metrics, and a query CLI; optional LangSmith tracing |
+| [`factory_console/`](factory_console/) | Streamlit demo of the loop plus an operator chatbot that queries and runs the factory ([docs](docs/factory-console.md)) |
 | [`evals/`](evals/) | Fixture repo and the adversarial prompt-injection cases G6–G17 |
 | [`docs/safety-plan.md`](docs/safety-plan.md) | Checkpoint 6.1 commitments → code → test |
 | [`factory/`](factory/) | The loop: runbook, Project instructions, and four Claude Skills |
@@ -77,6 +78,13 @@ pytest -q                                  # decision rule, parser, guardrails, 
 python -m evals.safety.run                 # adversarial cases: block rate + false positives
 python -m agentops metrics                 # metrics over runs/ (see docs/agentops.md)
 python product/build_submission.py         # rebuild submission.zip, print SHA-256s
+```
+
+Demo app and operator chatbot:
+
+```bash
+pip install -r requirements-console.txt -r requirements-agent.txt
+streamlit run factory_console/app.py
 ```
 
 Parse an Eval Gate log and apply the rule:
