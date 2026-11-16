@@ -1,0 +1,6 @@
+# Factory console (docs/factory-console.md): Streamlit demo + operator chatbot
+-r requirements.txt
+streamlit>=1.44
+altair>=5
+pandas>=2
+anthropic>=1.0             # operator chat; without credentials the chat runs in offline mode

@@ -1,0 +1,19 @@
+# SYNTHETIC SAMPLE. Not a real gate run. Written by hand in the Eval Gate v3 line format
+# (harness/trajectory.py) so the parser and decision rule can be demonstrated offline.
+10:01:02  Score  V8 rich_3043 rep0: SOLVED solved=True calls=17 first_edit=9 malformed=0 dur=301s reads=8 badedits=0 post=0 tok=41000 gold=True src=rich/text.py
+10:01:02  Score  V8 rich_3043 rep0: SOLVED solved=True calls=17 first_edit=9 malformed=0 dur=301s reads=8 badedits=0 post=0 tok=41000 gold=True src=rich/text.py
+10:09:40  Score  V8 rich_3521 rep0: EMPTY_DIFF solved=False calls=30 first_edit=None malformed=0 dur=470s reads=22 badedits=0 post=0 tok=52000 gold=None src=
+10:17:11  Score  V8 rich_3882 rep0: SOLVED solved=True calls=21 first_edit=12 malformed=0 dur=388s reads=11 badedits=1 post=0 tok=47000 gold=True src=rich/console.py
+10:25:30  Score  V8 fastapi_13537 rep0: SOLVED solved=True calls=24 first_edit=13 malformed=0 dur=431s reads=12 badedits=0 post=1 tok=55000 gold=True src=fastapi/routing.py
+10:33:48  Score  V8 fastapi_14458 rep0: LOGIC_MISMATCH solved=False calls=27 first_edit=15 malformed=1 dur=455s reads=14 badedits=2 post=0 tok=58000 gold=True src=fastapi/params.py
+10:42:02  Score  V8 fastapi_11194 rep0: EMPTY_DIFF solved=False calls=29 first_edit=None malformed=0 dur=480s reads=25 badedits=0 post=0 tok=61000 gold=None src=
+10:50:19  Score  V8 requests_7309 rep0: SOLVED solved=True calls=19 first_edit=10 malformed=0 dur=340s reads=9 badedits=0 post=0 tok=39000 gold=True src=requests/utils.py
+10:58:40  Score  V8 requests_7328 rep0: SOLVED solved=True calls=31 first_edit=18 malformed=0 dur=476s reads=15 badedits=3 post=0 tok=63000 gold=True src=requests/adapters.py
+11:06:55  Score  C1 rich_3043 rep0: SOLVED solved=True calls=29 first_edit=14 malformed=0 dur=410s reads=10 badedits=1 post=0 tok=60000 gold=True src=rich/text.py
+11:14:20  Score  C1 rich_3521 rep0: SOLVED solved=True calls=20 first_edit=8 malformed=0 dur=350s reads=6 badedits=0 post=0 tok=38000 gold=True src=rich/console.py
+11:22:41  Score  C1 rich_3882 rep0: SOLVED solved=True calls=18 first_edit=9 malformed=0 dur=322s reads=8 badedits=0 post=0 tok=40000 gold=True src=rich/console.py
+11:30:58  Score  C1 fastapi_13537 rep0: SOLVED solved=True calls=22 first_edit=11 malformed=0 dur=402s reads=10 badedits=0 post=0 tok=51000 gold=True src=fastapi/routing.py
+11:39:16  Score  C1 fastapi_14458 rep0: SOLVED solved=True calls=26 first_edit=12 malformed=0 dur=447s reads=11 badedits=1 post=0 tok=56000 gold=True src=fastapi/params.py
+11:47:33  Score  C1 fastapi_11194 rep0: EDIT_FAIL solved=False calls=28 first_edit=16 malformed=0 dur=469s reads=13 badedits=6 post=0 tok=59000 gold=True src=fastapi/dependencies/utils.py
+11:55:50  Score  C1 requests_7309 rep0: SOLVED solved=True calls=17 first_edit=8 malformed=0 dur=311s reads=7 badedits=0 post=0 tok=36000 gold=True src=requests/utils.py
+12:04:08  Score  C1 requests_7328 rep0: LOGIC_MISMATCH solved=False calls=25 first_edit=11 malformed=0 dur=438s reads=10 badedits=1 post=0 tok=54000 gold=True src=requests/adapters.py
