@@ -1,0 +1,38 @@
+{
+  "best_public_score": 0.10,
+  "best_public_score_ref": "57112729",
+  "best_public": {
+    "ref": "57112729",
+    "public_score": 0.10,
+    "status": "COMPLETE",
+    "message": "fixture tip score"
+  },
+  "pending_submit_utc": "2026-10-27T21:37:16Z",
+  "last_submit_utc": "2026-10-27T21:37:16Z",
+  "last_message": "fixture pending tip",
+  "pending_wait_it_out": true,
+  "pending_queue_note": "tip PENDING ref=57401384",
+  "tip_git_commit": "abc123fixture",
+  "tip_hypothesis": {
+    "profile": "shipcontract",
+    "kernel_version": "181",
+    "delta_one_liner": "fixture tip pin"
+  },
+  "next_tip_plan": "fixture next tip",
+  "history": [
+    {
+      "ref": "57112729",
+      "submitted_utc": "2026-10-20T00:00:00Z",
+      "public_score": 0.10,
+      "status": "COMPLETE",
+      "message": "fixture complete"
+    },
+    {
+      "ref": "57401384",
+      "submitted_utc": "2026-10-27T21:37:16Z",
+      "public_score": null,
+      "status": "PENDING",
+      "message": "fixture pending"
+    }
+  ]
+}

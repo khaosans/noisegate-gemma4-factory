@@ -17,6 +17,7 @@ from typing import Any, Callable
 from urllib.parse import urlparse
 
 from . import actions
+from . import climb_bridge
 
 MODEL = os.environ.get("FACTORY_CONSOLE_MODEL", "claude-opus-5-5")
 MAX_TURNS = 12
@@ -39,6 +40,9 @@ How to work:
 - Answer from the tools. They read the repository's records, which are the source of truth. Do not \
 answer factory questions from memory, and do not do the decision rule's arithmetic yourself: call \
 explain_candidate, decision_rule_what_if or judge_gate_log.
+- climb_scoreboard / kaggle_submissions_snapshot (and the climb slice on factory_status) are the live \
+publicScore source of truth from Kaggle via the cmu-agentic-ai climb board; NoiseGate CSV leaderboard \
+rows are factory gate bookkeeping and may disagree — say so when score_mismatch is set.
 - You can run local jobs (tests, safety eval, zip build, one supervised agent run). Say what you ran \
 and what it returned, including failures.
 - You cannot start a Kaggle gate run, submit to the leaderboard, or change the base config. Those are \
@@ -63,11 +67,18 @@ _S, _I, _N, _B = {"type": "string"}, {"type": "integer"}, {"type": "number"}, {"
 
 TOOLS = [
     _tool("factory_status", "Current state of the factory: base, best score, days to the deadline, what the "
-          "runbook says is due today, the next queue items, and warnings about stale or missing records. "
+          "runbook says is due today, the next queue items, warnings about stale or missing records, plus "
+          "a climb/Kaggle slice (live publicScore SoT) and score_mismatch when the CSV disagrees. "
           "Call this first for any 'where are we' question."),
+    _tool("climb_scoreboard", "Read the cmu-agentic-ai climb docs/scoreboard.json only (best publicScore, "
+          "pending tip, tip pin). Requires CMU_AGENTIC_AI_ROOT. Does not refresh or submit."),
+    _tool("kaggle_submissions_snapshot", "COMPLETE/PENDING summary from the climb scoreboard history. "
+          "When FACTORY_CLIMB_REFRESH=1, runs climb scripts/refresh_scoreboard.py first (Kaggle read only; "
+          "never CreateSubmission). Requires CMU_AGENTIC_AI_ROOT."),
     _tool("list_gate_runs", "Every Eval Gate result row (per candidate per run, counts per 30 tasks) with "
           "the recorded verdict."),
-    _tool("list_leaderboard", "Every scored public-leaderboard submission."),
+    _tool("list_leaderboard", "Every scored public-leaderboard submission (NoiseGate CSV bookkeeping; "
+          "may disagree with live Kaggle — prefer climb tools for publicScore SoT)."),
     _tool("list_candidates", "All candidate versions with their one change, plus the ordered queue of "
           "changes not yet tried."),
     _tool("explain_candidate", "Why a candidate was held or passed: its gate numbers, its baseline's "
@@ -111,7 +122,9 @@ def _explain(version: str) -> dict:
 
 
 HANDLERS: dict[str, Callable[..., Any]] = {
-    "factory_status": lambda: actions.status(),
+    "factory_status": lambda: climb_bridge.dual_status(actions.status()),
+    "climb_scoreboard": climb_bridge.read_scoreboard,
+    "kaggle_submissions_snapshot": climb_bridge.kaggle_submissions_snapshot,
     "list_gate_runs": actions.gate_runs,
     "list_leaderboard": actions.leaderboard,
     "list_candidates": lambda: {"candidates": actions.candidates(), "queue": actions.queue()},
@@ -433,10 +446,21 @@ def _table(rows: list[dict], cols: list[str]) -> str:
 def _fmt_status(s: dict) -> str:
     q = "; ".join(f"{i['position']}. {i['change']}" for i in s["next_in_queue"])
     warn = "".join(f"\n- {w}" for w in s["warnings"]) or "\n- none"
-    return (f"Base is **{s['base']}**, best public score **{s['best_public_score']}** ({s['best_version']}). "
+    climb = s.get("climb") or {}
+    if "error" in climb:
+        climb_line = f"- Climb/Kaggle: unavailable ({climb.get('error')})"
+    else:
+        climb_line = (f"- Climb/Kaggle best publicScore: **{climb.get('best_public_score')}** "
+                      f"(ref={climb.get('best_public_score_ref')}); "
+                      f"pending_submit_utc={climb.get('pending_submit_utc')}")
+    mismatch = ""
+    if s.get("score_mismatch"):
+        mismatch = f"\n- score_mismatch: {s.get('score_mismatch_note') or 'CSV ≠ climb best'}"
+    return (f"Base is **{s['base']}**, factory CSV best **{s['best_public_score']}** ({s['best_version']}). "
             f"{s['days_to_deadline']} days to the deadline ({s['deadline']}).\n\n"
             f"- Gated candidates: {s['candidates_gated']}; held: {', '.join(s['held'])}\n"
-            f"- Last gate run: {s['last_gate_run']}\n- Due today: {s['due_today']}\n- Next in queue: {q}\n\n"
+            f"- Last gate run: {s['last_gate_run']}\n- Due today: {s['due_today']}\n- Next in queue: {q}\n"
+            f"{climb_line}{mismatch}\n\n"
             f"**Warnings**{warn}")
 
 
@@ -459,9 +483,39 @@ def _fmt_rule(r: dict) -> str:
     return f"**{r['verdict']}**, delta {r['delta']:+}. {why}."
 
 
-OFFLINE_HELP = ("Offline mode understands: `status`, `gate runs`, `leaderboard`, `queue`, `why V17`, `noise`, "
-                "`goals`, `lessons`, `decisions`, `decision 4`, `what if 9 8 net 1`, `judge sample log`, "
-                "`run tests`, `run safety eval`, `build`, `run scripted agent`, `agent runs`, `search <words>`.")
+OFFLINE_HELP = ("Offline mode understands: `status`, `climb`, `kaggle`, `pending`, `gate runs`, `leaderboard`, "
+                "`queue`, `why V17`, `noise`, `goals`, `lessons`, `decisions`, `decision 4`, "
+                "`what if 9 8 net 1`, `judge sample log`, `run tests`, `run safety eval`, `build`, "
+                "`run scripted agent`, `agent runs`, `search <words>`.")
+
+
+def _fmt_climb(board: dict) -> str:
+    if "error" in board and "best_public_score" not in board:
+        return f"Climb board unavailable: {board['error']}."
+    hist = board.get("history_summary") or {}
+    pending = hist.get("pending") or []
+    pend = "; ".join(
+        f"ref={p.get('ref')} {p.get('message') or ''}".strip() for p in pending
+    ) or "none"
+    return (f"Climb/Kaggle best publicScore **{board.get('best_public_score')}** "
+            f"(ref={board.get('best_public_score_ref')}). "
+            f"pending_submit_utc={board.get('pending_submit_utc')}; PENDING rows: {pend}. "
+            f"tip_git_commit={board.get('tip_git_commit')}.")
+
+
+def _fmt_kaggle_snap(snap: dict) -> str:
+    if snap.get("error") and not snap.get("counts"):
+        return f"Kaggle snapshot unavailable: {snap['error']}."
+    counts = snap.get("counts") or {}
+    pending = snap.get("pending") or []
+    rows = "; ".join(
+        f"{p.get('ref') or p.get('kernel')} status={p.get('status')} score={p.get('public_score')}"
+        for p in pending
+    ) or "none"
+    return (f"Kaggle via climb board (refreshed={snap.get('refreshed')}): "
+            f"COMPLETE={counts.get('COMPLETE', 0)}, PENDING={counts.get('PENDING', 0)}, "
+            f"ERROR={counts.get('ERROR', 0)}. Best={snap.get('best_public_score')}. "
+            f"PENDING: {rows}.")
 
 
 class OfflineOperator:
@@ -521,6 +575,10 @@ class OfflineOperator:
         elif "gate" in t:
             reply.text = _table(do("list_gate_runs"), ["gate_run", "date", "baseline", "candidate", "solved",
                                                        "in_budget", "empty_diff", "paired_net_vs_baseline", "verdict"])
+        elif "climb" in t:
+            reply.text = _fmt_climb(do("climb_scoreboard"))
+        elif "kaggle" in t or "pending" in t:
+            reply.text = _fmt_kaggle_snap(do("kaggle_submissions_snapshot"))
         elif "leaderboard" in t or "score" in t:
             reply.text = _table(do("list_leaderboard"), ["version", "public_score", "change", "notes"])
         elif "queue" in t or "next" in t or "candidate" in t:
