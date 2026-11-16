@@ -1,23 +1,28 @@
-"""The operator chatbot: Claude with the factory's actions as tools, plus an offline fallback.
+"""The operator chatbot: Claude, local Ollama, or an offline keyword fallback.
 
-`ClaudeOperator` runs a tool loop over `factory_console.actions`. `OfflineOperator` maps keywords
-to the same actions with no model, so the console still answers without credentials or network.
-Both return a `Reply` with the text, every action that ran (for the UI to show), and any write
-that is waiting for a human to approve.
+`ClaudeOperator` and `OllamaOperator` run a tool loop over `factory_console.actions`.
+`OfflineOperator` maps keywords to the same actions with no model, so the console still
+answers without credentials or a local LLM. All return a `Reply` with the text, every
+action that ran (for the UI to show), and any write waiting for a human to approve.
 """
 from __future__ import annotations
 
 import json
 import os
 import re
+import urllib.error
+import urllib.request
 from dataclasses import dataclass, field
 from typing import Any, Callable
+from urllib.parse import urlparse
 
 from . import actions
 
 MODEL = os.environ.get("FACTORY_CONSOLE_MODEL", "claude-opus-5-5")
 MAX_TURNS = 12
 RESULT_LIMIT = 30_000  # characters of one tool result sent back to the model
+DEFAULT_OLLAMA_HOST = "http://127.0.0.1:11434"
+DEFAULT_OLLAMA_MODEL = "llama3.2:3b"
 
 SYSTEM = """You are the operator console for a software factory.
 
@@ -156,6 +161,84 @@ def claude_available() -> bool:
     return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"))
 
 
+def ollama_host() -> str:
+    """Base URL for the Ollama daemon (no /v1 suffix)."""
+    raw = (os.environ.get("OLLAMA_HOST")
+           or os.environ.get("OLLAMA_API_BASE")
+           or os.environ.get("NOISEGATE_BASE_URL")
+           or DEFAULT_OLLAMA_HOST).strip()
+    if not raw.startswith(("http://", "https://")):
+        raw = "http://" + raw
+    parsed = urlparse(raw)
+    path = parsed.path.rstrip("/")
+    if path.endswith("/v1"):
+        path = path[:-3]
+    return f"{parsed.scheme}://{parsed.netloc}{path}".rstrip("/")
+
+
+def _ollama_get(path: str, timeout: float = 3.0) -> Any:
+    req = urllib.request.Request(f"{ollama_host()}{path}", headers={"Accept": "application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.load(resp)
+
+
+def _ollama_post(path: str, payload: dict, timeout: float = 120.0) -> Any:
+    body = json.dumps(payload).encode()
+    req = urllib.request.Request(
+        f"{ollama_host()}{path}", data=body,
+        headers={"Content-Type": "application/json", "Accept": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.load(resp)
+
+
+def ollama_models() -> list[str]:
+    """Model ids served by the local OpenAI-compatible endpoint. Empty if Ollama is down."""
+    try:
+        data = _ollama_get("/v1/models")
+    except Exception:  # connection refused, timeout, bad JSON
+        return []
+    return [m.get("id", "") for m in data.get("data", []) if m.get("id")]
+
+
+def ollama_available() -> bool:
+    return bool(ollama_models())
+
+
+def resolve_ollama_model(preferred: str | None = None) -> str | None:
+    """Pick a chat model tag Ollama actually serves."""
+    served = ollama_models()
+    if not served:
+        return None
+    chat = [m for m in served if "embed" not in m.lower()]
+    pool = chat or served
+    candidates = [
+        preferred,
+        os.environ.get("OLLAMA_MODEL"),
+        os.environ.get("NOISEGATE_MODEL"),
+        os.environ.get("FACTORY_CONSOLE_MODEL") if not (os.environ.get("FACTORY_CONSOLE_MODEL") or "").startswith("claude") else None,
+        DEFAULT_OLLAMA_MODEL,
+        "mistral:latest",
+        "mistral",
+        "llama3.2:3b",
+        "llama3.2",
+    ]
+    for name in candidates:
+        if name and name in pool:
+            return name
+    return pool[0]
+
+
+def openai_tools_from_anthropic() -> list[dict]:
+    """Convert the Anthropic tool list to OpenAI/Ollama function tools."""
+    out = []
+    for t in TOOLS:
+        params = dict(t["input_schema"])
+        params.setdefault("type", "object")
+        out.append({"type": "function",
+                    "function": {"name": t["name"], "description": t["description"], "parameters": params}})
+    return out
+
+
 class ClaudeOperator:
     """Multi-turn chat. Keeps the full message history, including tool and thinking blocks."""
 
@@ -224,6 +307,118 @@ class ClaudeOperator:
         except a.APIConnectionError:
             err = "Could not reach the Anthropic API."
         del self.messages[start:]  # drop the failed exchange so the history stays valid
+        reply.error = err
+        return reply
+
+
+class OllamaOperator:
+    """Multi-turn chat against a local Ollama OpenAI-compatible endpoint (/v1/chat/completions)."""
+
+    def __init__(self, model: str | None = None):
+        chosen = resolve_ollama_model(model)
+        if not chosen:
+            raise RuntimeError(
+                f"Ollama is not reachable at {ollama_host()}, or no chat model is pulled. "
+                f"Start it with `ollama serve`, then `ollama pull {DEFAULT_OLLAMA_MODEL}`.")
+        self.model = chosen
+        self.host = ollama_host()
+        self.messages: list[dict] = [{"role": "system", "content": SYSTEM}]
+        self._tools = openai_tools_from_anthropic()
+
+    def _create(self) -> dict:
+        return _ollama_post("/v1/chat/completions", {
+            "model": self.model,
+            "messages": self.messages,
+            "tools": self._tools,
+            "tool_choice": "auto",
+            "temperature": 0.2,
+        })
+
+    @staticmethod
+    def _parse_args(raw_args: Any) -> tuple[dict, Any | None]:
+        try:
+            args = json.loads(raw_args) if isinstance(raw_args, str) else dict(raw_args or {})
+            if not isinstance(args, dict):
+                return {}, {"error": f"invalid tool arguments: {raw_args!r}"}
+            return args, None
+        except (json.JSONDecodeError, TypeError, ValueError):
+            return {}, {"error": f"invalid tool arguments: {raw_args!r}"}
+
+    @staticmethod
+    def _tool_calls_from_text(content: str) -> list[dict]:
+        """Some local tags emit a JSON tool call in content instead of tool_calls."""
+        text = (content or "").strip()
+        if not text or not text.startswith("{"):
+            return []
+        try:
+            data = json.loads(text)
+        except json.JSONDecodeError:
+            return []
+        name = data.get("name") or data.get("tool") or (data.get("function") or {}).get("name")
+        if not name or name not in HANDLERS and name != "record_score":
+            return []
+        args = data.get("arguments") or data.get("parameters") or data.get("input") or {}
+        if isinstance(args, str):
+            try:
+                args = json.loads(args)
+            except json.JSONDecodeError:
+                args = {}
+        return [{"id": f"text-{name}", "type": "function",
+                 "function": {"name": name, "arguments": json.dumps(args)}}]
+
+    def _run_tool_calls(self, tool_calls: list[dict], reply: Reply,
+                        on_step: Callable[[dict], None] | None) -> None:
+        for call in tool_calls:
+            fn = call.get("function") or {}
+            name = fn.get("name") or ""
+            args, err = self._parse_args(fn.get("arguments") or "{}")
+            out: Any = err if err else call_action(name, args, reply.pending)
+            step = {"name": name, "input": args, "result": out}
+            reply.steps.append(step)
+            if on_step:
+                on_step(step)
+            body = json.dumps(out, default=str)
+            if len(body) > RESULT_LIMIT:
+                body = body[:RESULT_LIMIT] + f"\n[truncated: {len(body)} characters in total]"
+            self.messages.append({
+                "role": "tool",
+                "tool_call_id": call.get("id") or name,
+                "content": body,
+            })
+
+    def ask(self, text: str, on_step: Callable[[dict], None] | None = None) -> Reply:
+        start = len(self.messages)
+        self.messages.append({"role": "user", "content": text})
+        reply = Reply(text="", mode="ollama")
+        try:
+            for _ in range(MAX_TURNS):
+                raw = self._create()
+                choice = (raw.get("choices") or [{}])[0]
+                msg = choice.get("message") or {}
+                content = msg.get("content") or ""
+                tool_calls = list(msg.get("tool_calls") or []) or self._tool_calls_from_text(content)
+                assistant = {"role": "assistant", "content": content}
+                if tool_calls:
+                    assistant["tool_calls"] = tool_calls
+                    assistant["content"] = content if msg.get("tool_calls") else ""
+                self.messages.append(assistant)
+                if tool_calls:
+                    self._run_tool_calls(tool_calls, reply, on_step)
+                    continue
+                reply.text = content.strip()
+                return reply
+            reply.text = "Stopped after too many steps without a final answer."
+            return reply
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", errors="replace")[:400]
+            err = f"Ollama HTTP {e.code} at {self.host}: {detail or e.reason}"
+        except urllib.error.URLError as e:
+            err = f"Could not reach Ollama at {self.host}: {e.reason}"
+        except TimeoutError:
+            err = f"Ollama timed out at {self.host}."
+        except Exception as e:  # keep chat usable; surface the failure
+            err = f"Ollama error: {type(e).__name__}: {e}"
+        del self.messages[start:]
         reply.error = err
         return reply
 
@@ -349,5 +544,34 @@ class OfflineOperator:
         return reply
 
 
-def make_operator(prefer_claude: bool = True):
-    return ClaudeOperator() if prefer_claude and claude_available() else OfflineOperator()
+def configured_backend() -> str:
+    """auto | claude | ollama | offline — from FACTORY_CONSOLE_BACKEND (default auto)."""
+    return (os.environ.get("FACTORY_CONSOLE_BACKEND") or "auto").strip().lower()
+
+
+def make_operator(*, allow_claude: bool = True, allow_ollama: bool = True):
+    """Pick an operator.
+
+    `FACTORY_CONSOLE_BACKEND`:
+      - `claude`  — Anthropic only (errors if no credentials)
+      - `ollama`  — local Ollama OpenAI-compatible API
+      - `offline` — keyword router
+      - `auto`    — Claude if credentials, else Ollama if up, else offline
+    """
+    backend = configured_backend()
+    if backend == "offline":
+        return OfflineOperator()
+    if backend == "claude":
+        if not allow_claude or not claude_available():
+            raise RuntimeError("FACTORY_CONSOLE_BACKEND=claude but Anthropic credentials are unavailable")
+        return ClaudeOperator()
+    if backend == "ollama":
+        if not allow_ollama:
+            return OfflineOperator()
+        return OllamaOperator()
+    # auto
+    if allow_claude and claude_available():
+        return ClaudeOperator()
+    if allow_ollama and ollama_available():
+        return OllamaOperator()
+    return OfflineOperator()

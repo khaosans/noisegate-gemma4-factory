@@ -80,12 +80,16 @@ python -m agentops metrics                 # metrics over runs/ (see docs/agento
 python product/build_submission.py         # rebuild submission.zip, print SHA-256s
 ```
 
-Demo app and operator chatbot:
+Demo app and operator chatbot (default port in docs: 8765):
 
 ```bash
 pip install -r requirements-console.txt -r requirements-agent.txt
-streamlit run factory_console/app.py
+# Optional local LLM: ollama serve && ollama pull llama3.2:3b
+# FACTORY_CONSOLE_BACKEND=ollama OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=llama3.2:3b
+streamlit run factory_console/app.py --server.port 8765
 ```
+
+See [`docs/factory-console.md`](docs/factory-console.md) for Claude / Ollama / offline backend selection.
 
 Parse an Eval Gate log and apply the rule:
 

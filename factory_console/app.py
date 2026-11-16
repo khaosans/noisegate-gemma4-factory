@@ -14,7 +14,10 @@ import pandas as pd  # noqa: E402
 import streamlit as st  # noqa: E402
 
 from factory_console import actions  # noqa: E402
-from factory_console.chat import ClaudeOperator, OfflineOperator, OFFLINE_HELP, claude_available  # noqa: E402
+from factory_console.chat import (  # noqa: E402
+    ClaudeOperator, OfflineOperator, OllamaOperator, OFFLINE_HELP,
+    claude_available, make_operator, ollama_available, ollama_host,
+)
 
 # Chart colours: fixed by role, never by rank. Validated palette from the dataviz reference (light).
 BLUE, ORANGE, AQUA, YELLOW, MAGENTA, GREEN, RED = (
@@ -372,19 +375,32 @@ SUGGESTIONS = ["Where does the factory stand today?", "Why was V17 held?",
                "Would 9 and 8 in-budget solves with paired net +1 ship?", "Run the tests", "What is next in the queue?"]
 
 
+def _chat_caption(operator) -> str:
+    base = ("Ask about the factory, or ask it to run a local job. It works through the same actions as the "
+            "other pages and cannot start a gate run, submit, or change the base. ")
+    if isinstance(operator, OfflineOperator):
+        return base + "**Offline mode** (no Claude credentials and no reachable Ollama): keyword commands only."
+    if isinstance(operator, OllamaOperator):
+        return base + f"Backend: **Ollama** at `{operator.host}` · model `{operator.model}`."
+    return base + f"Backend: **Claude** · model `{operator.model}`."
+
+
 def page_chat() -> None:
     st.title("Operator chat")
     ss = st.session_state
     ss.setdefault("chat", [])
     ss.setdefault("pending", [])
-    use_claude = claude_available() and not ss.get("claude_failed")
     if "operator" not in ss:
-        ss.operator = ClaudeOperator() if use_claude else OfflineOperator()
+        try:
+            ss.operator = make_operator(
+                allow_claude=claude_available() and not ss.get("claude_failed"),
+                allow_ollama=not ss.get("ollama_failed"),
+            )
+        except RuntimeError as e:
+            st.error(str(e))
+            ss.operator = OfflineOperator()
     offline = isinstance(ss.operator, OfflineOperator)
-    st.caption("Ask about the factory, or ask it to run a local job. It works through the same actions as the "
-               "other pages and cannot start a gate run, submit, or change the base. "
-               + ("**Offline mode** (no working Anthropic credentials): keyword commands only."
-                  if offline else f"Model: `{ss.operator.model}`."))
+    st.caption(_chat_caption(ss.operator))
 
     for i, p in enumerate(list(ss.pending)):
         with st.container(border=True):
@@ -418,7 +434,12 @@ def page_chat() -> None:
     prompt = st.chat_input("Ask the factory…" if not offline else "status · why V17 · what if 9 8 net 1 · run tests") or picked
     if not prompt:
         if offline and not ss.chat:
-            st.caption(OFFLINE_HELP)
+            why = []
+            if not claude_available():
+                why.append("no Anthropic credentials")
+            if not ollama_available():
+                why.append(f"Ollama not reachable at {ollama_host()}")
+            st.caption(OFFLINE_HELP + ((" · " + "; ".join(why)) if why else ""))
         return
     ss.chat.append({"role": "user", "text": prompt})
     with st.chat_message("user"):
@@ -429,10 +450,20 @@ def page_chat() -> None:
                 box.write(f"`{step['name']}` {step['input'] or ''}")
             reply = ss.operator.ask(prompt, on_step=show)
             if reply.error:
-                box.write(f"{reply.error} Falling back to offline mode.")
-                ss.claude_failed, ss.operator = True, OfflineOperator()
-                note, reply = reply.error, ss.operator.ask(prompt, on_step=show)
-                reply.text = f"*{note} Answering in offline mode.*\n\n{reply.text}"
+                note = reply.error
+                if isinstance(ss.operator, ClaudeOperator):
+                    ss.claude_failed = True
+                    box.write(f"{note} Trying Ollama, then offline…")
+                    ss.operator = make_operator(allow_claude=False, allow_ollama=not ss.get("ollama_failed"))
+                elif isinstance(ss.operator, OllamaOperator):
+                    ss.ollama_failed = True
+                    box.write(f"{note} Falling back to offline mode.")
+                    ss.operator = OfflineOperator()
+                else:
+                    ss.operator = OfflineOperator()
+                reply = ss.operator.ask(prompt, on_step=show)
+                mode = "Ollama" if isinstance(ss.operator, OllamaOperator) else "offline mode"
+                reply.text = f"*{note} Answering via {mode}.*\n\n{reply.text}"
             box.update(label=f"{len(reply.steps)} action(s) run", state="complete")
         st.markdown(reply.text)
     ss.pending += reply.pending
