@@ -1,11 +1,16 @@
 """Factory console: actions over the repo's records, the offline operator, and the Claude tool loop."""
+import json
 import shutil
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 
 from factory_console import actions
-from factory_console.chat import TOOLS, HANDLERS, ClaudeOperator, OfflineOperator
+from factory_console.chat import (
+    TOOLS, HANDLERS, ClaudeOperator, OfflineOperator, OllamaOperator,
+    make_operator, openai_tools_from_anthropic, resolve_ollama_model,
+)
 
 
 def test_status_reports_state_and_stale_records():
@@ -111,3 +116,78 @@ def test_record_score_appends_only_new_versions(tmp_path, monkeypatch):
     assert out["recorded"] and out["previous_best"] == 0.18
     assert actions.leaderboard()[-1]["version"] == "V18"
     assert "V18 scored 0.19" in (tmp_path / "results" / "eval-results.md").read_text()
+
+
+def test_openai_tools_match_anthropic_names():
+    converted = openai_tools_from_anthropic()
+    assert {t["function"]["name"] for t in converted} == {t["name"] for t in TOOLS}
+    assert all(t["type"] == "function" for t in converted)
+
+
+def test_resolve_ollama_model_prefers_env(monkeypatch):
+    monkeypatch.setenv("OLLAMA_MODEL", "llama3.2:3b")
+    with patch("factory_console.chat.ollama_models", return_value=["mistral:latest", "llama3.2:3b"]):
+        assert resolve_ollama_model() == "llama3.2:3b"
+    with patch("factory_console.chat.ollama_models", return_value=[]):
+        assert resolve_ollama_model() is None
+
+
+def test_make_operator_honors_backend_env(monkeypatch):
+    monkeypatch.setenv("FACTORY_CONSOLE_BACKEND", "offline")
+    assert isinstance(make_operator(), OfflineOperator)
+    monkeypatch.setenv("FACTORY_CONSOLE_BACKEND", "ollama")
+    with patch("factory_console.chat.ollama_models", return_value=["llama3.2:3b"]):
+        op = make_operator()
+        assert isinstance(op, OllamaOperator) and op.model == "llama3.2:3b"
+
+
+def test_ollama_loop_runs_tools(monkeypatch):
+    monkeypatch.setenv("OLLAMA_MODEL", "llama3.2:3b")
+    script = [
+        {"choices": [{"finish_reason": "tool_calls", "message": {
+            "role": "assistant", "content": "",
+            "tool_calls": [{"id": "c1", "type": "function",
+                            "function": {"name": "explain_candidate",
+                                         "arguments": json.dumps({"version": "V17"})}}],
+        }}]},
+        {"choices": [{"finish_reason": "stop", "message": {
+            "role": "assistant", "content": "V17 was held.",
+        }}]},
+    ]
+
+    def fake_post(path, payload, timeout=120.0):
+        assert path == "/v1/chat/completions"
+        assert payload["model"] == "llama3.2:3b" and payload["tools"]
+        return script.pop(0)
+
+    with patch("factory_console.chat.ollama_models", return_value=["llama3.2:3b"]), \
+         patch("factory_console.chat._ollama_post", side_effect=fake_post):
+        op = OllamaOperator()
+        reply = op.ask("why was V17 held?")
+    assert reply.text == "V17 was held." and reply.mode == "ollama"
+    assert [s["name"] for s in reply.steps] == ["explain_candidate"]
+    assert '"verdict": "HOLD"' in json.dumps(reply.steps[0]["result"])
+
+
+def test_ollama_operator_errors_clearly_when_down(monkeypatch):
+    with patch("factory_console.chat.ollama_models", return_value=[]):
+        with pytest.raises(RuntimeError, match="Ollama is not reachable"):
+            OllamaOperator()
+
+
+def test_ollama_parses_json_tool_call_in_content(monkeypatch):
+    monkeypatch.setenv("OLLAMA_MODEL", "llama3.2:3b")
+    script = [
+        {"choices": [{"finish_reason": "stop", "message": {
+            "role": "assistant",
+            "content": json.dumps({"name": "factory_status", "parameters": {}}),
+        }}]},
+        {"choices": [{"finish_reason": "stop", "message": {
+            "role": "assistant", "content": "Base V8, best 0.18.",
+        }}]},
+    ]
+    with patch("factory_console.chat.ollama_models", return_value=["llama3.2:3b"]), \
+         patch("factory_console.chat._ollama_post", side_effect=lambda *a, **k: script.pop(0)):
+        reply = OllamaOperator().ask("status?")
+    assert reply.steps[0]["name"] == "factory_status"
+    assert reply.text == "Base V8, best 0.18."
