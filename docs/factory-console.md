@@ -24,6 +24,22 @@ streamlit run factory_console/app.py --server.port 8765
 
 If Ollama is down with `FACTORY_CONSOLE_BACKEND=ollama`, the chat shows a clear error and falls back to offline keyword mode. With `FACTORY_CONSOLE_BACKEND=auto` (default), the order is Claude → Ollama → offline.
 
+### Climb / Kaggle bridge (read-only)
+
+Operator chat can read the live Kaggle publicScore SoT from the cmu-agentic-ai climb board without gaining submit powers:
+
+```bash
+export CMU_AGENTIC_AI_ROOT=/absolute/path/to/cmu-agentic-ai   # required for climb tools
+export FACTORY_CLIMB_REFRESH=1   # optional: run climb scripts/refresh_scoreboard.py before snapshot
+```
+
+- Tools: `climb_scoreboard` (read `docs/scoreboard.json` only), `kaggle_submissions_snapshot` (optional refresh, then COMPLETE/PENDING summary).
+- `factory_status` attaches a climb slice, `sources`, and `score_mismatch` when NoiseGate `results/leaderboard.csv` best ≠ climb best.
+- Climb/Kaggle is the live publicScore source of truth; the CSV is factory gate bookkeeping and may disagree.
+- Still cannot CreateSubmission, start a Kaggle gate, or auto-overwrite the CSV.
+
+Offline keywords: `climb`, `kaggle`, `pending` (plus existing `status`, …).
+
 ## Pages
 
 | Page | What it shows | Data |
@@ -42,12 +58,13 @@ If Ollama is down with `FACTORY_CONSOLE_BACKEND=ollama`, the chat shows a clear 
 `factory_console/actions.py` is the list of things the console may do. The chat and the pages call
 the same functions.
 
-- **Query:** gate runs, leaderboard, candidates and queue, decisions, lessons, goals, the log, run logs.
-- **Check:** status against the runbook, replay the decision rule on a recorded candidate, what-if
-  numbers, judge a pasted gate log.
+- **Query:** gate runs, leaderboard, candidates and queue, decisions, lessons, goals, the log, run logs,
+  climb scoreboard / Kaggle submissions snapshot (when `CMU_AGENTIC_AI_ROOT` is set).
+- **Check:** status against the runbook (plus climb slice / mismatch), replay the decision rule on a
+  recorded candidate, what-if numbers, judge a pasted gate log.
 - **Run:** the test suite, the safety eval, a zip build with SHA-256s, one supervised agent session.
 - **Not available, on purpose:** starting a Kaggle gate run, submitting, changing the base config.
-  The runbook reserves these for humans.
+  The runbook reserves these for humans. The climb bridge never CreateSubmission.
 - **Writes need approval:** `record_score` only queues an entry. It is written to `results/` after
   you press Approve in the chat page.
 
