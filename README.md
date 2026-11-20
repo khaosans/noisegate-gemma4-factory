@@ -73,25 +73,14 @@ flowchart TB
 
 ## How we ran it
 
-Production climb = **Claude Project + scheduled wakes**, not Streamlit.
+Production climb = **Claude Project + scheduled wakes**. Demo / ops narrative = **Claude Ops Console** artifact.
 
 1. Cowork loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` each wake.
 2. Skills in [`factory/skills/`](factory/skills/): `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
 3. **Cadence (UTC):** Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
 4. Kaggle login UI (notebook commit, gate start, CreateSubmission) stays on Claude’s authenticated session.
 
-**Default demo UI:** [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)
-
-## Optional local Streamlit (`:8765`)
-
-Streamlit is an **optional** adjunct for live checkout files — not the default demo path (use the Ops Console artifact above).
-
-```bash
-pip install -r requirements-console.txt -r requirements-agent.txt
-streamlit run factory_console/app.py --server.port 8765
-```
-
-Query / replay / pytest / zip build are fine. **Must not:** gate-start, CreateSubmission, or change base config. `record_score` writes need an **Approve** click. UI is rough; polish deferred. Details: [Local and Streamlit wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Local-And-Streamlit) · [`docs/factory-console.md`](docs/factory-console.md).
+**Main demo UI:** [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)
 
 ## Results that matter for shipping
 
@@ -121,7 +110,7 @@ Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence
 | [`product/`](product/) | Agent configs, candidates, zip builder |
 | [`harness/`](harness/) | Trajectory parse, evaluators, decision rule |
 | [`factory/`](factory/) | Runbook, Project instructions, Skills |
-| [`factory_console/`](factory_console/) | Optional Streamlit local console (default UI = Claude Ops Console artifact) |
+| [`factory_console/`](factory_console/) | Legacy local console (not used for demos; main UI = Claude Ops Console) |
 | [`supervisor/`](supervisor/) · [`guardrails/`](guardrails/) · [`agentops/`](agentops/) | Course slice (not in Kaggle zip) |
 | [`evals/`](evals/) · [`results/`](results/) | Safety cases · gate / LB bookkeeping |
 | [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [`docs/wiki/`](docs/wiki/) | Preferred viewer · editor SoT |
@@ -134,7 +123,7 @@ pip install -r requirements.txt
 pytest -q
 python -m evals.safety.run
 python product/build_submission.py
-streamlit run factory_console/app.py --server.port 8765
+# Demo UI: https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW  (see wiki Ops-Console)
 ```
 
 ```python

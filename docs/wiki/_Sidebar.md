@@ -3,9 +3,8 @@
 - [[Home]]
 - [[Method-Card]]
 - [[Architecture]]
-- [[Ops-Console]] *(default UI)*
+- [[Ops-Console]] *(main UI)*
 - [[Claude-Cowork-Loop]]
-- [[Local-And-Streamlit]] *(optional)*
 - [[Requirements-Compliance]]
 - [[Demo-Script]]
 - [[Future-Work]]

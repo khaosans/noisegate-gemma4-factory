@@ -1,35 +1,52 @@
-# Ops Console (Claude artifact) — default UI
+# Ops Console (Claude artifact) — main UI
 
-**Live UI (default):** [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
+**Live UI:** [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
 
-This is NoiseGate’s **default operator / demo interface**: the Claude **Agent Ops Console** artifact. Use it for class talks, portfolio demos, and the factory narrative (gate HOLD, HITL, never CreateSubmission).
+NoiseGate’s **main operator / demo interface**: the Claude **Agent Ops Console** artifact. Use it for class talks, portfolio demos, and the factory narrative (gate HOLD, HITL, never CreateSubmission).
 
-It is **paper / replay** of recorded factory state — not the climb runtime and **never** CreateSubmission. Streamlit `:8765` is an **optional** local adjunct when you need live `results/` on disk. Cowork remains the authenticated climb path.
+It is **paper / replay** of recorded factory state — not the climb runtime and **never** CreateSubmission. Cowork remains the authenticated climb path for gate-start and human CreateSubmission.
 
 Prefer linking out (do not iframe claude.ai in README — auth / embed fragility). Artifact URLs can drift; keep this page as the in-repo SoT for *what the Ops Console means*.
 
-![React Ops Console overview — Gemma 4 Climb Agent Ops Console (default demo UI) with agent lifecycle, gate HOLD narrative, and HITL guardrails](assets/ops-console/react-ops-console-overview.png)
+## Screens (how to read it)
+
+### Overview
+
+![Ops Console overview — Gemma 4 Climb Agent Ops Console main dashboard](assets/ops-console/react-ops-console-overview.png)
+
+Landing view: factory status, best score / HOLD context, and the live control surface. This is the screen to open first in a demo.
+
+### Controls
+
+![Ops Console controls — Live/Demo, Ops/Sim, Autopilot vs Manual Gate, Ops Copilot](assets/ops-console/react-ops-console-controls.png)
+
+Mode toggles: **Data** (Live vs Demo replay), **Mode** (Live Ops vs Dry-Run Sim), **Autopilot** (policy-bounded vs Manual Gate), plus Ops Copilot. Demo talks stay on replay / low-HITL narrative — never invent scores.
+
+### HOLD / gate insight
+
+![Ops Console HOLD and gate insight — noise band, quota, HITL before costly steps](assets/ops-console/react-ops-console-hold-or-gate.png)
+
+Why the factory refuses to ship: gains inside the V8 noise band **HOLD**; expensive steps need a human. Point here when explaining the eval-over-generator thesis.
+
+### Agents
+
+![Ops Console agents — lifecycle ring and eval-runner skills, tools, HITL guardrails](assets/ops-console/react-ops-console-agents.png)
+
+Agentic Systems panel: watchdog / patch / eval-runner / submit-governor. Drill into the running agent for skills, bound tools, and hard guardrails (HITL on full gate runs).
 
 ## Role in the system
 
-Three operator surfaces — **default first**:
+Two surfaces that matter for operators:
 
-| Priority | Surface | How | Data | CreateSubmission / gate-start? |
-|----------|---------|-----|------|--------------------------------|
-| **Default** | **Claude Ops Console** (this page) | Claude artifact | Paper / **replay** of recorded runs | **No** |
-| Optional | **Streamlit** | `streamlit run factory_console/app.py --server.port 8765` | Live repo `results/` (+ optional climb **read-only** bridge) | **No** |
-| Climb | **Claude Cowork** | Project + Skills + runbook | Authenticated Kaggle session | **Human only** |
-
-> **Default vs optional:** open the Claude Ops Console artifact for demos and the ops story. Streamlit is optional, rough, and only worth starting when you need local CSV / Approve / pytest against the checkout. **No Streamlit application code changes in this docs pass** — leave `factory_console/` alone. Details: [[Local-And-Streamlit]].
+| Surface | How | Data | CreateSubmission / gate-start? |
+|---------|-----|------|--------------------------------|
+| **Claude Ops Console** (this page) — **main UI** | Claude artifact | Paper / **replay** of recorded runs | **No** |
+| **Claude Cowork** | Project + Skills + runbook | Authenticated Kaggle session | **Human only** |
 
 ```mermaid
 flowchart LR
-  subgraph Default["Default demo UI"]
+  subgraph Main["Main demo / ops UI"]
     React[Claude Ops Console artifact]
-  end
-
-  subgraph Optional["Optional local"]
-    ST[Streamlit :8765]
   end
 
   subgraph Climb["Climb ops"]
@@ -37,9 +54,8 @@ flowchart LR
   end
 
   React -.->|illustrates| Gate[Eval gate + HOLD]
-  ST -->|reads| Results[results/ CSV + ledger]
   CW -->|auth session| Kaggle[Gate start / CreateSubmission HITL]
-  Results -.->|may lag artifact| React
+  Results[results/ CSV + ledger] -.->|may lag artifact| React
 ```
 
 ## What you can show
@@ -47,7 +63,7 @@ flowchart LR
 - Factory loop story: one delta → paired gate → **HOLD** inside noise  
 - Human approval before costly ledger writes (HITL narrative)  
 - Separation of product (Gemma ReAct) vs factory governance  
-- Full demo without installing Streamlit
+- Full demo from the artifact alone (no local console required)
 
 ## What you cannot claim
 
@@ -59,33 +75,26 @@ flowchart LR
 
 Scores only count when they appear in `results/` / climb SoT — never invent them from the paper UI.
 
-## Optional: in-repo Streamlit console
-
-![Streamlit Factory Console — optional local :8765 UI (rough; not the default demo path)](assets/ops-console/streamlit-factory-console.png)
+## Related docs
 
 | Concern | Docs |
 |---------|------|
-| Pages, chat backends, Approve flow | [`docs/factory-console.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/factory-console.md) |
-| May / must-not + climb bridge | [[Local-And-Streamlit]] |
 | Primary climb path | [[Claude-Cowork-Loop]] |
 | Architecture bands | [[Architecture]] · [[Method-Card]] |
+| Demo talk track | [[Demo-Script]] |
 
-Streamlit mirrors the same factory concepts for **local** query/replay. Same deny list: no gate-start, no submit. Treat it as optional until polished.
-
-## When to open which (operator cheat sheet)
+## When to open which
 
 | Goal | Open |
 |------|------|
-| Class talk / portfolio / default demo | **Claude Ops Console** artifact (**default**) |
-| Live CSVs, replay `decide()`, Approve `record_score`, pytest/zip | **Streamlit** `:8765` (**optional**, rough) |
+| Class talk / portfolio / ops narrative | **Claude Ops Console** artifact (**main**) |
 | Build candidate, start Eval Gate, CreateSubmission | **Cowork** (human) |
 
 ## Demo (60 seconds)
 
-1. Open the [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) — **this is the default demo**.  
-2. Point at factory loop / a HOLD above the V8 noise band.  
-3. Say: “Consoles never CreateSubmission — humans / Cowork own that.”  
-4. Optional only: Streamlit for “same story, live files on disk.”
+1. Open the [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW).  
+2. Overview → controls → HOLD insight → agents (same order as screens above).  
+3. Say: “This console never CreateSubmission — humans / Cowork own that.”
 
 Full talk track: [[Demo-Script]].
 
