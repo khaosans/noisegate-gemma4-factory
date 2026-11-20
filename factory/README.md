@@ -19,7 +19,7 @@ flowchart TB
   RS -->|LB ≥ best| NB[New base → next queue item]
 ```
 
-If both Run A candidates are below V8’s mean, Run B screens the next two queue items instead of `[V8, leader]` (see `runbook.md`).
+*Insight.* Run A screens; Run B only spends a full paired comparison when a leader clears V8 — or screens the next pair if both trail V8’s mean (`runbook.md`). HOLD is a successful outcome when the gain is inside noise.
 
 | Piece | File |
 |---|---|

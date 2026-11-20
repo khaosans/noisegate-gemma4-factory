@@ -2,6 +2,8 @@
 
 NoiseGate separates **deterministic factory governance** from the **offline Gemma 4 ReAct coding agent**, with humans on the Ops Console for costly steps. Confusing the bands is the fastest way to mis-read the project.
 
+The product targets issue-fixing under a fixed competition harness (SWE-bench-style tasks; Kaggle ADK host). Behavior is a ReAct loop: reason → tool → observe → patch.
+
 ## Figure 1 — Three bands
 
 ```mermaid
@@ -29,20 +31,22 @@ flowchart TB
   L2 <--> Ops
 ```
 
+*Insight — why three bands.* Layer 1 decides **whether to spend GPU and the weekly slot**; Layer 2 only solves tasks. Ops Console is the audit surface for humans, not a second climb path. CreateSubmission never leaves the HITL tier.
+
 | Band | What it does |
 |---|---|
-| **Factory (4 roles)** | Patch builds baseline + one change (SHA-256). Eval runs the 30-task paired gate. Watchdog classifies failures and tracks GPU. Submit Governor applies the noise gate and guards the weekly slot. |
-| **Product** | Gemma 4 ReAct: reason → tool (shell / read / edit / code-graph) → observe → repeat until patch. Hard caps: ≤28 calls, ≤480s/task, fixed seed. Configs versioned V8–V23. |
-| **Ops Console** | State file + append-only event ledger; React Ops Console with replay and approval. **Never** CreateSubmission from the console. |
+| **Factory (4 roles)** | Patch = base + one change (SHA-256). Eval = 30-task paired gate. Watchdog = failures + GPU. Submit Governor = noise gate + weekly slot. |
+| **Product** | Gemma 4 ReAct under ≤28 calls / ≤480s / fixed seed. Configs V8–V23. |
+| **Ops Console** | State file + append-only ledger; replay + approval. **Never** CreateSubmission. |
 
 | | **Product** | **Factory** |
 |---|---|---|
-| Model | `gemma-4-31b-it` (fixed by competition rules) | Claude scheduled runbook / Project |
-| Artifact | ADK config → `submission.zip` | Candidates = base + exactly one change |
-| Evaluation | Hidden tests → public/private LB | Local Eval Gate (30 tasks, paired vs V8) + coded decision rule |
+| Model | `gemma-4-31b-it` (fixed) | Claude scheduled runbook |
+| Artifact | ADK → `submission.zip` | Base + exactly one change |
+| Evaluation | Hidden tests → LB | Paired gate vs V8 + coded decision rule |
 | Human role | — | Cadence, full-gate approve, CreateSubmission, final picks |
 
-Core finding: **the harness matters more than the generator**. The factory’s most useful act has been HOLD.
+Core finding: **the harness matters more than the generator.** The factory’s most useful act has been HOLD.
 
 ## One weekly turn
 
@@ -59,9 +63,9 @@ flowchart TB
   RS -->|LB ≥ best| NB[New base]
 ```
 
-If **both** Run A candidates sit below V8’s mean, Run B screens the **next two** queue items instead of `[V8, leader]` (runbook rule; single-run bar applies).
+*Insight — why paired gate.* Run A screens two candidates cheaply; Run B only promotes a leader against V8 (or screens the next pair if both trail V8’s mean). Decision math is in `harness/decision_rule.py`, not chat — so HOLD/SUBMIT is reproducible.
 
-Cadence (UTC):
+If **both** Run A candidates sit below V8’s mean, Run B screens the **next two** queue items instead of `[V8, leader]` (runbook; single-run bar applies).
 
 ```mermaid
 flowchart LR
@@ -73,11 +77,11 @@ flowchart LR
   Wait --> Rec[record-score + CSV]
 ```
 
-Decision logic lives in code (`harness/decision_rule.py`), not free-form chat. Trajectory parsing and evaluators E1–E9 feed the gate; persistent memory is the ledger + `results/`.
+*Insight — cadence.* Status-only wakes exist so Claude refreshes scores without inventing submits. The ~1.5-day scoring lag is why the factory self-limits to ≤1 gated submit / ISO week.
 
 ## Product ReAct loop (ADK zip)
 
-What the **graded** Kaggle agent does on each task (ADK `submission.zip` only):
+Graded path only — what ships inside `submission.zip`:
 
 ```mermaid
 flowchart LR
@@ -88,15 +92,15 @@ flowchart LR
   Submit --> Tests[Hidden / maintainer tests]
 ```
 
-**Allow / Block** for tests/, adversarial shell, budgets, and escalate interrupts live in the local **LangGraph supervisor** + `guardrails/` — course evidence, **not** inside the ADK zip. See [[Requirements-Compliance]].
+*Insight.* This is the competition contract: one ADK agent, tools, patch, hidden tests. **Allow / Block**, budgets, and escalate interrupts live in local `supervisor/` + `guardrails/` — course evidence, **not** in the zip. See [[Requirements-Compliance]].
 
-## Figure 2 energy — noise band and telemetry
+## Figure 2 — Noise band and telemetry
 
-Numbers below are from the capstone evaluation writeup (gate through mid-November 2026). Not a live leaderboard scrape.
+Numbers from the capstone evaluation (gate through mid-November 2026). Not a live leaderboard scrape.
 
-### A. Paired gate in-budget solves vs V8 noise band
+### A. Paired gate vs V8 noise band
 
-V8 mean **7.33** in-budget / 30 · empirical noise ~**±2.5** tasks (three repeats: 8, 6, 8).
+V8 mean **7.33** in-budget / 30 · empirical noise ~**±2.5** (repeats 8, 6, 8).
 
 ```mermaid
 flowchart LR
@@ -110,24 +114,18 @@ flowchart LR
   V11[V11 10.0] -.-> Band
 ```
 
+*Insight — shipping decisions.* Anything inside the band is treated as noise, not a ship signal. V11’s single-run 10 looked decisive and then scored **0.15** on the board; V15 (public 0.22 copy) landed **0.17**. The gate’s job is blocking false promotions; it is trusted more to refuse than to forecast LB.
+
 | Candidate | In-budget / 30 | Notes |
 |---|---|---|
 | V8 (base) | 7.33 (8, 6, 8) | Noise calibration |
-| V11 | 10.0 (1 run) | Looked better locally → LB **0.15** |
-| V15 (public 0.22 copy) | 8.5 (7, 10) | LB **0.17** — board noise |
+| V11 | 10.0 (1 run) | Local win → LB 0.15 |
+| V15 (public 0.22 copy) | 8.5 (7, 10) | LB 0.17 — board noise |
 | V18 | 7.0 | HOLD |
 | V21 | 6.0 | HOLD |
 | V22 | 9.0 | HOLD pending second run |
 
-### B. Trajectory telemetry (N = 390 gate runs)
-
-| Signal | Value | Takeaway |
-|---|---|---|
-| Median first edit | call **16 / 28** (~57% budget spent reading) | Agent reads too long |
-| Out-of-budget | **243 / 390 (62.3%)** | Cap bites late |
-| Wrong fix | **32%** | Dominant failure mode |
-| Empty patch | **21%** | Second mode |
-| Prompt-only “edit by call 20” (V17) | Ignored | Deadline must be **tool-layer**, not prompt-only |
+### B. Trajectory telemetry (N = 390)
 
 ```mermaid
 flowchart LR
@@ -137,32 +135,40 @@ flowchart LR
   Out -->|in budget| Ok[Scored / other]
 ```
 
+*Insight — next engineering lever.* Median first edit at call **16/28** means most of the budget is spent reading. Prompt-only “edit by call 20” (V17) was ignored — so a **tool-layer** call/edit deadline is the honest next change, not another system-prompt pep talk.
+
+| Signal | Value | Takeaway |
+|---|---|---|
+| Median first edit | call **16 / 28** | Read loop too long |
+| Out-of-budget | **243 / 390 (62.3%)** | Cap bites late |
+| Wrong fix / empty patch | **32% / 21%** | Dominant failure modes |
+| Prompt-only deadline (V17) | Ignored | Enforce in tools |
+
 ## Table 2 — Governance tiers
 
 | Control tier | Operational action | Authorization & audit |
 |---|---|---|
-| **Autonomous** | Static checks, candidate packaging, 3-hour screen on 9 contested tasks | Runs on schedule; logged in append-only ledger |
+| **Autonomous** | Static checks, packaging, 3-hour screen on 9 contested tasks | Scheduled; logged in ledger |
 | **Automated reliability cutoff** | Early stop when projected overruns fail hard check | Deterministic watchdog (~3.3 GPU-h saved on V18 replay) |
-| **HITL gate** | Full 10-hour 30-task gate, Kaggle submission, failed recovery | Explicit human approval; overrides audited (e.g. V20) |
-| **Hard standing guardrails** | Duplicate-hash resubmit, post-deadline runs, deleting notebooks/submissions | Forbidden by policy; final submission human-reserved |
+| **HITL gate** | Full 10-hour gate, Kaggle submission, failed recovery | Explicit human approval; overrides audited (e.g. V20) |
+| **Hard standing guardrails** | Duplicate-hash resubmit, post-deadline runs, deleting notebooks/submissions | Forbidden; final submission human-reserved |
+
+*Insight — why HITL tiers.* Cheap steps automate; expensive or irreversible steps require a person. That is how the factory stays autonomous without gambling the weekly slot or deleting artifacts.
 
 Streamlit `:8765` and the React Ops Console may query / replay / approve ledger writes — they **must not** CreateSubmission or start a Kaggle gate on their own.
 
-## Repository layout (who owns what)
+## Repository layout
 
 | Path | Owner |
 |---|---|
-| `product/` | Product configs, candidates table, zip builder |
-| `harness/` | Gate math, trajectory parse, eval notebook notes |
-| `factory/` | Runbook, Project instructions, Skills |
-| `factory_console/` | Local query/demo UI (does not replace Claude for Kaggle login) |
-| `supervisor/` + `guardrails/` + `agentops/` | Course supervisor slice (LangGraph); **not** in the Kaggle zip |
-| `evals/` | Adversarial safety cases |
-| `results/` | Factory bookkeeping (gate CSV + leaderboard CSV) |
+| `product/` | Configs, candidates, zip builder |
+| `harness/` | Gate math, trajectory parse |
+| `factory/` | Runbook, Skills |
+| `factory_console/` | Local query/demo UI |
+| `supervisor/` + `guardrails/` + `agentops/` | Course slice — **not** in Kaggle zip |
+| `evals/` · `results/` | Safety cases · bookkeeping |
 
 ## Climb bridge (#4 merged)
-
-Sibling climb tooling and the live publicScore source of truth live in `cmu-agentic-ai` (`docs/scoreboard.json`). NoiseGate’s `results/leaderboard.csv` is factory bookkeeping and can disagree until operators reconcile.
 
 ```mermaid
 flowchart LR
@@ -181,18 +187,20 @@ flowchart LR
   Tips -.->|ADK zip configs| Prod[product/]
 ```
 
-With [#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4) and Ollama [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3) on `main`:
-
-- Console tools `climb_scoreboard` / `kaggle_submissions_snapshot` read via `CMU_AGENTIC_AI_ROOT`
-- `factory_status` can report `score_mismatch`
-- Still **no** CreateSubmission, gate-start, or auto CSV overwrite from Streamlit
+*Insight.* Climb `scoreboard.json` is live publicScore SoT; NoiseGate CSV is factory bookkeeping. The bridge is read-only — still **no** CreateSubmission from Streamlit ([#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4), [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3)).
 
 ## What ships where
 
 | Surface | Ships |
 |---|---|
-| Kaggle competition | Product ADK zip only |
+| Kaggle | Product ADK zip only |
 | Demo | Ops Console + Streamlit `:8765` + this wiki |
-| Course evidence (non-zip) | LangGraph supervisor, guardrails, AgentOps, safety eval |
+| Course evidence (non-zip) | LangGraph supervisor, guardrails, AgentOps |
 
 See also: [[Claude-Cowork-Loop]], [[Local-And-Streamlit]], [[Requirements-Compliance]].
+
+## References
+
+1. Jimenez et al., *SWE-bench* (ICLR 2024) — issue-fixing benchmark lineage.  
+2. Yao et al., *ReAct* (ICLR 2023) — product agent loop.  
+3. Kaggle & Google DeepMind, *Gemma 4 Developer Agent* (2026) — fixed model, 28 calls, 480s/task.

@@ -56,7 +56,7 @@ flowchart TB
   Supervisor[supervisor/] --> Course
 ```
 
-Decision 007 records why the supervisor exists for class checkpoints without changing the Kaggle ship contract.
+*Insight.* Graders should score the **ADK zip** for competition competence. LangGraph is deliberate course evidence (budgets, tool policy, escalate) — Decision 007 keeps it out of the ship contract so the two surfaces stay honest.
 
 ## HITL summary
 
@@ -85,6 +85,8 @@ flowchart TB
     E2 --> E3[Human resume or stop]
   end
 ```
+
+*Insight — HITL tiers.* Autonomy stops where cost or irreversibility starts: full gates and CreateSubmission need a person; the console can propose ledger writes but cannot submit. Supervisor interrupts are local course safety, not the Kaggle host.
 
 ## What we are not claiming
 
