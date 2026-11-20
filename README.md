@@ -2,11 +2,12 @@
 
 **Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI (Fall 2026) · Kaggle *Google DeepMind Gemma 4 Developer Agent*
 
-We built two systems. The **product** is a Gemma 4 coding agent that fixes real GitHub issues.
-The **factory** is a Claude-run climb loop that proposes, builds, evaluates, and ships new versions of
-that agent, with humans controlling the decisions that matter. Our main finding: in a self-improving
-system, the evaluation harness matters more than the generator. Most of the differences we measured
-were noise, and the factory's most useful act was refusing to ship.
+We built **two systems**:
+
+- **Product** — a Gemma 4 ADK coding agent (`submission.zip`) that fixes real GitHub issues under Kaggle's call/time budget.
+- **Factory** — a Claude-run climb loop that proposes one change, gates it, and may ship. Humans approve CreateSubmission on Kaggle; the Streamlit console never submits.
+
+Main finding: in a self-improving system, the evaluation harness matters more than the generator. Most of the differences we measured were noise, and the factory's most useful act was refusing to ship.
 
 | | |
 |---|---|
@@ -15,7 +16,7 @@ were noise, and the factory's most useful act was refusing to ship.
 | Measured noise | ±2–3 tasks per 30 locally · ±0.05 on the leaderboard |
 | Competition deadline | **2026-12-02** 23:59 UTC |
 
-Class wiki (demo story, architecture, requirements map): [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki) (preferred viewer). Source of truth in-repo: [`docs/wiki/`](docs/wiki/).
+**Class wiki** (demo story, Mermaid architecture, requirements map): [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki) — preferred viewer. In-repo source of truth: [`docs/wiki/`](docs/wiki/).
 
 ## The challenge
 
@@ -25,19 +26,29 @@ the patch. Kaggle allows one submission per UTC day; scoring takes ~1.5 days.
 
 ## Two systems
 
+```mermaid
+flowchart TB
+  subgraph Factory["Factory — Claude Cowork / scheduled wakes"]
+    Q[Queue item] --> B[build-candidate]
+    B --> GA[Eval Gate A]
+    GA --> GB[Eval Gate B]
+    GB --> DR{decision_rule}
+    DR -->|HOLD| H[Report to humans]
+    DR -->|SUBMIT| S[Human CreateSubmission]
+    S --> R[record-score]
+    R -->|LB ≥ best| NB[New base]
+  end
+
+  subgraph Product["Product — Gemma 4 SuperAgent"]
+    AY[agent.yaml + prompts + sampling]
+    AY --> ZIP[ADK submission.zip]
+  end
+
+  Factory -->|base + one change| Product
+  ZIP --> K[Kaggle hidden tests / LB]
 ```
-┌─────────────────────────── FACTORY (Claude Cowork, scheduled wakes) ────────────────────┐
-│  queue ─► build candidate ─► Eval Gate (2 runs) ─► decision rule ─► submit ─► score     │
-│              (base + 1 change)    4× L4, 30 tasks     code + tests     ≤1/week   │       │
-│                     ▲                                                            │       │
-│                     └──────────── new base if score ≥ best ◄─────────────────────┘       │
-│   HUMANS decide: base config · cadence · final two selections                           │
-│                                                                                          │
-│        ┌──────────── PRODUCT (Gemma 4 SuperAgent) ────────────┐                          │
-│        │ agent.yaml · sampling.yaml · system prompt call plan │                          │
-│        └──────────────────────────────────────────────────────┘                          │
-└──────────────────────────────────────────────────────────────────────────────────────────┘
-```
+
+Humans decide base config, cadence, and final two selections. Detail: [`docs/wiki/Architecture.md`](docs/wiki/Architecture.md).
 
 | | Product | Factory |
 |---|---|---|

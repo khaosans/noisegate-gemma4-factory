@@ -38,6 +38,24 @@ How this repo meets course and competition expectations without pasting propriet
 | Purpose | Leaderboard score | Budgets, tool policy, escalate, traces |
 | In zip? | Yes | No |
 
+```mermaid
+flowchart TB
+  subgraph Ship["Graded Kaggle ship path"]
+    ADK[One Google ADK agent] --> Zip[submission.zip]
+    Zip --> Host[Kaggle ADK host]
+  end
+
+  subgraph Course["Course evidence — not in zip"]
+    LG[LangGraph supervisor]
+    GR[guardrails + budgets]
+    AO[agentops traces]
+    LG --> GR --> AO
+  end
+
+  ProductCfg[product/] --> Ship
+  Supervisor[supervisor/] --> Course
+```
+
 Decision 007 records why the supervisor exists for class checkpoints without changing the Kaggle ship contract.
 
 ## HITL summary
@@ -47,6 +65,26 @@ Decision 007 records why the supervisor exists for class checkpoints without cha
 | Factory runbook | Base, cadence, final two private selections, CreateSubmission |
 | Streamlit console | Approve before `record_score` writes; never gate-start / submit |
 | Supervisor | Escalate interrupts on boundary / failing or high-impact patches |
+
+```mermaid
+flowchart TB
+  subgraph FactoryHITL["Factory runbook"]
+    F1[Base config] --> F2[Cadence]
+    F2 --> F3[Final private picks]
+    F3 --> F4[CreateSubmission]
+  end
+
+  subgraph ConsoleHITL["Streamlit :8765"]
+    C1[Query / replay / pytest] --> C2{record_score?}
+    C2 -->|needs write| C3[Approve click]
+    C2 -->|gate-start / submit| C4[Denied by design]
+  end
+
+  subgraph SuperHITL["Supervisor escalate"]
+    E1[Boundary / repeated block / budget] --> E2[LangGraph interrupt]
+    E2 --> E3[Human resume or stop]
+  end
+```
 
 ## What we are not claiming
 

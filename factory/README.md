@@ -4,20 +4,17 @@ Claude runs the climb loop inside a claude.ai Project on scheduled wakes. It pro
 builds them on Kaggle, runs the Eval Gate, applies the decision rule, and submits at most once a week.
 Humans set the base, the cadence, and the final selections.
 
-```
- queue item ──► build-candidate ──► run-eval-gate (Run A: screen 2)
-                                          │
-                                          ▼
-                                    run-eval-gate (Run B: leader vs V8)
-                                          │
-                                          ▼
-                                    weekly-decision ──HOLD──► report to humans
-                                          │ SUBMIT
-                                          ▼
-                                 Kaggle submission (≤ 1/week)
-                                          │ ~1.5 days
-                                          ▼
-                                    record-score ──► new base? (LB ≥ best) ──► next queue item
+```mermaid
+flowchart TB
+  Q[Queue item] --> BC[build-candidate]
+  BC --> GA[run-eval-gate Run A<br/>screen 2]
+  GA --> GB[run-eval-gate Run B<br/>leader vs V8]
+  GB --> WD{weekly-decision}
+  WD -->|HOLD| RH[Report to humans]
+  WD -->|SUBMIT| KS[Kaggle submission ≤ 1/week]
+  KS --> Wait[~1.5 days]
+  Wait --> RS[record-score]
+  RS -->|LB ≥ best| NB[New base → next queue item]
 ```
 
 | Piece | File |

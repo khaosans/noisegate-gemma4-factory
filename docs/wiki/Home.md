@@ -12,6 +12,32 @@
 | Competition | Kaggle *Google DeepMind Gemma 4 Developer Agent* · deadline 2026-12-02 |
 | Repo front door | [`README.md`](../../README.md) |
 
+### Dual systems at a glance
+
+```mermaid
+flowchart TB
+  subgraph Factory["Factory — Claude Cowork / scheduled wakes"]
+    Q[Queue item] --> B[build-candidate]
+    B --> GA[Eval Gate A]
+    GA --> GB[Eval Gate B]
+    GB --> DR{decision_rule}
+    DR -->|HOLD| H[Report to humans]
+    DR -->|SUBMIT| S[Human CreateSubmission]
+    S --> R[record-score]
+    R -->|LB ≥ best| NB[New base]
+  end
+
+  subgraph Product["Product — Gemma 4 SuperAgent"]
+    AY[agent.yaml + prompts + sampling]
+    AY --> ZIP[ADK submission.zip]
+  end
+
+  Factory -->|base + one change| Product
+  ZIP --> K[Kaggle hidden tests / LB]
+```
+
+More detail: [`Architecture.md`](Architecture.md).
+
 ## Demo in under a minute
 
 1. `streamlit run factory_console/app.py --server.port 8765` → [http://127.0.0.1:8765](http://127.0.0.1:8765)
