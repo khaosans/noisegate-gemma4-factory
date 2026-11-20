@@ -1,6 +1,6 @@
 # Requirements compliance
 
-How this repo meets course and competition expectations without pasting proprietary syllabus text. Authoritative concept → code table: [`CONCEPTS.md`](../../CONCEPTS.md). Safety commitments: [`docs/safety-plan.md`](../safety-plan.md).
+How this repo meets course and competition expectations without pasting proprietary syllabus text. Authoritative concept → code table: [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md). Safety commitments: [docs/safety-plan.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/safety-plan.md). Architecture story: [[Architecture]].
 
 ## Course concepts → evidence (summary)
 

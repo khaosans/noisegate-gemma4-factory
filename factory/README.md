@@ -4,6 +4,8 @@ Claude runs the climb loop inside a claude.ai Project on scheduled wakes. It pro
 builds them on Kaggle, runs the Eval Gate, applies the decision rule, and submits at most once a week.
 Humans set the base, the cadence, and the final selections.
 
+Diagram story (Figure 1 three-band + weekly turn): [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Claude Cowork Loop](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop).
+
 ```mermaid
 flowchart TB
   Q[Queue item] --> BC[build-candidate]

@@ -3,7 +3,8 @@
 The factory’s **production** climb path is Claude, not Streamlit. Cowork / Project wakes hold the authenticated Kaggle browser session needed for notebook commit, Eval Gate starts, and CreateSubmission.
 
 Cowork project artifact: [claude.ai/artifact/1Ldx2khByugozsHH5cuLfa](https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa).  
-In-repo procedures: [`factory/`](../../factory/) (`project-instructions.md`, `runbook.md`, `skills/*/SKILL.md`).
+Paper Ops Console (replay): [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW).  
+In-repo procedures: [`factory/`](https://github.com/khaosans/noisegate-gemma4-factory/tree/main/factory) (`project-instructions.md`, `runbook.md`, `skills/*/SKILL.md`).
 
 ## Why Claude holds login-heavy ops
 
@@ -18,7 +19,7 @@ The console is a **query and demo surface** over repo records. It deliberately c
 
 ## Schedule (UTC)
 
-From [`factory/runbook.md`](../../factory/runbook.md). GPU quota resets weekly (by Sat 00:30 UTC).
+From [`factory/runbook.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md). GPU quota resets weekly (by Sat 00:30 UTC).
 
 | Day | Work |
 |---|---|

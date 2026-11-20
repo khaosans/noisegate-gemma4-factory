@@ -1,76 +1,78 @@
-# NoiseGate — A Software Factory for a Gemma 4 Coding Agent
+# NoiseGate Gemma 4 Factory
 
-**Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI (Fall 2026) · Kaggle *Google DeepMind Gemma 4 Developer Agent*
+An autonomous **build → evaluate → submit** loop that separates real agent improvements from benchmark noise.
 
-We built **two systems**:
+**Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI · Fall 2026 · Kaggle [*Google DeepMind Gemma 4 Developer Agent*](https://www.kaggle.com/competitions/gemma-4-developer-agent)
 
-- **Product** — a Gemma 4 ADK coding agent (`submission.zip`) that fixes real GitHub issues under Kaggle's call/time budget.
-- **Factory** — a Claude-run climb loop that proposes one change, gates it, and may ship. Humans approve CreateSubmission on Kaggle; the Streamlit console never submits.
+The public notebook that shows **0.22** on the board scored **0.17** when we submitted the same artifact. Locally, baseline **V8** solves **8, then 6, then 8** in-budget on the same 30 tasks. With **one planned Kaggle submission per week** and ~**30 GPU hours** of weekly quota, a team that trusts a single score spends its budget promoting luck.
 
-Main finding: in a self-improving system, the evaluation harness matters more than the generator. Most of the differences we measured were noise, and the factory's most useful act was refusing to ship.
+**Intended user:** a small engineering team iterating a coding agent under tight compute and submission limits.  
+**Success:** ship a better agent only when evidence beats measured noise, at a known cost.  
+**Out of scope:** fine-tuning Gemma; changing the competition harness.
 
 | | |
 |---|---|
-| Best public score | **0.18** (V8, current base) |
-| Versions evaluated / held by our gate | 7 / 3 (V14, V16, V17) |
-| Measured noise | ±2–3 tasks per 30 locally · ±0.05 on the leaderboard |
-| Competition deadline | **2026-12-02** 23:59 UTC |
+| Best public score (base) | **0.18** (V8) |
+| Gate noise band (V8, n=3) | mean **7.33** in-budget / 30 · ~**±2.5** tasks |
+| Telemetry | **N=390** gate runs · median first edit at call **16/28** · **62.3%** out-of-budget |
+| Deadline | **2026-12-02** 23:59 UTC |
 
-**Class wiki** (demo story, Mermaid architecture, requirements map): [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki) — preferred viewer. In-repo source of truth: [`docs/wiki/`](docs/wiki/).
+**Links:** [Wiki Home](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
 
-## The challenge
+Editors sync wiki pages from in-repo [`docs/wiki/`](docs/wiki/).
 
-A Gemma 4 agent (`gemma-4-31b-it`, fixed by the rules) gets a repository (fastapi, requests, rich, …)
-and an issue, and must produce a patch within **28 tool calls and ~8 minutes**. Hidden tests score
-the patch. Kaggle allows one submission per UTC day; scoring takes ~1.5 days.
+## Architecture (Figure 1)
 
-## Two systems
+Three bands: a scheduled factory that governs promotion, a Gemma 4 ReAct product under hard caps, and a human Ops Console over an append-only ledger. The console never CreateSubmission — humans approve full gate runs and Kaggle submits.
 
 ```mermaid
 flowchart TB
-  subgraph Factory["Factory — Claude Cowork / scheduled wakes"]
-    Q[Queue item] --> B[build-candidate]
-    B --> GA[Eval Gate A]
-    GA --> GB[Eval Gate B]
-    GB --> DR{decision_rule}
-    DR -->|HOLD| H[Report to humans]
-    DR -->|SUBMIT| S[Human CreateSubmission]
-    S --> R[record-score]
-    R -->|LB ≥ best| NB[New base]
+  subgraph L1["Layer 1 — Autonomous Factory · Claude runbook 4×/week"]
+    direction LR
+    P[Patch<br/>1 delta + SHA-256] --> E[Eval<br/>30-task paired gate]
+    E --> W[Watchdog<br/>failures + GPU]
+    W --> G[Submit Governor<br/>noise gate · 1/wk slot]
   end
 
-  subgraph Product["Product — Gemma 4 SuperAgent"]
-    AY[agent.yaml + prompts + sampling]
-    AY --> ZIP[ADK submission.zip]
+  subgraph L2["Layer 2 — Product · Gemma 4 ReAct · offline 4× L4"]
+    T[Shell · Read · Edit · Code-Graph]
+    C["≤28 calls · ≤480s · fixed seed · V8–V23"]
   end
 
-  Factory -->|base + one change| Product
-  ZIP --> K[Kaggle hidden tests / LB]
+  subgraph Ops["State & Human Ops Console"]
+    S[State file + event ledger]
+    H[Replay · approval gate]
+  end
+
+  E -->|runs candidates| L2
+  W -.->|observes| L2
+  G -->|HITL approve| Ops
+  L2 <--> Ops
 ```
 
-Humans decide base config, cadence, and final two selections. Detail: [`docs/wiki/Architecture.md`](docs/wiki/Architecture.md).
+Detail: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 
 | | Product | Factory |
 |---|---|---|
-| Model | `gemma-4-31b-it` (competition-fixed) | Claude (Cowork / Project) |
-| Job | Fix issues under the call/time budget | Propose one change, gate it, maybe ship |
-| Memory | Context window only | `results/` + Skills |
+| Model | `gemma-4-31b-it` (competition-fixed) | Claude (scheduled runbook / Project) |
+| Job | Fix issues under call/time budget | One delta → gate → maybe ship |
+| Memory | Context window only | State file + append-only ledger + `results/` |
 | Submit path | ADK `submission.zip` on Kaggle | Humans approve; ≤1 gated submit / week |
 
 ## How we ran it (primary loop)
 
-The production climb path is **Claude Project + scheduled wakes**, not the Streamlit console.
+The production climb path is **Claude Project + scheduled wakes**, not the local Streamlit console.
 
 1. **Claude Cowork / Project** loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` on every wake.
 2. **Skills** in [`factory/skills/`](factory/skills/) are the agentic procedures: `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
 3. **Cadence (UTC):** Sat build + Gate Run A · Sun Gate Run B · Mon decide + optional submit · other wakes status-only.
-4. Login-heavy Kaggle UI (notebook commit, gate start, CreateSubmission) stays on Claude because that is where the authenticated browser session lives.
+4. Login-heavy Kaggle UI (notebook commit, gate start, CreateSubmission) stays on Claude — that is where the authenticated browser session lives.
 
-Cowork project artifact (external): [claude.ai/artifact/1Ldx2khByugozsHH5cuLfa](https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa). In-repo detail: [`docs/wiki/Claude-Cowork-Loop.md`](docs/wiki/Claude-Cowork-Loop.md).
+Paper Ops Console (replay + approval): [claude.ai artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW). Climb loop: [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop).
 
 ## Local path (query / demo without Claude login)
 
-For class demos and local operator queries we use:
+For demos and local operator queries:
 
 - **Streamlit factory console** at **`:8765`** — [`factory_console/`](factory_console/), see [`docs/factory-console.md`](docs/factory-console.md)
 - **Ollama** (optional chat backend) — OpenAI-compatible tools over the same `factory_console/actions.py` handlers
@@ -89,12 +91,12 @@ or change the base config. Writes via `record_score` wait for an **Approve** cli
 On the Mac demo host, a LaunchAgent (`com.noisegate.factory-console`) can KeepAlive the app on `:8765`.
 Ollama chat (`FACTORY_CONSOLE_BACKEND`) and the climb/Kaggle read-only bridge (`CMU_AGENTIC_AI_ROOT`) are on `main` (#3, #4).
 
-More: [`docs/wiki/Local-And-Streamlit.md`](docs/wiki/Local-And-Streamlit.md).
+More: [Local and Streamlit wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Local-And-Streamlit).
 
 ## Requirements map
 
 Course concepts → code: [`CONCEPTS.md`](CONCEPTS.md). Safety commitments → tests: [`docs/safety-plan.md`](docs/safety-plan.md).
-HITL and competition constraints summarized for graders: [`docs/wiki/Requirements-Compliance.md`](docs/wiki/Requirements-Compliance.md).
+HITL and competition constraints: [Requirements Compliance wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Requirements-Compliance).
 
 Graded Kaggle ship path remains the **ADK agent zip**. The LangGraph supervisor in `supervisor/` is
 course evidence (guardrails, budgets, escalate) and is **not** inside the competition submission.
@@ -113,23 +115,24 @@ course evidence (guardrails, budgets, escalate) and is **not** inside the compet
 | [`factory/`](factory/) | Runbook, Project instructions, four Claude Skills |
 | [`evals/`](evals/) | Fixture repo + adversarial cases G6–G17 |
 | [`results/`](results/) | Gate runs, leaderboard scores, calibration log |
-| [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki) · [`docs/wiki/`](docs/wiki/) | Class demo wiki (GitHub Wiki preferred; docs/wiki SoT) |
+| [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [`docs/wiki/`](docs/wiki/) | Demo wiki (preferred viewer); docs/wiki is editor SoT |
 | [`docs/decisions/`](docs/decisions/) | Decision records |
 | [`GOALS.md`](GOALS.md) · [`CONCEPTS.md`](CONCEPTS.md) | OKRs · concept → code map |
 
-## Results
+## Results (paper Table 1 strip)
 
-| Version | Change | Local in-budget solves /30 | Public score |
-|---|---|---|---|
-| V8 | base | 8, 6 | **0.18** |
-| V11 | thinking budget cut | 10 | 0.15 |
-| V12 | variant of V11 | 8 | 0.15 |
-| V14 | + "run the issue example" | 6 → held | — |
-| V15 | public 0.22 notebook, credited | 7, 10 | 0.17 |
-| V16 | V15 − unused graph tools | 6 → held | — |
-| V17 | V15 + "edit by call 20" rule | 7 → held | — |
+Gate results through mid-November 2026. Do not treat these as a live leaderboard scrape.
 
-Full tables: [`results/`](results/). Lessons: [`docs/lessons.md`](docs/lessons.md).
+| Version | Change | In-budget / 30 | Public LB | Gate verdict |
+|---|---|---|---|---|
+| V8 | Baseline | 8, 6, 8 (mean 7.33) | **0.18** (best) | Baseline |
+| V11 | Reasoning / edit-deadline | 10 | 0.15 | Below +4.0 single-run bar |
+| V15 | Exact copy of public 0.22 notebook | 7, 10 | 0.17 | Noise calibration |
+| V18 | Heredoc edit recovery | 7, 7 | — | HOLD (gain −0.33) |
+| V21 | Thinking 1024 → 2048 | 6 | — | HOLD |
+| V22 | Best-guess edit on empty diff | 9 | — | HOLD (+1.67; needs 2nd run) |
+
+Full tables: [`results/`](results/). Lessons: [`docs/lessons.md`](docs/lessons.md). Architecture + telemetry: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 
 ## Quick start
 
@@ -173,11 +176,11 @@ print(decide([RunSummary.from_results(cand)], V8_HISTORY + [RunSummary.from_resu
 
 - Keep submit HITL; use Ollama + climb bridge for local query only.
 - Propose `record_score` from COMPLETE Kaggle rows (Approve still required).
-- Frugal local Gemma supervisor demos (sandbox-required), separate from the Kaggle zip.
+- Enforce edit deadline in the tool layer (prompt-only deadline ignored on V17).
+- Confirm V22 with a second paired run; frugal repeats on the nine contested tasks.
 - Calibration: more decisive gate↔leaderboard points; re-measure noise.
-- Optional course fallback evidence pack (traces + one guardrail + 3–5 golden cases) if needed.
 
-Longer rationale: [`docs/wiki/Future-Work.md`](docs/wiki/Future-Work.md).
+Longer rationale: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
 
 ## What is not in this repo
 

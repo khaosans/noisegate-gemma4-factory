@@ -36,14 +36,14 @@ Optional: **Decision rule** page — move sliders into/out of the noise band so 
 
 ### 3:00–4:00 — Gate hold ↔ requirements
 
-- Point at [`CONCEPTS.md`](../../CONCEPTS.md) or wiki [`Requirements-Compliance.md`](Requirements-Compliance.md): trajectory eval, statistical gate, HITL.
+- Point at [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) or [[Requirements-Compliance]]: trajectory eval, statistical gate, HITL.
 - Mention LangGraph supervisor as **course** evidence, not the Kaggle zip.
 
 ### 4:00–5:00 — Cowork primary loop
 
-- Slide or wiki [`Claude-Cowork-Loop.md`](Claude-Cowork-Loop.md): Sat / Sun / Mon Skills.
+- Slide or [[Claude-Cowork-Loop]]: Sat / Sun / Mon Skills.
 - “Login-heavy Kaggle stays on Claude; this console is how you demo without that login.”
-- Link artifact if useful: [Cowork project artifact](https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa).
+- Ops Console (paper): https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW · Cowork climb artifact: https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa
 
 ## Lines to avoid
 
@@ -54,5 +54,5 @@ Optional: **Decision rule** page — move sliders into/out of the noise band so 
 ## Backup if Streamlit is down
 
 1. `pytest -q` + show `harness/decision_rule.py` decide() briefly.  
-2. Walk the ASCII diagram in the README.  
+2. Walk the Figure 1 Mermaid on [[Home]] / the [README](https://github.com/khaosans/noisegate-gemma4-factory#readme).  
 3. Open `results/gate_runs.csv` and name one HOLD row.

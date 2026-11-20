@@ -1,72 +1,79 @@
-# NoiseGate class wiki
+# NoiseGate Gemma 4 Factory
 
-> **Preferred viewer:** [https://github.com/khaosans/noisegate-gemma4-factory/wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki). This `docs/wiki/` tree remains the in-repo source of truth; edit here, then sync to the GitHub Wiki.
+> **Preferred viewer:** this [GitHub Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home). Editors keep the markdown SoT in-repo under `docs/wiki/` and sync here.
 
+An autonomous **build → evaluate → submit** loop that separates real agent improvements from benchmark noise.
 
-**60-second story.** We ship a Gemma 4 coding agent (the product) and a Claude-run factory that tries to improve it one change at a time. The factory’s Eval Gate and decision rule refuse to ship noise — V14, V16, and V17 were held; the live base remains **V8 at public 0.18**. For demos, open the Streamlit console at `:8765` (query/replay without Claude login). For the real climb, Claude Cowork + Skills own the Kaggle login path.
+The public notebook that shows **0.22** scored **0.17** when we submitted the same artifact. Baseline **V8** fluctuates **8 / 6 / 8** in-budget on the same 30 tasks. With **one planned submission per week** and ~**30 GPU hours** of quota, trusting a single score burns luck.
 
 | | |
 |---|---|
-| Course | CMU SCS Agentic AI · Fall 2026 |
 | Authors | Souriya Khaosanga · Adil Shamim |
-| Competition | Kaggle *Google DeepMind Gemma 4 Developer Agent* · deadline 2026-12-02 |
-| Repo front door | [`README.md`](../../README.md) |
+| Competition | [Kaggle *Gemma 4 Developer Agent*](https://www.kaggle.com/competitions/gemma-4-developer-agent) · deadline 2026-12-02 |
+| Best public (base) | **0.18** (V8) |
+| Repo | [noisegate-gemma4-factory](https://github.com/khaosans/noisegate-gemma4-factory) |
+| Video | https://youtu.be/-EiKv_MafOY |
+| Ops Console | https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW |
 
-### Dual systems at a glance
+### Architecture at a glance (Figure 1)
+
+Three bands — factory governance, product ReAct agent, human Ops Console. Console never CreateSubmission.
 
 ```mermaid
 flowchart TB
-  subgraph Factory["Factory — Claude Cowork / scheduled wakes"]
-    Q[Queue item] --> B[build-candidate]
-    B --> GA[Eval Gate A]
-    GA --> GB[Eval Gate B]
-    GB --> DR{decision_rule}
-    DR -->|HOLD| H[Report to humans]
-    DR -->|SUBMIT| S[Human CreateSubmission]
-    S --> R[record-score]
-    R -->|LB ≥ best| NB[New base]
+  subgraph L1["Layer 1 — Autonomous Factory · Claude runbook 4×/week"]
+    direction LR
+    P[Patch<br/>1 delta + SHA-256] --> E[Eval<br/>30-task paired gate]
+    E --> W[Watchdog<br/>failures + GPU]
+    W --> G[Submit Governor<br/>noise gate · 1/wk slot]
   end
 
-  subgraph Product["Product — Gemma 4 SuperAgent"]
-    AY[agent.yaml + prompts + sampling]
-    AY --> ZIP[ADK submission.zip]
+  subgraph L2["Layer 2 — Product · Gemma 4 ReAct · offline 4× L4"]
+    T[Shell · Read · Edit · Code-Graph]
+    C["≤28 calls · ≤480s · fixed seed · V8–V23"]
   end
 
-  Factory -->|base + one change| Product
-  ZIP --> K[Kaggle hidden tests / LB]
+  subgraph Ops["State & Human Ops Console"]
+    S[State file + event ledger]
+    H[Replay · approval gate]
+  end
+
+  E -->|runs candidates| L2
+  W -.->|observes| L2
+  G -->|HITL approve| Ops
+  L2 <--> Ops
 ```
 
-More detail: [`Architecture.md`](Architecture.md).
+More: [[Architecture]] (noise band, telemetry, governance tiers).
 
 ## Demo in under a minute
 
-1. `streamlit run factory_console/app.py --server.port 8765` → [http://127.0.0.1:8765](http://127.0.0.1:8765)
-2. Open **Factory loop** — best score, base V8, what the runbook says is due.
-3. Open **One turn of the loop** or ask Operator chat `why V17` — show a HOLD above the noise band.
-4. Point at Claude Skills + schedule for the authenticated climb (not the console).
+1. Open the [Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) for replay / noise-band dashboard, **or** `streamlit run factory_console/app.py --server.port 8765` → http://127.0.0.1:8765
+2. Show a HOLD above the V8 noise band (e.g. ask why V18 / V21 / V17).
+3. Point at Claude Skills + schedule for the authenticated climb — not the console for CreateSubmission.
 
-Talk track: [`Demo-Script.md`](Demo-Script.md).
+Talk track: [[Demo-Script]].
 
 ## Pages
 
 | Page | Purpose |
 |---|---|
-| [`Architecture.md`](Architecture.md) | Product vs factory; data flow; climb bridge |
-| [`Claude-Cowork-Loop.md`](Claude-Cowork-Loop.md) | Schedule, Skills, why Claude holds Kaggle login ops |
-| [`Local-And-Streamlit.md`](Local-And-Streamlit.md) | Ollama, `:8765`, what the console may / must not do |
-| [`Requirements-Compliance.md`](Requirements-Compliance.md) | Course concepts → code; competition + HITL |
-| [`Future-Work.md`](Future-Work.md) | Honest next steps |
-| [`Demo-Script.md`](Demo-Script.md) | 3–5 minute talk track |
+| [[Architecture]] | Figure 1 bands · weekly turn · Figure 2 noise/telemetry · Table 2 governance |
+| [[Claude-Cowork-Loop]] | Schedule, Skills, why Claude holds Kaggle login ops |
+| [[Local-And-Streamlit]] | Ollama, `:8765`, what the console may / must not do |
+| [[Requirements-Compliance]] | Concepts → code; ADK zip vs LangGraph; HITL |
+| [[Future-Work]] | Honest next steps |
+| [[Demo-Script]] | 3–5 minute talk track |
 
 ## Primary sources in the repo
 
 | Doc | Role |
 |---|---|
-| [`CONCEPTS.md`](../../CONCEPTS.md) | Concept → code evidence |
-| [`factory/runbook.md`](../../factory/runbook.md) | Climb cadence + human decisions |
-| [`docs/factory-console.md`](../factory-console.md) | Console pages and chat backends |
-| [`docs/safety-plan.md`](../safety-plan.md) | Checkpoint 6.1 → tests |
-| [`GOALS.md`](../../GOALS.md) | OKRs |
+| [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) | Concept → code evidence |
+| [factory/runbook.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md) | Climb cadence + human decisions |
+| [docs/factory-console.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/factory-console.md) | Console pages and chat backends |
+| [docs/safety-plan.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/safety-plan.md) | Safety commitments → tests |
+| [GOALS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/GOALS.md) | OKRs |
 
 ## Console upgrades on `main`
 
