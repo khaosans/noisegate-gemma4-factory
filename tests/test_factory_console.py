@@ -13,6 +13,17 @@ from factory_console.chat import (
 )
 
 
+def test_console_root_has_factory_data_files():
+    """Installed wheels force-include these next to packages; checkout has them at repo root."""
+    root = actions.ROOT
+    assert (root / "factory" / "runbook.md").is_file()
+    assert (root / "results" / "gate_runs.csv").is_file()
+    assert (root / "results" / "leaderboard.csv").is_file()
+    assert (root / "GOALS.md").is_file()
+    assert (root / "docs" / "lessons.md").is_file()
+    assert (root / "docs" / "decisions").is_dir()
+
+
 def test_status_reports_state_and_stale_records():
     s = actions.status(today="2026-11-16")
     assert s["best_version"] == "V8" and s["best_public_score"] == 0.18

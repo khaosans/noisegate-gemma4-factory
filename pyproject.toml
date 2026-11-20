@@ -57,11 +57,16 @@ Wiki = "https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home"
 include = [
   "agentops",
   "evals",
+  "factory",
   "factory_console",
   "guardrails",
   "harness",
   "product",
   "supervisor",
+  "docs",
+  "results",
+  "GOALS.md",
+  "CONCEPTS.md",
   "VERSION",
   "CHANGELOG.md",
   "LICENSE",
@@ -82,6 +87,15 @@ packages = [
   "product",
   "supervisor",
 ]
+
+# Console/status reads these via factory_console.actions.ROOT (site-packages parent).
+[tool.hatch.build.targets.wheel.force-include]
+"factory" = "factory"
+"results" = "results"
+"docs" = "docs"
+"GOALS.md" = "GOALS.md"
+"CONCEPTS.md" = "CONCEPTS.md"
+"VERSION" = "VERSION"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
