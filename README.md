@@ -1,8 +1,11 @@
 # NoiseGate Gemma 4 Factory
 
+[![Release](https://img.shields.io/github/v/release/khaosans/noisegate-gemma4-factory?include_prereleases&label=release)](https://github.com/khaosans/noisegate-gemma4-factory/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 An autonomous **build → evaluate → submit** loop that separates real agent improvements from benchmark noise.
 
-**Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI · Fall 2026 · Kaggle [*Gemma 4 Developer Agent*](https://www.kaggle.com/competitions/gemma-4-developer-agent)
+**Version `1.0.0-beta.1`** (Capstone beta — not GA) · **Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI · Fall 2026 · Kaggle [*Gemma 4 Developer Agent*](https://www.kaggle.com/competitions/gemma-4-developer-agent)
 
 The public notebook that shows **0.22** on the board scored **0.17** when we submitted the same artifact. Locally, baseline **V8** solves **8, then 6, then 8** in-budget on the same 30 tasks. With **one planned Kaggle submission per week** and ~**30 GPU hours** of quota, trusting a single score spends the budget promoting luck.
 
@@ -45,7 +48,25 @@ flowchart TB
   W -.->|observes| L2
   G -->|HITL approve| Ops
   L2 <--> Ops
+
+  classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
+  classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
+  class P,E,W,G factory
+  class T,C product
+  class S,H ops
+  style L1 fill:#ECFDF5,stroke:#059669,color:#065F46
+  style L2 fill:#FFF7ED,stroke:#EA580C,color:#9A3412
+  style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
+
+**Legend**
+
+| Color | Meaning |
+|---|---|
+| Green | Factory roles — Patch → Eval → Watchdog → Submit Governor |
+| Amber | Product ReAct — tools + call/time budgets |
+| Blue | Ops / HITL — ledger replay + human approval (never CreateSubmission from console) |
 
 *Insight — noise vs luck.* Eval and Submit Governor sit above the product so a lucky single run cannot burn the weekly slot. The Ops Console replays the ledger and gates costly actions; it never CreateSubmission. Full story + telemetry: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 
