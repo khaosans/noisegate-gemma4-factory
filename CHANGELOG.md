@@ -5,6 +5,20 @@ All notable changes to NoiseGate Gemma 4 Factory are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human GA cut.
 
+## [Unreleased]
+
+### Added
+- `SECURITY.md` — reporting path, no-secrets policy, trust boundaries
+- Wiki [[Method-Card]] — one-page academic method (problem → gate → evidence)
+- GitHub Actions CI — pytest on harness/guardrails/factory (supervisor suite ignored pending langgraph pin)
+
+### Changed
+- README / Home: score SoT note (factory V8 **0.18** vs sibling climb tip ledger)
+- README References: eval-over-generator thesis vs SWE-bench / ReAct
+- Future-Work: tool-layer edit deadline labeled **hypothesis — not shipped**
+- Requirements-Compliance: pinned golden/safety table + calibration tally
+- Local-And-Streamlit: climb bridge explicitly read-only
+
 ## [1.0.0-beta.1] — 2026-11-20
 
 First public beta of the NoiseGate product repo (aligned with CMU course tracker `1.0.0-beta.1` SemVer).

@@ -19,7 +19,9 @@ The public notebook that shows **0.22** on the board scored **0.17** when we sub
 | Telemetry (N=390) | first edit @ call **16/28** · **62.3%** out-of-budget |
 | Deadline | **2026-12-02** 23:59 UTC |
 
-**Explore:** [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
+**Score SoT:** this repo’s factory base is **V8 @ 0.18**. Sibling climb tip packaging in [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) keeps its own `docs/scoreboard.json` (may show a different tip best, e.g. **0.10**) — do not conflate the two. Climb bridge is read-only.
+
+**Explore:** [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Method card](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Method-Card) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
 
 ## Architecture
 
@@ -147,7 +149,7 @@ print(decide([RunSummary.from_results(cand)], V8_HISTORY + [RunSummary.from_resu
 
 ## Future work
 
-Keep submit HITL. Enforce edit deadline in the tool layer. Confirm V22 with a second paired run. Frugal repeats on the nine contested tasks. Calibration notes: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
+Keep submit HITL. **Hypothesis (not shipped):** a tool-layer edit-by-call / deadline may beat prompt-only caps (V17 failed). Confirm V22 with a second paired run. Frugal repeats on the nine contested tasks. Calibration notes: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
 
 ## What is not in this repo
 
@@ -159,6 +161,8 @@ Competition data/tasks, model weights, GPU wheelhouse, Kaggle credentials, other
 2. Yao et al., *ReAct: Synergizing Reasoning and Acting in Language Models* (ICLR 2023).  
 3. Kaggle & Google DeepMind, *Gemma 4 Developer Agent* competition harness (2026) — fixed model, 28 tool calls, 480s/task.
 
+**Thesis vs related work:** like SWE-bench agents we optimize under a fixed harness; unlike “generate more cleverly,” NoiseGate’s contribution is an **eval-over-generator** factory — paired gates and HOLD so luck cannot burn the weekly submit. Method card: [wiki/Method-Card](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Method-Card).
+
 ## License
 
-MIT. See [`LICENSE`](LICENSE).
+MIT. See [`LICENSE`](LICENSE). See also [`SECURITY.md`](SECURITY.md).

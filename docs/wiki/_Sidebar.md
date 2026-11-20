@@ -1,6 +1,7 @@
 **NoiseGate**
 
 - [[Home]]
+- [[Method-Card]]
 - [[Architecture]]
 - [[Claude-Cowork-Loop]]
 - [[Local-And-Streamlit]]

@@ -36,7 +36,8 @@ Optional: **Decision rule** page — move sliders into/out of the noise band so 
 
 ### 3:00–4:00 — Gate hold ↔ requirements
 
-- Point at [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) or [[Requirements-Compliance]]: trajectory eval, statistical gate, HITL.
+- Point at [[Method-Card]] or [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) / [[Requirements-Compliance]]: trajectory eval, statistical gate, HITL.
+- One line on goldens: **55/55** adversarial blocked, **0/29** false positives (`evals/safety`).
 - Mention LangGraph supervisor as **course** evidence, not the Kaggle zip.
 
 ### 4:00–5:00 — Cowork primary loop
