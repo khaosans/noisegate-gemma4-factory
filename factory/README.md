@@ -26,9 +26,7 @@ flowchart TB
   class RH hold
 ```
 
-**Legend:** green = factory loop · gray = HOLD · red = human CreateSubmission (≤1/week).
-
-*Insight.* Run A screens; Run B only spends a full paired comparison when a leader clears V8 — or screens the next pair if both trail V8’s mean (`runbook.md`). HOLD is a successful outcome when the gain is inside noise.
+*Insight.* Run A screens; Run B pairs a leader vs V8 (or the next pair if both trail). HOLD is success when the gain is inside noise.
 
 | Piece | File |
 |---|---|

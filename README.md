@@ -60,15 +60,7 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-**Legend**
-
-| Color | Meaning |
-|---|---|
-| Green | Factory roles — Patch → Eval → Watchdog → Submit Governor |
-| Amber | Product ReAct — tools + call/time budgets |
-| Blue | Ops / HITL — ledger replay + human approval (never CreateSubmission from console) |
-
-*Insight — noise vs luck.* Eval and Submit Governor sit above the product so a lucky single run cannot burn the weekly slot. The Ops Console replays the ledger and gates costly actions; it never CreateSubmission. Full story + telemetry: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
+*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn the weekly slot. Ops gates costly actions — never CreateSubmission. [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 
 | | Product | Factory |
 |---|---|---|

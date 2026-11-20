@@ -63,9 +63,7 @@ flowchart TB
   style Course fill:#F9FAFB,stroke:#6B7280,color:#374151
 ```
 
-**Legend:** amber = graded ADK ship path · gray = course evidence (not in zip).
-
-*Insight.* Graders should score the **ADK zip** for competition competence. LangGraph is deliberate course evidence (budgets, tool policy, escalate) — Decision 007 keeps it out of the ship contract so the two surfaces stay honest.
+*Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract.
 
 ## HITL summary
 
@@ -78,9 +76,7 @@ flowchart TB
 ```mermaid
 flowchart TB
   subgraph FactoryHITL["Factory runbook"]
-    F1[Base config] --> F2[Cadence]
-    F2 --> F3[Final private picks]
-    F3 --> F4[CreateSubmission]
+    F1[Base · cadence · private picks] --> F4[CreateSubmission]
   end
 
   subgraph ConsoleHITL["Streamlit :8765"]
@@ -90,14 +86,13 @@ flowchart TB
   end
 
   subgraph SuperHITL["Supervisor escalate"]
-    E1[Boundary / repeated block / budget] --> E2[LangGraph interrupt]
-    E2 --> E3[Human resume or stop]
+    E1[Boundary / repeated block / budget] --> E2[Interrupt → human]
   end
 
   classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
   classDef deny fill:#F3F4F6,stroke:#6B7280,color:#374151
-  class F1,F2,F3,F4,E1,E2,E3 hitl
+  class F1,F4,E1,E2 hitl
   class C1,C2,C3 ops
   class C4 deny
   style FactoryHITL fill:#FEF2F2,stroke:#B91C1C,color:#7F1D1D
@@ -105,9 +100,7 @@ flowchart TB
   style SuperHITL fill:#FEF2F2,stroke:#B91C1C,color:#7F1D1D
 ```
 
-**Legend:** red = human-required / escalate · blue = console query + approve-for-write · gray = denied by design (no gate-start / submit).
-
-*Insight — HITL tiers.* Autonomy stops where cost or irreversibility starts: full gates and CreateSubmission need a person; the console can propose ledger writes but cannot submit. Supervisor interrupts are local course safety, not the Kaggle host.
+*Insight.* Autonomy stops at cost/irreversibility: CreateSubmission needs a person; console can approve ledger writes but never submit. Supervisor escalate is local course safety, not Kaggle.
 
 ## What we are not claiming
 

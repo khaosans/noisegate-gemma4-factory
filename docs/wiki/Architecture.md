@@ -41,15 +41,7 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-**Legend (Figure 1)**
-
-| Color | Band | Nodes |
-|---|---|---|
-| Green | Factory | Patch → Eval → Watchdog → Submit Governor |
-| Amber | Product | Shell / Read / Edit / Code-Graph + budgets |
-| Blue | Ops / HITL | State ledger + replay / approval gate |
-
-*Insight — why three bands.* Layer 1 decides **whether to spend GPU and the weekly slot**; Layer 2 only solves tasks. Ops Console is the audit surface for humans, not a second climb path. CreateSubmission never leaves the HITL tier.
+*Insight.* Layer 1 decides **whether to spend GPU / the weekly slot**; Layer 2 only solves tasks. Ops is audit + HITL — never CreateSubmission.
 
 | Band | What it does |
 |---|---|
@@ -88,9 +80,7 @@ flowchart TB
   class RH hold
 ```
 
-**Legend:** green = autonomous factory steps · gray = HOLD report · red = human CreateSubmission (HITL).
-
-*Insight — why paired gate.* Run A screens two candidates cheaply; Run B only promotes a leader against V8 (or screens the next pair if both trail V8’s mean). Decision math is in `harness/decision_rule.py`, not chat — so HOLD/SUBMIT is reproducible.
+*Insight.* Run A screens cheaply; Run B pairs a leader vs V8 (or the next pair). `decision_rule.py` makes HOLD/SUBMIT reproducible — not chat.
 
 If **both** Run A candidates sit below V8’s mean, Run B screens the **next two** queue items instead of `[V8, leader]` (runbook; single-run bar applies).
 
@@ -111,9 +101,7 @@ flowchart LR
   class Hitl hitl
 ```
 
-**Legend:** green = scheduled factory cadence · gray = HOLD / status-only · red = human CreateSubmission.
-
-*Insight — cadence.* Status-only wakes exist so Claude refreshes scores without inventing submits. The ~1.5-day scoring lag is why the factory self-limits to ≤1 gated submit / ISO week.
+*Insight.* Status-only wakes refresh scores without inventing submits; ~1.5d scoring lag → ≤1 gated submit / ISO week.
 
 ## Product ReAct loop (ADK zip)
 
@@ -131,9 +119,7 @@ flowchart LR
   class Issue,Agent,Tools,WS,Submit,Tests product
 ```
 
-**Legend:** amber = product ReAct path inside the ADK zip (graded ship).
-
-*Insight.* This is the competition contract: one ADK agent, tools, patch, hidden tests. **Allow / Block**, budgets, and escalate interrupts live in local `supervisor/` + `guardrails/` — course evidence, **not** in the zip. See [[Requirements-Compliance]].
+*Insight.* Graded contract: one ADK agent → tools → patch → hidden tests. Allow/Block + escalate live in `supervisor/` / `guardrails/` — **not** in the zip. [[Requirements-Compliance]].
 
 ## Figure 2 — Noise band and telemetry
 
@@ -163,9 +149,7 @@ flowchart LR
   style Band fill:#FEFCE8,stroke:#CA8A04,color:#713F12
 ```
 
-**Legend (Figure 2A):** yellow = V8 noise band · gray = candidates treated as in-band HOLD · red = false-positive local win (V11 → LB 0.15).
-
-*Insight — shipping decisions.* Anything inside the band is treated as noise, not a ship signal. V11’s single-run 10 looked decisive and then scored **0.15** on the board; V15 (public 0.22 copy) landed **0.17**. The gate’s job is blocking false promotions; it is trusted more to refuse than to forecast LB.
+*Insight.* In-band = noise, not a ship signal. V11’s local 10 → LB **0.15**; V15 (public 0.22) → **0.17**. The gate is trusted to refuse false promotions.
 
 | Candidate | In-budget / 30 | Notes |
 |---|---|---|
@@ -193,9 +177,7 @@ flowchart LR
   class Ok ok
 ```
 
-**Legend (Figure 2B):** amber = trajectory phases · red = dominant failure modes (wrong fix / empty / overrun) · green = in-budget outcomes.
-
-*Insight — next engineering lever.* Median first edit at call **16/28** means most of the budget is spent reading. Prompt-only “edit by call 20” (V17) was ignored — so a **tool-layer** call/edit deadline is the honest next change, not another system-prompt pep talk.
+*Insight.* Median first edit at call **16/28** — most budget is reading. Prompt-only deadlines (V17) failed; next lever is a **tool-layer** edit cap.
 
 | Signal | Value | Takeaway |
 |---|---|---|
@@ -248,15 +230,15 @@ flowchart LR
 
   classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
-  class SB,Tips,CSV,Cons ops
+  classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
+  class SB,Tips,Cons ops
   class Prod product
+  class CSV factory
   style CMU fill:#F0F9FF,stroke:#0284C7,color:#075985
   style NG fill:#ECFDF5,stroke:#059669,color:#065F46
 ```
 
-**Legend:** blue = climb SoT / console bridge (read-only) · amber = product zip configs · green band = NoiseGate bookkeeping.
-
-*Insight.* Climb `scoreboard.json` is live publicScore SoT; NoiseGate CSV is factory bookkeeping. The bridge is read-only — still **no** CreateSubmission from Streamlit ([#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4), [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3)).
+*Insight.* Climb `scoreboard.json` = live publicScore SoT; NG CSV = bookkeeping. Bridge is read-only — no CreateSubmission from Streamlit ([#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4), [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3)).
 
 ## What ships where
 

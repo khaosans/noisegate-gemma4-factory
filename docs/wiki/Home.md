@@ -54,9 +54,7 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-**Legend:** green = factory roles (Patch / Eval / Watchdog / Governor) · amber = product tools & budgets · blue = Ops / HITL approval.
-
-*Insight.* The interesting surface is not “another coding agent” — it is the **noise gate** between Eval and Submit. If a gain sits inside V8’s ±2.5-task band, the factory HOLDs. Deep dive: [[Architecture]].
+*Insight.* The surface that matters is the **noise gate** between Eval and Submit — gains inside V8’s ±2.5 band HOLD. [[Architecture]].
 
 ## Demo in under a minute
 
