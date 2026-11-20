@@ -8,6 +8,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 ## [Unreleased]
 
 ### Added
+- Architecture wiki: **Gemma agent + Eval Gate harness** and **LangChain / LangGraph** Mermaid flows (named colored bands; course evidence stack marked not-in-zip)
 - `factory/state-and-artifacts.md` — schemas/paths for loop state, append-only wake ledger, `results/` files, and the read-only climb scoreboard bridge
 - Runbook "Current state (2026-11-20)": V8–V23 evaluated, V22 awaiting second paired run (J1), V24 tool-layer read-budget cap queued
 - `results/`: gate runs v7–v9, v11 (V18–V23), V20 LB 0.13, W47 manual submission 0.17, V20 calibration row

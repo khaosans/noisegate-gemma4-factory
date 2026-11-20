@@ -71,7 +71,7 @@ Talk track: [[Demo-Script]].
 | Page | Purpose |
 |---|---|
 | [[Method-Card]] | One-page academic method (problem → gate → evidence) |
-| [[Architecture]] | Figure 1 · weekly turn · noise/telemetry · HITL tiers |
+| [[Architecture]] | Figure 1 · Gemma+harness · LangChain/LangGraph · noise/HITL |
 | [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
 | [[Claude-Cowork-Loop]] | Schedule + Skills |
 | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
