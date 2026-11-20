@@ -31,7 +31,24 @@ from harness.decision_rule import V8_HISTORY, RunSummary, decide, paired_net
 from harness.evaluators import scorecard
 from harness.trajectory import parse_log
 
-ROOT = Path(__file__).resolve().parents[1]
+def _discover_root() -> Path:
+    """Repo checkout or installed wheel data next to the import packages.
+
+    Prefer ``NOISEGATE_ROOT``. Otherwise use a tree that has ``factory/runbook.md``
+    (checkout or hatch force-include into site-packages). Falls back to the
+    parent of ``factory_console/`` so local editable installs keep working.
+    """
+    env = (os.environ.get("NOISEGATE_ROOT") or "").strip()
+    if env:
+        return Path(env).expanduser().resolve()
+    here = Path(__file__).resolve().parent
+    for candidate in (here.parent, *here.parents):
+        if (candidate / "factory" / "runbook.md").is_file():
+            return candidate
+    return here.parent
+
+
+ROOT = _discover_root()
 SAMPLE_LOG = Path(__file__).with_name("sample_gate_log.txt")
 GATE_NOISE_TASKS = 3      # same config moved by up to 3 in-budget solves between runs
 LEADERBOARD_NOISE = 0.05  # an identical public 0.22 config scored 0.17

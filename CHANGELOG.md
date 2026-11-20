@@ -13,6 +13,8 @@ First public beta of the NoiseGate product repo (aligned with CMU course tracker
 
 - Gemma 4 SuperAgent **V8** base configs in `product/superagent/` (public LB **0.18**).
 - Reproducible ADK zip builder: `python product/build_submission.py` → `submission.zip`.
+- Installable Python package `noisegate-gemma4-factory==1.0.0b1` (`pyproject.toml`; sdist + wheel on the GitHub Release).
+- Wheel force-includes `factory/`, `results/`, `docs/`, `GOALS.md` so the Streamlit console works when installed from the package (not only from a git checkout).
 
 ### Factory & harness
 
