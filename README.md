@@ -76,7 +76,7 @@ flowchart TB
 Production climb = **Claude Project + scheduled wakes**. Demo / ops narrative = **Claude Ops Console** artifact.
 
 1. Cowork loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` each wake.
-2. Skills in [`factory/skills/`](factory/skills/): `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
+2. Skills in [`factory/skills/`](factory/skills/): `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`. State/ledger schemas: [`factory/state-and-artifacts.md`](factory/state-and-artifacts.md).
 3. **Cadence (UTC):** Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
 4. Kaggle login UI (notebook commit, gate start, CreateSubmission) stays on Claude’s authenticated session.
 
@@ -92,8 +92,11 @@ Gate through mid-November 2026 — not a live leaderboard scrape.
 | V11 | Reasoning / edit-deadline | 10 | 0.15 | Below single-run bar |
 | V15 | Public 0.22 notebook copy | 7, 10 | 0.17 | Noise calibration |
 | V18 | Heredoc recovery | 7, 7 | — | HOLD |
+| V20 | Batched recon | 7 | 0.13 | HOLD (submitted by user override) |
 | V21 | Think 1k → 2k | 6 | — | HOLD |
-| V22 | Best-guess on empty diff | 9 | — | HOLD (needs 2nd run) |
+| V22 | Best-guess on empty diff | 9 | — | CONFIRM — 2nd paired run (J1) Sat 11-21 |
+| V23 | Graph tools removed | 7 | — | HOLD |
+| V24 | Tool-layer read-budget cap | — | — | Queued (next one-change hypothesis) |
 
 *Insight — why paired gate + HOLD.* V11 looked like a win locally and lost on the board; V15 proved the board itself is noisy. Eleven candidates tested, zero false-positive ships. The harness’s job is refusing luck, not predicting every LB point. Telemetry (N=390): median first edit at call 16/28 and 62% overruns → the bottleneck is a long read loop; prompt-only deadlines failed (V17), so the next lever is a **tool-layer** call cap. More: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [`results/`](results/).
 

@@ -86,3 +86,20 @@ Started 08:38:17 UTC, last task 14:14 UTC (~5.6 wall h, ~11 GPU quota h; quota 2
 - Local gate had V15 ≥ V8 (11/7 and 14/10 vs 9/8 and 8/6). The leaderboard doesn't confirm it, but both differences are noise-sized.
 - Per the runbook, V16/V17 are one change off V15, not off the best (V8), so auto-submit is paused pending the user's base decision. No submission on 10-31.
 - GPU quota 24:11 / 30 h → no gate run until the weekly reset.
+
+## 2026-11-09 — W46: V18 vs V19 (Run A, gate v7) → V8 vs V18 (Run B, gate v8)
+- Run A (run 367009113): V18 heredoc recovery 9 solved / 7 in-budget / 7 empty / 19 overruns; V19 edit-loop cap 8/6/5/19; leader V18.
+- Run B (run 367132867): V8 10/8/5/17, V18 8/7/5/20, paired net −1. V8 runs now 8/6/8 → mean 7.33.
+- Decision: Δ −0.33, overrun hard check failed → **HOLD**. No W46 submission.
+
+## 2026-11-16 — W47: V20 vs V21 (Run A, gate v9); V22 vs V23 (Run B screen, gate v11)
+- Run A (run 369348902): V20 batched recon 11/7/5/17; V21 thinking 2048 6/4/15 (in-budget/empty/overruns). Both below V8 mean → Run B screened queue #5/#6.
+- Gate v10 (run 370082388) was a mis-started duplicate of Run A; cancelled, results ignored.
+- V20 submitted 2026-11-16 18:58 UTC at the user's request (W47 slot, gate HOLD).
+- Run B screen (run 370392494): V22 best-guess source edit on empty diff 12 solved / 9 in-budget / 4 empty / 17 overruns; V23 graph tools removed 8/7/6/16; net −2. V22 Δ +1.67 < single-run bar +4 → **HOLD**; needs a second paired run vs V8.
+
+## 2026-11-20 — V20 scored 0.13; manual team submission 0.17; loop v2 adopted
+- V20 **0.13** (below V8 0.18): the in-budget metric's prediction held (calibration: agree). A manual team submission in W47 scored 0.17. Best is still V8 0.18.
+- Loop v2 from 2026-11-20: decisions on KEPT14 (the 14 ever-solved tasks), V8 paired in every run, z-gate (T2 z ≥ 1.0 over ≥ 2 runs; SINGLE z ≥ 2.5; CONFIRM z ≥ 0.75), new hard check over-budget solves ≤ V8 mean + 2. V22 = CONFIRM (z 1.08).
+- Next job J1 = [V8, V22] KEPT14 × 2 at the Sat 2026-11-21 heartbeat; a T2 pass queues submission S1 (not before Mon 11-23, human approval required).
+- Queued next one-change hypothesis: **V24 = V8 + tool-layer read-budget cap** (enforce the read/call budget in the tool layer, not the prompt; prompt-only deadlines failed in V17). Not built, not screened.

@@ -16,4 +16,12 @@ using Gemma.
 2. When proposing prompt tweaks, explain the expected impact on Gemma's reasoning/context utilization.
 3. Keep prompt designs aligned with Kaggle runtime, token budget, and Gemma-specific model characteristics.
 
-Project knowledge files: `runbook.md` and `results/eval-results.md` (the loop reads both on every wake).
+## Operating the climb loop (scheduled wakes)
+- Read on every wake: `runbook.md` (start with "Current state"), `results/eval-results.md`,
+  `state-and-artifacts.md`.
+- Cadence (UTC): Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
+- Skills, in order: `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
+- CreateSubmission is human-in-the-loop: ≤ 1 gated submission per ISO week, only on a decision-rule pass,
+  only after explicit human approval. Never on HOLD, never to fill a slot.
+- Do not change the submission contract: `gemma-4-31b-it`, ≤ 28 tool calls, ≤ 480 s, `submission.zip` writer.
+- End every wake with the 5-line report from the runbook.

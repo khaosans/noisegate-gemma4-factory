@@ -3,3 +3,5 @@ V8,362553010,TBD,0.18,base config,current base (best scored)
 V11,362967896,TBD,0.15,V8 with thinking budget cut,
 V12,363360165,2026-10-29 03:33,0.15,variant of V11,scored 2026-10-30
 V15,363956732,2026-10-30 13:10,0.17,exact copy of public 0.22 notebook (flexonafft; credited),scored 2026-10-31; shows leaderboard noise ~±0.05
+V20,369348049,2026-11-16 18:58,0.13,V8 + batched recon (user override; gate HOLD),scored ~2026-11-20; in-budget metric predicted <= V8
+manual-W47,,~2026-11-18,0.17,team manual submission.zip (Adil),counts as a team submission for W47
