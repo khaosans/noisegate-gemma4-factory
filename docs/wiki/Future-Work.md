@@ -34,7 +34,7 @@ Concrete next steps. Same bullets as the README, with rationale. None of these e
 
 ## Non-goals (still)
 
-- GitHub Wiki enablement (in-repo `docs/wiki/` is enough)
 - CreateSubmission from Streamlit
 - Secrets or credentials in-repo
 - Re-implementing Agent OS here
+- Treating the React Ops Console live cycle as invented scores (replay of recorded runs only)

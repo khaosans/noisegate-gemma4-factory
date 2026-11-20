@@ -4,21 +4,22 @@ Claude runs the climb loop inside a claude.ai Project on scheduled wakes. It pro
 builds them on Kaggle, runs the Eval Gate, applies the decision rule, and submits at most once a week.
 Humans set the base, the cadence, and the final selections.
 
+Diagram story (Figure 1 three-band + weekly turn): [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Claude Cowork Loop](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop).
+
+```mermaid
+flowchart TB
+  Q[Queue item] --> BC[build-candidate]
+  BC --> GA[run-eval-gate Run A<br/>screen 2]
+  GA --> GB[run-eval-gate Run B<br/>leader vs V8 · else next pair]
+  GB --> WD{weekly-decision}
+  WD -->|HOLD| RH[Report to humans]
+  WD -->|SUBMIT| KS[Kaggle submission ≤ 1/week]
+  KS --> Wait[~1.5 days]
+  Wait --> RS[record-score]
+  RS -->|LB ≥ best| NB[New base → next queue item]
 ```
- queue item ──► build-candidate ──► run-eval-gate (Run A: screen 2)
-                                          │
-                                          ▼
-                                    run-eval-gate (Run B: leader vs V8)
-                                          │
-                                          ▼
-                                    weekly-decision ──HOLD──► report to humans
-                                          │ SUBMIT
-                                          ▼
-                                 Kaggle submission (≤ 1/week)
-                                          │ ~1.5 days
-                                          ▼
-                                    record-score ──► new base? (LB ≥ best) ──► next queue item
-```
+
+*Insight.* Run A screens; Run B only spends a full paired comparison when a leader clears V8 — or screens the next pair if both trail V8’s mean (`runbook.md`). HOLD is a successful outcome when the gain is inside noise.
 
 | Piece | File |
 |---|---|
