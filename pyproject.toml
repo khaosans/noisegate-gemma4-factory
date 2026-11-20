@@ -1,0 +1,105 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "noisegate-gemma4-factory"
+version = "1.0.0b1"
+description = "NoiseGate: autonomous build → evaluate → submit loop for a Gemma 4 coding agent"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+  { name = "Souriya Khaosanga" },
+  { name = "Adil Shamim" },
+]
+keywords = [
+  "gemma4",
+  "kaggle",
+  "react-agent",
+  "adk",
+  "noisegate",
+  "agentic-ai",
+  "evaluation",
+]
+dependencies = [
+  "pydantic>=2",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+]
+agent = [
+  "langgraph>=1.2,<2",
+  "langchain-core>=1.4.7,<2",
+  "langchain-openai>=0.3",
+  "langsmith>=0.3",
+  "duckdb>=1.1",
+]
+console = [
+  "noisegate-gemma4-factory[agent]",
+  "streamlit>=1.44",
+  "altair>=5",
+  "pandas>=2",
+  "anthropic>=1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/khaosans/noisegate-gemma4-factory"
+Repository = "https://github.com/khaosans/noisegate-gemma4-factory"
+Changelog = "https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CHANGELOG.md"
+"Release notes" = "https://github.com/khaosans/noisegate-gemma4-factory/releases/tag/v1.0.0-beta.1"
+Wiki = "https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home"
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "agentops",
+  "evals",
+  "factory_console",
+  "guardrails",
+  "harness",
+  "product",
+  "supervisor",
+  "VERSION",
+  "CHANGELOG.md",
+  "LICENSE",
+  "README.md",
+  "requirements.txt",
+  "requirements-agent.txt",
+  "requirements-console.txt",
+  "pytest.ini",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = [
+  "agentops",
+  "evals",
+  "factory_console",
+  "guardrails",
+  "harness",
+  "product",
+  "supervisor",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = [
+  "agentops",
+  "evals",
+  "factory_console",
+  "guardrails",
+  "harness",
+  "product",
+  "supervisor",
+  "tests",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
