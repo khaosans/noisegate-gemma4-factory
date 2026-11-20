@@ -25,13 +25,10 @@ flowchart TB
     H[Replay · approval gate]
   end
 
-  Key["Key: green Factory · amber Product · blue Ops"]
-
   E -->|runs candidates| L2
   W -.->|observes| L2
   G -->|HITL approve| Ops
   L2 <--> Ops
-  G ~~~ Key
 
   classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
@@ -42,7 +39,6 @@ flowchart TB
   style L1 fill:#ECFDF5,stroke:#059669,color:#065F46
   style L2 fill:#FFF7ED,stroke:#EA580C,color:#9A3412
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Layer 1 decides **whether to spend GPU / the weekly slot**; Layer 2 only solves tasks. Ops is audit + HITL — never CreateSubmission.
@@ -76,16 +72,12 @@ flowchart TB
   Wait --> RS[record-score + ledger]
   RS -->|LB ≥ best| NB[New base]
 
-  Key["Key: green factory · gray HOLD · red CreateSubmission"]
-  NB ~~~ Key
-
   classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
   classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef hold fill:#F3F4F6,stroke:#6B7280,color:#374151
   class Q,BC,GA,GB,WD,RS,NB,Wait factory
   class CS hitl
   class RH hold
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Run A screens cheaply; Run B pairs a leader vs V8 (or the next pair). `decision_rule.py` makes HOLD/SUBMIT reproducible — not chat.
@@ -101,16 +93,12 @@ flowchart LR
   Hitl --> Wait[~1.5d scoring]
   Wait --> Rec[record-score + CSV]
 
-  Key["Key: green cadence · gray HOLD · red CreateSubmission"]
-  Rec ~~~ Key
-
   classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
   classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef hold fill:#F3F4F6,stroke:#6B7280,color:#374151
   class Sat,Sun,Mon,Wait,Rec factory
   class Ops hold
   class Hitl hitl
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Status-only wakes refresh scores without inventing submits; ~1.5d scoring lag → ≤1 gated submit / ISO week.
@@ -152,9 +140,6 @@ flowchart LR
   V22[V22 9.0] -.-> Band
   V11[V11 10.0] -.-> Band
 
-  Key["Key: yellow noise · gray HOLD · red false+"]
-  V11 ~~~ Key
-
   classDef noise fill:#FEF9C3,stroke:#A16207,color:#713F12
   classDef inside fill:#F3F4F6,stroke:#6B7280,color:#374151
   classDef falsepos fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
@@ -162,7 +147,6 @@ flowchart LR
   class V21,V18,V15,V22 inside
   class V11 falsepos
   style Band fill:#FEFCE8,stroke:#CA8A04,color:#713F12
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* In-band = noise, not a ship signal. V11’s local 10 → LB **0.15**; V15 (public 0.22) → **0.17**. The gate is trusted to refuse false promotions.
@@ -185,16 +169,12 @@ flowchart LR
   Out -->|62.3% overrun| Fail[Wrong fix 32% · empty 21%]
   Out -->|in budget| Ok[Scored / other]
 
-  Key["Key: amber phases · red fail · green ok"]
-  Ok ~~~ Key
-
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
   classDef fail fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef ok fill:#D1FAE5,stroke:#047857,color:#064E3B
   class Read,Edit,Out product
   class Fail fail
   class Ok ok
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Median first edit at call **16/28** — most budget is reading. Prompt-only deadlines (V17) failed; next lever is a **tool-layer** edit cap.
@@ -248,9 +228,6 @@ flowchart LR
   Cons -->|score_mismatch flag| CSV
   Tips -.->|ADK zip configs| Prod[product/]
 
-  Key["Key: blue climb SoT · green NG CSV · amber product"]
-  Prod ~~~ Key
-
   classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
   classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
@@ -259,7 +236,6 @@ flowchart LR
   class CSV factory
   style CMU fill:#F0F9FF,stroke:#0284C7,color:#075985
   style NG fill:#ECFDF5,stroke:#059669,color:#065F46
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Climb `scoreboard.json` = live publicScore SoT; NG CSV = bookkeeping. Bridge is read-only — no CreateSubmission from Streamlit ([#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4), [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3)).

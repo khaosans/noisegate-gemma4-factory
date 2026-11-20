@@ -55,16 +55,12 @@ flowchart TB
   ProductCfg[product/] --> Ship
   Supervisor[supervisor/] --> Course
 
-  Key["Key: amber ADK ship · gray course evidence"]
-  Host ~~~ Key
-
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
   classDef course fill:#F3F4F6,stroke:#6B7280,color:#374151
   class ADK,Zip,Host,ProductCfg product
   class LG,GR,AO,Supervisor course
   style Ship fill:#FFF7ED,stroke:#EA580C,color:#9A3412
   style Course fill:#F9FAFB,stroke:#6B7280,color:#374151
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract.
@@ -93,9 +89,6 @@ flowchart TB
     E1[Boundary / repeated block / budget] --> E2[Interrupt → human]
   end
 
-  Key["Key: red HITL · blue console · gray denied"]
-  F4 ~~~ Key
-
   classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
   classDef deny fill:#F3F4F6,stroke:#6B7280,color:#374151
@@ -105,7 +98,6 @@ flowchart TB
   style FactoryHITL fill:#FEF2F2,stroke:#B91C1C,color:#7F1D1D
   style ConsoleHITL fill:#F0F9FF,stroke:#0284C7,color:#075985
   style SuperHITL fill:#FEF2F2,stroke:#B91C1C,color:#7F1D1D
-  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
 *Insight.* Autonomy stops at cost/irreversibility: CreateSubmission needs a person; console can approve ledger writes but never submit. Supervisor escalate is local course safety, not Kaggle.
