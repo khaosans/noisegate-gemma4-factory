@@ -11,13 +11,17 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 - `SECURITY.md` — reporting path, no-secrets policy, trust boundaries
 - Wiki [[Method-Card]] — one-page academic method (problem → gate → evidence)
 - GitHub Actions CI — pytest on harness/guardrails/factory (supervisor suite ignored pending langgraph pin)
+- Wiki [[Ops-Console]] — Claude Agent Ops Console as **main** demo UI (screens + deny list vs Cowork)
+- Ops Console directional screenshots under `docs/wiki/assets/ops-console/`
 
 ### Changed
 - README / Home: score SoT note (factory V8 **0.18** vs sibling climb tip ledger)
 - README References: eval-over-generator thesis vs SWE-bench / ReAct
 - Future-Work: tool-layer edit deadline labeled **hypothesis — not shipped**
 - Requirements-Compliance: pinned golden/safety table + calibration tally
-- Local-And-Streamlit: climb bridge explicitly read-only
+- Local-And-Streamlit: climb bridge explicitly read-only (page now marks Streamlit **not used for demos**)
+- README / Home / Cowork / Demo-Script / SECURITY / factory-console point at Claude Ops Console as **main** UI
+- Streamlit removed from demo docs, Sidebar, Quick start, and screenshot set (no app code changes)
 
 ## [1.0.0-beta.1] — 2026-11-20
 

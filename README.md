@@ -21,7 +21,7 @@ The public notebook that shows **0.22** on the board scored **0.17** when we sub
 
 **Score SoT:** this repo’s factory base is **V8 @ 0.18**. Sibling climb tip packaging in [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) keeps its own `docs/scoreboard.json` (may show a different tip best, e.g. **0.10**) — do not conflate the two. Climb bridge is read-only.
 
-**Explore:** [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Method card](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Method-Card) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
+**Explore:** [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Method card](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Method-Card) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
 
 ## Architecture
 
@@ -73,23 +73,14 @@ flowchart TB
 
 ## How we ran it
 
-Production climb = **Claude Project + scheduled wakes**, not Streamlit.
+Production climb = **Claude Project + scheduled wakes**. Demo / ops narrative = **Claude Ops Console** artifact.
 
 1. Cowork loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` each wake.
 2. Skills in [`factory/skills/`](factory/skills/): `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
 3. **Cadence (UTC):** Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
 4. Kaggle login UI (notebook commit, gate start, CreateSubmission) stays on Claude’s authenticated session.
 
-[Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)
-
-## Local demo (`:8765`)
-
-```bash
-pip install -r requirements-console.txt -r requirements-agent.txt
-streamlit run factory_console/app.py --server.port 8765
-```
-
-Query / replay / pytest / zip build are fine. **Must not:** gate-start, CreateSubmission, or change base config. `record_score` writes need an **Approve** click. Details: [Local and Streamlit wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Local-And-Streamlit) · [`docs/factory-console.md`](docs/factory-console.md).
+**Main demo UI:** [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)
 
 ## Results that matter for shipping
 
@@ -119,7 +110,7 @@ Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence
 | [`product/`](product/) | Agent configs, candidates, zip builder |
 | [`harness/`](harness/) | Trajectory parse, evaluators, decision rule |
 | [`factory/`](factory/) | Runbook, Project instructions, Skills |
-| [`factory_console/`](factory_console/) | Streamlit demo / operator chat |
+| [`factory_console/`](factory_console/) | Legacy local console (not used for demos; main UI = Claude Ops Console) |
 | [`supervisor/`](supervisor/) · [`guardrails/`](guardrails/) · [`agentops/`](agentops/) | Course slice (not in Kaggle zip) |
 | [`evals/`](evals/) · [`results/`](results/) | Safety cases · gate / LB bookkeeping |
 | [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [`docs/wiki/`](docs/wiki/) | Preferred viewer · editor SoT |
@@ -132,7 +123,7 @@ pip install -r requirements.txt
 pytest -q
 python -m evals.safety.run
 python product/build_submission.py
-streamlit run factory_console/app.py --server.port 8765
+# Demo UI: https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW  (see wiki Ops-Console)
 ```
 
 ```python

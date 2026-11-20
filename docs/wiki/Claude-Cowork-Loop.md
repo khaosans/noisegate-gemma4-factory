@@ -1,21 +1,23 @@
 # Claude Cowork loop (primary agentic path)
 
-The factory’s **production** climb path is Claude, not Streamlit. Cowork / Project wakes hold the authenticated Kaggle browser session needed for notebook commit, Eval Gate starts, and CreateSubmission.
+The factory’s **production** climb path is Claude Cowork. Cowork / Project wakes hold the authenticated Kaggle browser session needed for notebook commit, Eval Gate starts, and CreateSubmission.
 
 Cowork project artifact: [claude.ai/artifact/1Ldx2khByugozsHH5cuLfa](https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa).  
-Paper Ops Console (replay): [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW).  
+**Main Ops Console** (demo / paper replay): [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) — full docs [[Ops-Console]].  
 In-repo procedures: [`factory/`](https://github.com/khaosans/noisegate-gemma4-factory/tree/main/factory) (`project-instructions.md`, `runbook.md`, `skills/*/SKILL.md`).
+
+**Quick split:** Cowork = authenticated climb (gate start / human CreateSubmission). [[Ops-Console]] = **main** demo / ops UI (paper/replay). The Ops Console never submits.
 
 ## Why Claude holds login-heavy ops
 
-| Action | Why not Streamlit |
+| Action | Why on Cowork (not the Ops Console) |
 |---|---|
 | Import / Save & Run All on SuperAgent notebook | Needs logged-in Kaggle UI |
 | Start Eval Gate on 4× L4 | GPU quota + notebook auth |
 | CreateSubmission | Human-reserved; daily/weekly limits |
 | Dashboard refresh after scoring | Session + judgment on unexpected UI |
 
-The console is a **query and demo surface** over repo records. It deliberately cannot start gates or submit.
+The Ops Console is a **demo / replay surface** over recorded factory state. It deliberately cannot start gates or submit.
 
 ## Schedule (UTC)
 
@@ -55,6 +57,6 @@ Project knowledge on every wake: runbook + `results/eval-results.md`. System pro
 - No ad-hoc runs, larger task sets, or interactive GPU sessions
 - Same UI step fails 3× → stop and report
 
-## Relation to the local console
+## Relation to the Ops Console
 
-Classmates can follow the story on `:8765` without Claude login. The authentic climb still goes through this Cowork loop. Merged [#3](https://github.com/khaosans/noisegate-gemma4-factory/pull/3) / [#4](https://github.com/khaosans/noisegate-gemma4-factory/pull/4) only improve the local query surface (Ollama chat, read-only climb SoT).
+Classmates follow the factory story on the [[Ops-Console]] Claude artifact (main demo UI). The authentic climb still goes through this Cowork loop.

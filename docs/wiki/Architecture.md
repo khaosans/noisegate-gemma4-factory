@@ -205,7 +205,7 @@ flowchart LR
 
 *Insight — why HITL tiers.* Cheap steps automate; expensive or irreversible steps require a person. That is how the factory stays autonomous without gambling the weekly slot or deleting artifacts.
 
-Streamlit `:8765` and the React Ops Console may query / replay / approve ledger writes — they **must not** CreateSubmission or start a Kaggle gate on their own.
+The Claude Ops Console (**main** demo UI) may illustrate query / replay / approval — it **must not** CreateSubmission or start a Kaggle gate. See [[Ops-Console]].
 
 ## Repository layout
 
@@ -253,10 +253,10 @@ flowchart LR
 | Surface | Ships |
 |---|---|
 | Kaggle | Product ADK zip only |
-| Demo | Ops Console + Streamlit `:8765` + this wiki |
+| Demo | Claude Ops Console (**main**) · this wiki |
 | Course evidence (non-zip) | LangGraph supervisor, guardrails, AgentOps |
 
-See also: [[Claude-Cowork-Loop]], [[Local-And-Streamlit]], [[Requirements-Compliance]].
+See also: [[Claude-Cowork-Loop]], [[Ops-Console]], [[Requirements-Compliance]].
 
 ## References
 
