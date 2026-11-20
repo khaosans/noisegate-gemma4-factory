@@ -4,6 +4,13 @@ A Streamlit app over the factory's own records. It shows how the factory builds 
 (one change, measured on the benchmark, shipped only above the noise) and lets you query and run
 the factory from a chat.
 
+### Sibling: React Ops Console (Claude artifact)
+
+Paper / **replay** UI for demos (not this Streamlit app):  
+https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW  
+
+In-repo docs: [wiki Ops-Console](wiki/Ops-Console.md). Same deny list — **no** CreateSubmission / gate-start. Prefer Streamlit when you need live `results/` files; prefer the artifact when presenting without a local server.
+
 ```bash
 pip install -r requirements-console.txt -r requirements-agent.txt
 streamlit run factory_console/app.py --server.port 8765

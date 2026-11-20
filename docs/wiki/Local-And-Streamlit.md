@@ -2,7 +2,9 @@
 
 Local surface for demos and operator queries without Claude login. It does **not** replace the Cowork climb loop for Kaggle auth.
 
-Full page catalog: [`docs/factory-console.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/factory-console.md). See also [[Home]], [[Claude-Cowork-Loop]].
+Related: [[Ops-Console]] (Claude **paper/replay** artifact) · [[Claude-Cowork-Loop]] (live climb) · [[Home]].
+
+Full page catalog: [`docs/factory-console.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/factory-console.md).
 
 ## Quick start
 

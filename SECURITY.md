@@ -16,6 +16,7 @@ This is a research / class product repo (MIT). For security concerns about this 
 |---------|-----|----------|
 | Claude Cowork climb loop | Propose candidates, start gates (authenticated session) | Auto-CreateSubmission without human |
 | Streamlit console (`:8765`) | Query, replay, pytest, zip build; Approve `record_score` | Gate-start, CreateSubmission, change base, overwrite CSV without Approve |
+| React Ops Console (Claude artifact) | Demo / paper replay UI | Gate-start, CreateSubmission, inventing scores; treat as demo-only |
 | Climb bridge (`CMU_AGENTIC_AI_ROOT`) | Read-only scoreboard / submissions snapshot | Write climb ledger or submit |
 | LangGraph `supervisor/` | Local course guardrails / escalate | Ship inside the Kaggle ADK zip |
 

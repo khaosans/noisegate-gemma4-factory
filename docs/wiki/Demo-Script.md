@@ -44,7 +44,7 @@ Optional: **Decision rule** page — move sliders into/out of the noise band so 
 
 - Slide or [[Claude-Cowork-Loop]]: Sat / Sun / Mon Skills.
 - “Login-heavy Kaggle stays on Claude; this console is how you demo without that login.”
-- Ops Console (paper): https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW · Cowork climb artifact: https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa
+- [[Ops-Console]] (paper artifact): https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW · Cowork climb artifact: https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa
 
 ## Lines to avoid
 

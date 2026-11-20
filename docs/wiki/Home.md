@@ -13,7 +13,7 @@ The public notebook that shows **0.22** scored **0.17** when we submitted it. Ba
 | Best public (base) | **0.18** (V8) |
 | Repo | [noisegate-gemma4-factory](https://github.com/khaosans/noisegate-gemma4-factory) |
 | Video | https://youtu.be/-EiKv_MafOY |
-| Ops Console | https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW |
+| Ops Console | [artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · docs [[Ops-Console]] |
 
 **Score SoT:** factory base here is **V8 @ 0.18**. Sibling [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) climb tips use `docs/scoreboard.json` (may differ, e.g. tip best **0.10**) — not the same artifact ledger.
 
@@ -60,7 +60,7 @@ flowchart TB
 
 ## Demo in under a minute
 
-1. [Ops Console](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) **or** `streamlit run factory_console/app.py --server.port 8765`
+1. [[Ops-Console]] artifact **or** `streamlit run factory_console/app.py --server.port 8765`
 2. Show a HOLD above the V8 noise band (V18 / V21 / V17).
 3. Climb login path = Claude Skills — not the console for CreateSubmission.
 
@@ -72,6 +72,7 @@ Talk track: [[Demo-Script]].
 |---|---|
 | [[Method-Card]] | One-page academic method (problem → gate → evidence) |
 | [[Architecture]] | Figure 1 · weekly turn · noise/telemetry · HITL tiers |
+| [[Ops-Console]] | Claude artifact paper/replay UI vs Streamlit vs Cowork |
 | [[Claude-Cowork-Loop]] | Schedule + Skills |
 | [[Local-And-Streamlit]] | `:8765` may / must-not |
 | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
