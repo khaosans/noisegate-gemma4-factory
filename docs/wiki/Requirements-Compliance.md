@@ -90,7 +90,7 @@ flowchart TB
   end
 
   subgraph SuperHITL["Supervisor escalate"]
-    E1[Boundary / block / budget] --> E2[Interrupt → human]
+    E1[Boundary / repeated block / budget] --> E2[Interrupt → human]
   end
 
   Key["Key: red HITL · blue console · gray denied"]
