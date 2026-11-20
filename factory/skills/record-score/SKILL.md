@@ -9,3 +9,5 @@ description: Record a newly scored leaderboard submission, update the base if wa
 3. If score ≥ current best → the candidate becomes the new base; re-apply remaining queue items on
    top of it. Otherwise keep the base and mark the candidate "passed gate, LB lower".
 4. Update the status column in `GOALS.md`.
+5. Never read scores from the climb repo's `docs/scoreboard.json` into `results/` (read-only bridge,
+   different SoT). Schemas: `factory/state-and-artifacts.md`.

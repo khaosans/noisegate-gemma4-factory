@@ -13,7 +13,7 @@ flowchart TB
   GA --> GB[run-eval-gate Run B<br/>leader vs V8 · else next pair]
   GB --> WD{weekly-decision}
   WD -->|HOLD| RH[Report to humans]
-  WD -->|SUBMIT| KS[Kaggle submission ≤ 1/week]
+  WD -->|SUBMIT| KS[Human-approved submission ≤ 1/week]
   KS --> Wait[~1.5 days]
   Wait --> RS[record-score]
   RS -->|LB ≥ best| NB[New base → next queue item]
@@ -33,5 +33,6 @@ flowchart TB
 | System prompt for the Project | `project-instructions.md` |
 | Operating procedure, cadence, guardrails | `runbook.md` |
 | Procedures as loadable skills | `skills/*/SKILL.md` |
+| State, ledger, file schemas | `state-and-artifacts.md` |
 | Persistent memory | `../results/eval-results.md`, `../results/*.csv` |
 | Decision logic as code | `../harness/decision_rule.py` |

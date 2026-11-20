@@ -12,7 +12,9 @@ description: Build one climb-loop candidate as a new Gemma 4 SuperAgent notebook
 3. Import into the SuperAgent notebook editor and run "Save & Run All (Commit)".
 4. Verify the new version: its source diff vs base is only the intended change, config checks
    pass, and the printed SHA-256 matches the downloaded zip.
-5. Mark the queue item "tried" in `product/candidates.md` with the version number.
+5. Do not change the submission contract (`gemma-4-31b-it`, ≤ 28 calls, ≤ 480 s) or anything in
+   `harness/`.
+6. Mark the queue item "tried" in `product/candidates.md` with the version number.
 
 # Stop conditions
 - Diff touches more than the intended change → discard the version, report.

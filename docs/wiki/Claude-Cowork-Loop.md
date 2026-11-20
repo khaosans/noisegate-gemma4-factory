@@ -27,10 +27,12 @@ From [`factory/runbook.md`](https://github.com/khaosans/noisegate-gemma4-factory
 |---|---|
 | **Sat** | Build top queue items as C1/C2 (base + one change); Gate **Run A** screen |
 | **Sun** | Gate **Run B**: leader vs V8 (or next pair if both below V8 mean) |
-| **Mon** | Apply `decision_rule.py`; submit only on SUBMIT; ≤1 gated submit / ISO week |
+| **Mon** | Apply `decision_rule.py`; on SUBMIT ask a human to approve CreateSubmission; ≤1 gated submit / ISO week |
 | Other wakes | Status only: record scores, refresh dashboards |
 
 Planned submission slots (from runbook): Nov 9, 16, 23, 30. No gate runs after Nov 30. Final deadline **2026-12-02**.
+
+Since 2026-11-20 the live loop runs as **loop v2** (event-driven job queue, KEPT14 task set, z-gate); the weekly table above is still the submit-slot skeleton. Current state (V22 confirm run J1 Sat 11-21; V24 tool-layer read-budget cap queued) lives in the runbook's "Current state" section. State/ledger schemas: [`factory/state-and-artifacts.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/state-and-artifacts.md).
 
 ## Skills (procedural memory)
 

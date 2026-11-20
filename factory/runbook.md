@@ -6,10 +6,21 @@ Kaggle allows one submission per UTC day; scoring takes ~1.5 days.
 **Goal:** climb from the best scored config (V8, 0.18). One submission per ISO week, and only a
 candidate our own evaluation rates above V8.
 
+## Current state (2026-11-20) — read first on every wake
+- Base: **V8 @ 0.18** (best scored). V8–V23 evaluated; scored: V11 0.15, V12 0.15, V15 0.17, V20 0.13.
+- **V22** (V8 + best-guess source edit on empty diff): one gate run, 9 in-budget vs V8 mean 7.33 (z 1.08,
+  CONFIRM). Awaiting its second paired run: job J1 = [V8, V22] KEPT14 × 2 at the Sat 2026-11-21 wake.
+- **V24** (queued, not built): V8 + tool-layer read-budget cap — the one-change follow-up to V17's
+  failed prompt-only deadline. Screen after J1 is decided.
+- Loop v2 is live since 2026-11-20 (event-driven jobs, KEPT14 task set, z-gate; see
+  `state-and-artifacts.md`). The weekly cadence below remains the skeleton and the submit-slot rule.
+
 ## Human decisions (the loop never makes these)
 - Base config. 2026-11-07: rolled back to V8; V15 lineage retired as a base.
 - Cadence. 2026-11-07: one gated submission per week, two candidates screened per week.
 - Final two selections for private scoring (proposed by the loop by Dec 1, chosen by humans).
+- **CreateSubmission.** The loop prepares the version and description; a human approves in chat before
+  it is clicked. Consoles (Ops Console, legacy `factory_console/`) never submit.
 
 ## Weekly cadence (UTC)
 GPU quota resets weekly (by Sat 00:30 UTC).
@@ -18,8 +29,11 @@ GPU quota resets weekly (by Sat 00:30 UTC).
 - **Sun — Run B.** Leader = more in-budget solves (tie → fewer EMPTY_DIFF, then fewer overruns).
   Gate Run B: [V8, leader]. If both candidates were below V8's mean, Run B screens the next two items
   instead (single-run bar applies).
-- **Mon — decide + submit.** Apply `harness/decision_rule.py`. Submit only on a pass.
+- **Mon — decide + optional submit.** Apply `harness/decision_rule.py`. On a pass, ask a human to approve
+  CreateSubmission; never submit on HOLD.
 - **Other wakes — status only.** Record new scores; refresh dashboards.
+Skill order on a full week: `build-candidate` → `run-eval-gate` (A, B) → `weekly-decision` → `record-score`.
+State, ledger and file schemas: `state-and-artifacts.md`.
 Planned submission slots: Nov 9, 16, 23, 30. No gate runs after Nov 30.
 
 ## Cost guardrails

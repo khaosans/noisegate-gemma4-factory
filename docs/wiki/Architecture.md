@@ -158,7 +158,7 @@ flowchart LR
 | V15 (public 0.22 copy) | 8.5 (7, 10) | LB 0.17 — board noise |
 | V18 | 7.0 | HOLD |
 | V21 | 6.0 | HOLD |
-| V22 | 9.0 | HOLD pending second run |
+| V22 | 9.0 | CONFIRM — second paired run pending |
 
 **Calibration tally** (local direction vs LB; from `results/README.md`):
 

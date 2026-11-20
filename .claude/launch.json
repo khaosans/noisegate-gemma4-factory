@@ -2,9 +2,14 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "factory-console",
+      "name": "legacy-factory-console (not the demo UI; main UI = Claude Ops Console artifact)",
       "runtimeExecutable": ".venv/bin/streamlit",
-      "runtimeArgs": ["run", "factory_console/app.py", "--server.port", "8765"],
+      "runtimeArgs": [
+        "run",
+        "factory_console/app.py",
+        "--server.port",
+        "8765"
+      ],
       "port": 8765
     }
   ]

@@ -29,8 +29,9 @@ def test_status_reports_state_and_stale_records():
     assert s["best_version"] == "V8" and s["best_public_score"] == 0.18
     assert s["days_to_deadline"] == 16 and s["held"] == ["V14", "V16", "V17"]
     assert s["due_today"].startswith("Monday")
-    assert any("No gate run recorded" in w for w in s["warnings"])
-    assert any("2026-11-09" in w for w in s["warnings"])
+    assert not any("No gate run recorded" in w for w in s["warnings"])  # results/ current through v11
+    later = actions.status(today="2026-11-28")
+    assert any("No gate run recorded" in w and "2026-11-16" in w for w in later["warnings"])
 
 
 def test_records_parse():

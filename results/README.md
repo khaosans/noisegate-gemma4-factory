@@ -3,6 +3,7 @@
 - `gate_runs.csv`: every Eval Gate run (30 tasks, seed 20261028, 1 repeat). Counts are per 30 tasks.
   `in_budget` = solved within 28 tool calls and 480 s, the gate metric.
 - `leaderboard.csv`: every public-leaderboard submission. ~58 public tasks; we measured noise of about ±0.05.
+- `gate_runs.csv` rows from v7 on leave edit_fail / logic_mismatch / timeout blank (not recorded in the summary log); v10 was a mis-started duplicate and is omitted.
 - `eval-results.md`: the dated narrative log the factory appends to after every run and score.
 
 **Read every comparison against the noise.** The same config moved by 3 in-budget solves between runs
@@ -15,3 +16,4 @@
 | V11 | better (10 vs 8 in-budget) | worse (0.15 vs 0.18) | No |
 | V12 | slightly worse (paired 1 win / 2 losses) | worse (0.15 vs 0.18) | Yes |
 | V15 | better (7, 10 vs V8 mean 7.0) | tie within noise (0.17 vs 0.18) | Inconclusive |
+| V20 | not better (7 vs V8 mean 7.33; gate HOLD) | worse (0.13 vs 0.18) | Yes |
