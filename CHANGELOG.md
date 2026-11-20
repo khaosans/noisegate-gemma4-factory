@@ -17,6 +17,9 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 - Wiki [[Ops-Console]] — Claude Agent Ops Console as **main** demo UI (screens + deny list vs Cowork)
 - Ops Console directional screenshots under `docs/wiki/assets/ops-console/`
 
+### Fixed
+- `harness/decision_rule.py`: `V8_HISTORY` now loads every V8 baseline row from `results/gate_runs.csv` (was hard-coded to 2 runs, so Δ was off by 0.33, e.g. V22 +2.0 instead of +1.67). Thresholds unchanged; regression tests reproduce the logged W46 V18 and W47 V22 decisions.
+
 ### Changed
 - CreateSubmission made explicitly human-approved in runbook, `project-instructions.md`, `weekly-decision` skill, factory diagram and Cowork wiki
 - `project-instructions.md`: wake read list, UTC cadence, skill order, submission contract

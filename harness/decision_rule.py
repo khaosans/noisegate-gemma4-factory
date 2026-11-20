@@ -9,8 +9,10 @@ config scored 0.17 for us). Passing makes an improvement likely, not certain.
 """
 from __future__ import annotations
 
+import csv
 from dataclasses import dataclass, field
 from statistics import mean
+from pathlib import Path
 from typing import Optional
 
 from .trajectory import TaskResult
@@ -98,8 +100,28 @@ def decide(
     return Decision("HOLD", delta, [f"delta {delta:+.2f} below +1.0"])
 
 
-# Historical V8 runs (gate v1, gate v4). Append each week's Run B.
-V8_HISTORY = [
-    RunSummary(in_budget_solves=8, empty_or_nonsource=7, overruns=16),
-    RunSummary(in_budget_solves=6, empty_or_nonsource=9, overruns=18),
+# V8 baseline runs are read from the append-only ledger so code and results/ cannot drift.
+# A row counts when candidate == "V8" on the full 30-task gate (verdict "baseline").
+GATE_RUNS_CSV = Path(__file__).resolve().parent.parent / "results" / "gate_runs.csv"
+
+# Fallback only if the ledger is missing (e.g. an install without results/).
+_V8_FALLBACK = [
+    RunSummary(in_budget_solves=8, empty_or_nonsource=7, overruns=16),  # gate v1
+    RunSummary(in_budget_solves=6, empty_or_nonsource=9, overruns=18),  # gate v4
+    RunSummary(in_budget_solves=8, empty_or_nonsource=5, overruns=17),  # gate v8 (W46 Run B)
 ]
+
+
+def load_v8_history(path: Path = GATE_RUNS_CSV) -> list[RunSummary]:
+    """All V8 baseline runs from results/gate_runs.csv, oldest first."""
+    if not path.is_file():
+        return list(_V8_FALLBACK)
+    with path.open(newline="") as f:
+        rows = [r for r in csv.DictReader(f)
+                if r["candidate"] == "V8" and r["verdict"].strip() == "baseline"]
+    return [RunSummary(in_budget_solves=int(r["in_budget"]),
+                       empty_or_nonsource=int(r["empty_diff"]),
+                       overruns=int(r["over_28_calls"])) for r in rows] or list(_V8_FALLBACK)
+
+
+V8_HISTORY = load_v8_history()
