@@ -44,32 +44,27 @@ flowchart TB
     H[Replay · approval gate]
   end
 
-  subgraph Legend["Legend"]
-    direction LR
-    LegF[Factory roles]
-    LegP[Product ReAct]
-    LegO[Ops / HITL]
-  end
+  Key["Key: green Factory · amber Product · blue Ops"]
 
   E -->|runs candidates| L2
   W -.->|observes| L2
   G -->|HITL approve| Ops
   L2 <--> Ops
-  G ~~~ LegF
+  G ~~~ Key
 
   classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
   classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
-  class P,E,W,G,LegF factory
-  class T,C,LegP product
-  class S,H,LegO ops
+  class P,E,W,G factory
+  class T,C product
+  class S,H ops
   style L1 fill:#ECFDF5,stroke:#059669,color:#065F46
   style L2 fill:#FFF7ED,stroke:#EA580C,color:#9A3412
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
-  style Legend fill:#FAFAF9,stroke:#A8A29E,color:#44403C
+  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
-*Insight — noise vs luck.* Eval and Submit Governor sit above the product so a lucky single run cannot burn the weekly slot. The Ops Console replays the ledger and gates costly actions; it never CreateSubmission. Full story + telemetry: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
+*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn the weekly slot. Ops gates costly actions — never CreateSubmission. [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 
 | | Product | Factory |
 |---|---|---|

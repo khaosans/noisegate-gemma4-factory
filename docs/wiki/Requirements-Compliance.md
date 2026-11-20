@@ -55,23 +55,19 @@ flowchart TB
   ProductCfg[product/] --> Ship
   Supervisor[supervisor/] --> Course
 
-  subgraph Legend["Legend"]
-    direction LR
-    LegP[Graded ADK ship]
-    LegC[Course evidence · not in zip]
-  end
-  Host ~~~ LegP
+  Key["Key: amber ADK ship · gray course evidence"]
+  Host ~~~ Key
 
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
   classDef course fill:#F3F4F6,stroke:#6B7280,color:#374151
-  class ADK,Zip,Host,ProductCfg,LegP product
-  class LG,GR,AO,Supervisor,LegC course
+  class ADK,Zip,Host,ProductCfg product
+  class LG,GR,AO,Supervisor course
   style Ship fill:#FFF7ED,stroke:#EA580C,color:#9A3412
   style Course fill:#F9FAFB,stroke:#6B7280,color:#374151
-  style Legend fill:#FAFAF9,stroke:#A8A29E,color:#44403C
+  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
-*Insight.* Graders should score the **ADK zip** for competition competence. LangGraph is deliberate course evidence (budgets, tool policy, escalate) — Decision 007 keeps it out of the ship contract so the two surfaces stay honest.
+*Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract.
 
 ## HITL summary
 
@@ -97,27 +93,22 @@ flowchart TB
     E1[Boundary / block / budget] --> E2[Interrupt → human]
   end
 
-  subgraph Legend["Legend"]
-    direction LR
-    LegH[Human-required / escalate]
-    LegO[Console query + approve]
-    LegD[Denied by design]
-  end
-  F4 ~~~ LegH
+  Key["Key: red HITL · blue console · gray denied"]
+  F4 ~~~ Key
 
   classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
   classDef deny fill:#F3F4F6,stroke:#6B7280,color:#374151
-  class F1,F4,E1,E2,LegH hitl
-  class C1,C2,C3,LegO ops
-  class C4,LegD deny
+  class F1,F4,E1,E2 hitl
+  class C1,C2,C3 ops
+  class C4 deny
   style FactoryHITL fill:#FEF2F2,stroke:#B91C1C,color:#7F1D1D
   style ConsoleHITL fill:#F0F9FF,stroke:#0284C7,color:#075985
   style SuperHITL fill:#FEF2F2,stroke:#B91C1C,color:#7F1D1D
-  style Legend fill:#FAFAF9,stroke:#A8A29E,color:#44403C
+  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
-*Insight — HITL tiers.* Autonomy stops where cost or irreversibility starts: full gates and CreateSubmission need a person; the console can propose ledger writes but cannot submit. Supervisor interrupts are local course safety, not the Kaggle host.
+*Insight.* Autonomy stops at cost/irreversibility: CreateSubmission needs a person; console can approve ledger writes but never submit. Supervisor escalate is local course safety, not Kaggle.
 
 ## What we are not claiming
 

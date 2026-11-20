@@ -18,24 +18,19 @@ flowchart TB
   Wait --> RS[record-score]
   RS -->|LB ≥ best| NB[New base → next queue item]
 
-  subgraph Legend["Legend"]
-    direction LR
-    LegF[Factory loop]
-    LegH[HOLD]
-    LegS[Human CreateSubmission]
-  end
-  NB ~~~ LegF
+  Key["Key: green factory · gray HOLD · red CreateSubmission"]
+  NB ~~~ Key
 
   classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
   classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
   classDef hold fill:#F3F4F6,stroke:#6B7280,color:#374151
-  class Q,BC,GA,GB,WD,Wait,RS,NB,LegF factory
-  class KS,LegS hitl
-  class RH,LegH hold
-  style Legend fill:#FAFAF9,stroke:#A8A29E,color:#44403C
+  class Q,BC,GA,GB,WD,Wait,RS,NB factory
+  class KS hitl
+  class RH hold
+  style Key fill:#FAFAF9,stroke:#A8A29E,color:#44403C
 ```
 
-*Insight.* Run A screens; Run B only spends a full paired comparison when a leader clears V8 — or screens the next pair if both trail V8’s mean (`runbook.md`). HOLD is a successful outcome when the gain is inside noise.
+*Insight.* Run A screens; Run B pairs a leader vs V8 (or the next pair if both trail). HOLD is success when the gain is inside noise.
 
 | Piece | File |
 |---|---|
