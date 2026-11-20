@@ -63,7 +63,7 @@ flowchart TB
   style Course fill:#F9FAFB,stroke:#6B7280,color:#374151
 ```
 
-*Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract.
+*Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract. Full band diagrams: [[Architecture]] (Gemma + harness · LangChain / LangGraph).
 
 ## HITL summary
 

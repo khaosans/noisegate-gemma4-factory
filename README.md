@@ -62,7 +62,7 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn the weekly slot. Ops gates costly actions — never CreateSubmission. [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
+*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn the weekly slot. Ops gates costly actions — never CreateSubmission. [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) — also **Gemma + Eval Gate harness** and **LangChain / LangGraph** local-stack diagrams.
 
 | | Product | Factory |
 |---|---|---|

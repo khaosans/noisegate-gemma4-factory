@@ -121,6 +121,121 @@ flowchart LR
 
 *Insight.* Graded contract: one ADK agent → tools → patch → hidden tests. Allow/Block + escalate live in `supervisor/` / `guardrails/` — **not** in the zip. [[Requirements-Compliance]].
 
+## Gemma agent + Eval Gate harness
+
+How a candidate is measured before any weekly submit. Two bands: the **product** ReAct agent under the fixed competition contract, and the **harness** that turns notebook logs into HOLD/SUBMIT.
+
+```mermaid
+flowchart TB
+  subgraph Product["Product · Gemma 4 ADK ReAct"]
+    direction LR
+    Cfg[product/superagent<br/>prompts · agent.yaml] --> Zip[build_submission.py<br/>submission.zip]
+    Zip --> Run[Kaggle / Eval Gate host<br/>gemma-4-31b-it]
+    Run --> Loop[ReAct: reason → tool → observe]
+    Loop --> Cap["Budget: ≤28 calls · ≤480s"]
+    Cap --> Patch[submit_patch]
+  end
+
+  subgraph Harness["Harness · local gate math"]
+    direction LR
+    Log[Gate notebook Score lines] --> Parse[trajectory.parse_log]
+    Parse --> Evals[evaluators E1–E9]
+    Evals --> Sum[RunSummary]
+    Sum --> Dec{decision_rule.decide}
+    Dec -->|pass| Prop[Propose submit]
+    Dec -->|fail| Hold[HOLD]
+  end
+
+  Patch -.->|same config on 30-task gate| Log
+  Prop --> Hitl[Human CreateSubmission · ≤1 / week]
+
+  classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
+  classDef harness fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  class Cfg,Zip,Run,Loop,Cap,Patch product
+  class Log,Parse,Evals,Sum,Dec,Prop,Hold harness
+  class Hitl hitl
+  style Product fill:#FFF7ED,stroke:#EA580C,color:#9A3412
+  style Harness fill:#ECFDF5,stroke:#059669,color:#065F46
+```
+
+*Insight.* The ADK zip is the **generator**; `harness/` is the **evaluator**. Factory Skills start the gate notebook and append `results/`; `decide()` never invents a score. V8 baseline history loads from `results/gate_runs.csv`.
+
+| Stage | Code | Output |
+|---|---|---|
+| Build candidate | `product/build_submission.py`, Skills `build-candidate` | Versioned zip + SHA-256 |
+| Run paired gate | Kaggle Eval Gate notebook | Per-task `Score` lines |
+| Parse / score | `harness/trajectory.py`, `evaluators.py` | Typed rows · E1–E9 |
+| Decide | `harness/decision_rule.py` | HOLD / SUBMIT tier · Δ vs V8 |
+
+## LangChain / LangGraph local stack
+
+Course evidence only — **not** in the Kaggle zip. LangChain supplies chat messages; LangGraph owns control flow; `guardrails/` is plain Python with no LangChain imports (Decision 007).
+
+```mermaid
+flowchart TB
+  subgraph LC["LangChain · model I/O"]
+    Msg[langchain_core messages] --> Chat[BaseChatModel<br/>Gemma / local tag]
+  end
+
+  subgraph LG["LangGraph · control flow"]
+    direction LR
+    Start[START] --> Intake[intake]
+    Intake --> Agent[agent<br/>one JSON tool call]
+    Agent --> Guard[guard]
+    Guard -->|allow| Exec[execute]
+    Guard -->|block / boundary| Esc[escalate]
+    Exec --> Agent
+    Exec -->|submit_patch| Verify[verify]
+    Verify --> Fin[finalize]
+    Esc --> Fin
+    Fin --> EndNode[END]
+  end
+
+  subgraph GR["guardrails/ · policy in code"]
+    Pol[Policy · allow-list tools] --> Bud[Budget 28 calls · 8 min]
+    Bud --> PatchChk[Patch / path checks]
+    PatchChk --> Shell[Shell allow-list + sandbox]
+  end
+
+  subgraph AO["agentops/ · observability"]
+    JSONL[JSONL run log] --> Metrics[Checkpoint metrics]
+    Metrics --> LS[LangSmith when enabled]
+  end
+
+  Chat --> Agent
+  Guard --> Pol
+  Exec --> Shell
+  Agent --> JSONL
+  Esc -.->|hitl=True interrupt| Human[Human resume]
+
+  classDef lc fill:#E0E7FF,stroke:#4338CA,color:#312E81
+  classDef lg fill:#F3E8FF,stroke:#7E22CE,color:#581C87
+  classDef gr fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef ao fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  class Msg,Chat lc
+  class Start,Intake,Agent,Guard,Exec,Verify,Esc,Fin,EndNode lg
+  class Pol,Bud,PatchChk,Shell gr
+  class JSONL,Metrics,LS ao
+  class Human hitl
+  style LC fill:#EEF2FF,stroke:#4F46E5,color:#312E81
+  style LG fill:#FAF5FF,stroke:#9333EA,color:#581C87
+  style GR fill:#ECFDF5,stroke:#059669,color:#065F46
+  style AO fill:#F0F9FF,stroke:#0284C7,color:#075985
+```
+
+*Insight.* The model **proposes**; code **decides**. Budgets and path policy run in `guard` / `execute`, including call counters injected into tool results (the lever prompt-only V17 lacked). Safety evals: `evals/safety` · 55/55 adversarial blocked, 0/29 false positives.
+
+| Package | Role |
+|---|---|
+| `supervisor/` | LangGraph `StateGraph` — intake → agent → guard → execute → verify / escalate |
+| `guardrails/` | Policy, budgets, patch checks, shell allow-list — no LangChain imports |
+| `agentops/` | JSONL traces + checkpoint metrics; optional LangSmith |
+| `evals/safety/` | Adversarial + benign twins through the full graph |
+
+Ship contrast: [[Requirements-Compliance]] (ADK zip vs this stack).
+
 ## Figure 2 — Noise band and telemetry
 
 Numbers from the capstone evaluation (gate through mid-November 2026). Not a live leaderboard scrape.
