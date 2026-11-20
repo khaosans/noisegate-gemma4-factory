@@ -1,1 +1,6 @@
-# TODO: paste verbatim from SuperAgent v8 (run 362553010) FILES['configs/sampling.yaml'] — see product/README.md
+temperature: 0.2
+top_p: 0.95
+max_output_tokens: 4096
+thinking_config:
+  thinking_budget: 1024
+  include_thoughts: true
