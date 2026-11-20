@@ -48,7 +48,7 @@ export CMU_AGENTIC_AI_ROOT=/absolute/path/to/cmu-agentic-ai
 export FACTORY_CLIMB_REFRESH=1   # optional: refresh scoreboard before snapshot
 ```
 
-Tools: `climb_scoreboard`, `kaggle_submissions_snapshot`. Climb publicScore is SoT; NoiseGate CSV may disagree (`score_mismatch`).
+Tools: `climb_scoreboard`, `kaggle_submissions_snapshot`. Climb `docs/scoreboard.json` is the live **publicScore SoT** for tip packaging; NoiseGate `results/leaderboard.csv` is factory bookkeeping and may disagree (`score_mismatch`). Bridge is **read-only** — never CreateSubmission, never auto-overwrite CSV.
 
 ## What the console may do
 

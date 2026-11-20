@@ -22,9 +22,15 @@ Concrete next steps. Same bullets as the README, with rationale. None of these e
 
 ## 4. Calibration: more decisive gate↔leaderboard points
 
-**Why:** OKR O2 wants ≥2 of 3 scored points agreeing in direction with the leaderboard. Today we have partial agreement and large noise (±3 local, ±0.05 LB). Need more decisive SUBMIT decisions and a noise re-measure after any harness change.
+**Why:** OKR O2 wants ≥2 of 3 scored points agreeing in direction with the leaderboard. Today we have partial agreement and large noise (±3 local, ±0.05 LB) — see the table on [[Requirements-Compliance]]. Need more decisive SUBMIT decisions and a noise re-measure after any harness change.
 
 **Done when:** Updated calibration notes in `results/`; explicit agree/disagree/inconclusive tally vs GOALS.
+
+## 4b. Tool-layer edit deadline (**hypothesis — not shipped**)
+
+**Why:** Telemetry (N=390) shows median first edit ~call 16/28 and 62% overruns. Prompt-only deadlines (V17) failed. A **tool-layer** call/edit cap may force earlier patches.
+
+**Not claiming:** that this is implemented or validated. Treat as next experiment only after HOLD discipline stays intact.
 
 ## 5. Optional course fallback evidence pack
 

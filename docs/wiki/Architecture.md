@@ -160,6 +160,14 @@ flowchart LR
 | V21 | 6.0 | HOLD |
 | V22 | 9.0 | HOLD pending second run |
 
+**Calibration tally** (local direction vs LB; from `results/README.md`):
+
+| Point | Agree with LB? |
+|-------|----------------|
+| V11 | **No** (local better, LB worse) |
+| V12 | **Yes** |
+| V15 | Inconclusive (within noise) |
+
 ### B. Trajectory telemetry (N = 390)
 
 ```mermaid

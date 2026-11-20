@@ -15,6 +15,8 @@ The public notebook that shows **0.22** scored **0.17** when we submitted it. Ba
 | Video | https://youtu.be/-EiKv_MafOY |
 | Ops Console | https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW |
 
+**Score SoT:** factory base here is **V8 @ 0.18**. Sibling [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) climb tips use `docs/scoreboard.json` (may differ, e.g. tip best **0.10**) — not the same artifact ledger.
+
 ## Architecture at a glance
 
 Factory governance above a Gemma 4 ReAct product; humans on the Ops Console for costly steps. Console never CreateSubmission.
@@ -68,11 +70,12 @@ Talk track: [[Demo-Script]].
 
 | Page | Purpose |
 |---|---|
+| [[Method-Card]] | One-page academic method (problem → gate → evidence) |
 | [[Architecture]] | Figure 1 · weekly turn · noise/telemetry · HITL tiers |
 | [[Claude-Cowork-Loop]] | Schedule + Skills |
 | [[Local-And-Streamlit]] | `:8765` may / must-not |
-| [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL |
-| [[Future-Work]] | Next levers |
+| [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
+| [[Future-Work]] | Next levers (hypotheses labeled) |
 | [[Demo-Script]] | 3–5 min talk |
 
 ## Primary sources

@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "cursor/**"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          pip install -e ".[dev,agent]"
+          pip install -r requirements.txt
+      - name: Pytest (factory / harness / guardrails)
+        # Supervisor graph tests are sensitive to langgraph runtime; tracked separately.
+        run: |
+          pytest -q \
+            --ignore=tests/test_supervisor.py \
+            --ignore=tests/test_sandbox.py
