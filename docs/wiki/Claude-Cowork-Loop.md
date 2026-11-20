@@ -35,7 +35,7 @@ Planned submission slots (from runbook): Nov 9, 16, 23, 30. No gate runs after N
 | Skill | Role |
 |---|---|
 | `build-candidate` | Export base, apply exactly one change, verify diff + SHA-256 |
-| `run-eval-gate` | Drive Gate Run A (screen two) / Run B (leader vs V8) |
+| `run-eval-gate` | Drive Gate Run A (screen two) / Run B (leader vs V8, or next pair if both trail V8) |
 | `weekly-decision` | Apply coded SUBMIT/HOLD rule; report to humans |
 | `record-score` | After LB returns, update `results/` and note gate↔LB agreement |
 

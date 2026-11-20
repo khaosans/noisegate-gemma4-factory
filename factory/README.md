@@ -10,7 +10,7 @@ Diagram story (Figure 1 three-band + weekly turn): [Architecture wiki](https://g
 flowchart TB
   Q[Queue item] --> BC[build-candidate]
   BC --> GA[run-eval-gate Run A<br/>screen 2]
-  GA --> GB[run-eval-gate Run B<br/>leader vs V8]
+  GA --> GB[run-eval-gate Run B<br/>leader vs V8 · else next pair]
   GB --> WD{weekly-decision}
   WD -->|HOLD| RH[Report to humans]
   WD -->|SUBMIT| KS[Kaggle submission ≤ 1/week]
@@ -18,6 +18,8 @@ flowchart TB
   Wait --> RS[record-score]
   RS -->|LB ≥ best| NB[New base → next queue item]
 ```
+
+If both Run A candidates are below V8’s mean, Run B screens the next two queue items instead of `[V8, leader]` (see `runbook.md`).
 
 | Piece | File |
 |---|---|

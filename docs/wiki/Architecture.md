@@ -49,8 +49,8 @@ Core finding: **the harness matters more than the generator**. The factory’s m
 ```mermaid
 flowchart TB
   Q[Queue item] --> BC[Patch / build-candidate<br/>base + 1 change · SHA]
-  BC --> GA[Eval Gate A<br/>screen on 30 tasks]
-  GA --> GB[Eval Gate B<br/>leader vs V8]
+  BC --> GA[Eval Gate A<br/>screen two on 30 tasks]
+  GA --> GB[Eval Gate B<br/>leader vs V8 · else next pair]
   GB --> WD{Submit Governor<br/>decision_rule.py}
   WD -->|HOLD| RH[Report to humans]
   WD -->|SUBMIT| CS[Human CreateSubmission<br/>≤ 1 / ISO week]
@@ -59,11 +59,13 @@ flowchart TB
   RS -->|LB ≥ best| NB[New base]
 ```
 
+If **both** Run A candidates sit below V8’s mean, Run B screens the **next two** queue items instead of `[V8, leader]` (runbook rule; single-run bar applies).
+
 Cadence (UTC):
 
 ```mermaid
 flowchart LR
-  Sat[Sat: build + Gate A] --> Sun[Sun: Gate B vs V8]
+  Sat[Sat: build + Gate A] --> Sun[Sun: Gate B<br/>V8 or next pair]
   Sun --> Mon{Mon: weekly-decision}
   Mon -->|HOLD| Ops[Status-only wakes]
   Mon -->|SUBMIT| Hitl[Human CreateSubmission]
@@ -73,19 +75,20 @@ flowchart LR
 
 Decision logic lives in code (`harness/decision_rule.py`), not free-form chat. Trajectory parsing and evaluators E1–E9 feed the gate; persistent memory is the ledger + `results/`.
 
-## Product ReAct loop (ADK)
+## Product ReAct loop (ADK zip)
+
+What the **graded** Kaggle agent does on each task (ADK `submission.zip` only):
 
 ```mermaid
 flowchart LR
   Issue[Issue + repo] --> Agent[ADK ReAct agent]
-  Agent --> Tools[Harness tools]
+  Agent --> Tools[Shell · Read · Edit · Code-Graph]
   Tools --> WS[Workspace]
-  Agent --> Policy{Allow / Block}
-  Policy -->|ALLOW source edit| Tools
-  Policy -->|BLOCK tests/ or bad shell| Trace[Trace + refuse]
   Agent --> Submit[submit_patch]
   Submit --> Tests[Hidden / maintainer tests]
 ```
+
+**Allow / Block** for tests/, adversarial shell, budgets, and escalate interrupts live in the local **LangGraph supervisor** + `guardrails/` — course evidence, **not** inside the ADK zip. See [[Requirements-Compliance]].
 
 ## Figure 2 energy — noise band and telemetry
 
