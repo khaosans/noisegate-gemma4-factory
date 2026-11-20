@@ -1,15 +1,9 @@
-# Factory console: demo app and operator chatbot
+# Factory console: optional Streamlit app
 
-A Streamlit app over the factory's own records. It shows how the factory builds the coding agent
-(one change, measured on the benchmark, shipped only above the noise) and lets you query and run
-the factory from a chat.
+**Default demo / ops UI** is the Claude Agent Ops Console artifact — not this Streamlit app.  
+See [wiki Ops-Console](wiki/Ops-Console.md) · https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW
 
-### Sibling: React Ops Console (Claude artifact)
-
-Paper / **replay** UI for demos (not this Streamlit app):  
-https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW  
-
-In-repo docs: [wiki Ops-Console](wiki/Ops-Console.md). Same deny list — **no** CreateSubmission / gate-start. Prefer Streamlit when you need live `results/` files; prefer the artifact when presenting without a local server.
+This Streamlit app is an **optional** local surface over the factory's own records. It shows how the factory builds the coding agent (one change, measured on the benchmark, shipped only above the noise) and lets you query and run factory helpers from a chat when you need live `results/` on disk. Same deny list — **no** CreateSubmission / gate-start. UI is rough; leave app code alone unless explicitly polishing Streamlit.
 
 ```bash
 pip install -r requirements-console.txt -r requirements-agent.txt

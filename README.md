@@ -80,16 +80,18 @@ Production climb = **Claude Project + scheduled wakes**, not Streamlit.
 3. **Cadence (UTC):** Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
 4. Kaggle login UI (notebook commit, gate start, CreateSubmission) stays on Claude’s authenticated session.
 
-[Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)
+**Default demo UI:** [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)
 
-## Local demo (`:8765`)
+## Optional local Streamlit (`:8765`)
+
+Streamlit is an **optional** adjunct for live checkout files — not the default demo path (use the Ops Console artifact above).
 
 ```bash
 pip install -r requirements-console.txt -r requirements-agent.txt
 streamlit run factory_console/app.py --server.port 8765
 ```
 
-Query / replay / pytest / zip build are fine. **Must not:** gate-start, CreateSubmission, or change base config. `record_score` writes need an **Approve** click. Details: [Local and Streamlit wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Local-And-Streamlit) · [`docs/factory-console.md`](docs/factory-console.md).
+Query / replay / pytest / zip build are fine. **Must not:** gate-start, CreateSubmission, or change base config. `record_score` writes need an **Approve** click. UI is rough; polish deferred. Details: [Local and Streamlit wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Local-And-Streamlit) · [`docs/factory-console.md`](docs/factory-console.md).
 
 ## Results that matter for shipping
 
@@ -119,7 +121,7 @@ Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence
 | [`product/`](product/) | Agent configs, candidates, zip builder |
 | [`harness/`](harness/) | Trajectory parse, evaluators, decision rule |
 | [`factory/`](factory/) | Runbook, Project instructions, Skills |
-| [`factory_console/`](factory_console/) | Streamlit demo / operator chat |
+| [`factory_console/`](factory_console/) | Optional Streamlit local console (default UI = Claude Ops Console artifact) |
 | [`supervisor/`](supervisor/) · [`guardrails/`](guardrails/) · [`agentops/`](agentops/) | Course slice (not in Kaggle zip) |
 | [`evals/`](evals/) · [`results/`](results/) | Safety cases · gate / LB bookkeeping |
 | [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [`docs/wiki/`](docs/wiki/) | Preferred viewer · editor SoT |

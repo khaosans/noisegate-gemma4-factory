@@ -1,10 +1,15 @@
-# Local path and Streamlit console
+# Local path and Streamlit console (optional)
 
-Local surface for demos and operator queries without Claude login. It does **not** replace the Cowork climb loop for Kaggle auth.
+**Optional** local surface for demos and operator queries without Claude login. It does **not** replace the default [[Ops-Console]] Claude artifact for class talks, and it does **not** replace the Cowork climb loop for Kaggle auth.
 
-Related: [[Ops-Console]] (Claude **paper/replay** artifact) · [[Claude-Cowork-Loop]] (live climb) · [[Home]].
+**Default UI:** [[Ops-Console]] (Claude Agent Ops Console artifact).  
+Related: [[Claude-Cowork-Loop]] (live climb) · [[Home]].
 
 Full page catalog: [`docs/factory-console.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/factory-console.md).
+
+> **Status — optional & needs work (docs only):** Streamlit on `:8765` is **rough around the edges** and secondary to the Claude Ops Console. Prefer [[Ops-Console]] for demos. Start Streamlit only when you need live checkout files (CSV query, Approve `record_score`, pytest/zip). **Leave `factory_console/` application code untouched for now.**
+
+![Streamlit Factory Console — optional local operator UI at :8765 (Factory loop home)](assets/ops-console/streamlit-factory-console.png)
 
 ## Quick start
 
@@ -18,7 +23,7 @@ Claude Code / local launch config also pins port **8765** (`.claude/launch.json`
 
 ## Mac KeepAlive (ops host)
 
-On the demo Mac, LaunchAgent `com.noisegate.factory-console` can KeepAlive Streamlit via `/tmp/run-factory-console-8765.sh` (logs under `/tmp/factory-console-8765.*.log`). That plist is host ops, not committed to the repo. Classmates should use the `streamlit run … --server.port 8765` command above.
+On the demo Mac, LaunchAgent `com.noisegate.factory-console` can KeepAlive Streamlit via `/tmp/run-factory-console-8765.sh` (logs under `/tmp/factory-console-8765.*.log`). That plist is host ops, not committed to the repo. Classmates should use the `streamlit run … --server.port 8765` command above — or skip Streamlit and use [[Ops-Console]].
 
 ## Chat backends
 

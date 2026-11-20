@@ -3,10 +3,10 @@
 The factory’s **production** climb path is Claude, not Streamlit. Cowork / Project wakes hold the authenticated Kaggle browser session needed for notebook commit, Eval Gate starts, and CreateSubmission.
 
 Cowork project artifact: [claude.ai/artifact/1Ldx2khByugozsHH5cuLfa](https://claude.ai/artifact/1Ldx2khByugozsHH5cuLfa).  
-Paper Ops Console (replay): [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) — full docs [[Ops-Console]].  
+**Default Ops Console** (demo / paper replay): [claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) — full docs [[Ops-Console]].  
 In-repo procedures: [`factory/`](https://github.com/khaosans/noisegate-gemma4-factory/tree/main/factory) (`project-instructions.md`, `runbook.md`, `skills/*/SKILL.md`).
 
-**Quick split:** Cowork = authenticated climb (gate start / human CreateSubmission). [[Ops-Console]] artifact = paper/replay for demos. [[Local-And-Streamlit]] = local query over `results/` — neither console submits.
+**Quick split:** Cowork = authenticated climb (gate start / human CreateSubmission). [[Ops-Console]] = **default** demo / ops UI (paper/replay). [[Local-And-Streamlit]] = **optional** local query over `results/` — neither console submits.
 
 ## Why Claude holds login-heavy ops
 
