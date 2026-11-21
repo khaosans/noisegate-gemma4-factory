@@ -8,6 +8,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 ## [Unreleased]
 
 ### Added
+- Architecture + Cowork wiki: **record-keeping cadence before/after** (loop v1 calendar vs loop v2 event-driven / KEPT14 / z-gate / wake ledger); both versions kept visible
 - Architecture wiki: **Gemma agent + Eval Gate harness** and **LangChain / LangGraph** Mermaid flows (named colored bands; course evidence stack marked not-in-zip)
 - `factory/state-and-artifacts.md` — schemas/paths for loop state, append-only wake ledger, `results/` files, and the read-only climb scoreboard bridge
 - Runbook "Current state (2026-11-20)": V8–V23 evaluated, V22 awaiting second paired run (J1), V24 tool-layer read-budget cap queued

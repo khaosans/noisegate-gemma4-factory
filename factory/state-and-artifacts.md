@@ -4,6 +4,13 @@ What each wake reads and writes. Paths are relative to this repo unless marked *
 (the sibling [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) checkout, which owns the
 live loop state). The factory never writes into the climb repo from this repo's tooling.
 
+**Cadence versions (record-keeping):** **loop v2** (live since 2026-11-20) is event-driven
+(`jobs[]`, `plan.py`, `history.log`, KEPT14 + z-gate). **loop v1** was calendar-only
+(Sat/Sun/Mon/status → 30-task noise-band gate → `results/` only); `state.v1.json` is the
+rollback copy. The weekly table remains the submit-slot skeleton; human CreateSubmission is
+unchanged. Wiki before/after diagrams: [`docs/wiki/Architecture.md`](../wiki/Architecture.md)
+· [`docs/wiki/Claude-Cowork-Loop.md`](../wiki/Claude-Cowork-Loop.md).
+
 | Artifact | Location | Access | Written by |
 |---|---|---|---|
 | Loop state | climb repo `labs/gemma-eval-harness/loop/state.json` (key `v2`) | read/write by the Cowork wake only | `plan.py`, every skill |

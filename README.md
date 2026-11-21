@@ -77,7 +77,7 @@ Production climb = **Claude Project + scheduled wakes**. Demo / ops narrative = 
 
 1. Cowork loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` each wake.
 2. Skills in [`factory/skills/`](factory/skills/): `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`. State/ledger schemas: [`factory/state-and-artifacts.md`](factory/state-and-artifacts.md).
-3. **Cadence (UTC):** Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
+3. **Cadence (UTC):** Sat/Sun/Mon table = submit-slot skeleton. **Live loop v2** (since 2026-11-20): event-driven jobs, KEPT14, z-gate, wake ledger — see [Architecture before/after](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 4. Kaggle login UI (notebook commit, gate start, CreateSubmission) stays on Claude’s authenticated session.
 
 **Main demo UI:** [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)

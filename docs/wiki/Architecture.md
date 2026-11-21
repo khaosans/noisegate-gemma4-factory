@@ -103,6 +103,90 @@ flowchart LR
 
 *Insight.* Status-only wakes refresh scores without inventing submits; ~1.5d scoring lag → ≤1 gated submit / ISO week.
 
+## Record-keeping cadence — before vs after
+
+**Live since 2026-11-20: loop v2.** The Sat/Sun/Mon table above is still the **submit-slot skeleton** (≤1 gated CreateSubmission / ISO week). What changed is how wakes **choose work** and how **ledger / gate math** are recorded. Keep both diagrams when explaining the factory — v1 is how we used to run; v2 is how we record now.
+
+### Before — loop v1 (calendar-driven)
+
+```mermaid
+flowchart TB
+  subgraph Cal["Loop v1 · calendar driver · retired 2026-11-20"]
+    direction LR
+    Sat1[Sat: build + Gate A] --> Sun1[Sun: Gate B]
+    Sun1 --> Mon1[Mon: weekly-decision]
+    Mon1 --> St1[Other wakes: status / record-score]
+  end
+
+  subgraph Rec1["Record-keeping v1"]
+    direction LR
+    G30[30-task paired gate] --> Noise[decision_rule<br/>noise band ~±2.5]
+    Noise --> CSV1[results/*.csv + eval-results.md]
+  end
+
+  Cal --> Rec1
+  Rec1 --> Hitl1[Human CreateSubmission<br/>≤1 / ISO week]
+
+  classDef retired fill:#F3F4F6,stroke:#6B7280,color:#374151
+  classDef record fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  class Sat1,Sun1,Mon1,St1,G30,Noise retired
+  class CSV1 record
+  class Hitl1 hitl
+  style Cal fill:#F9FAFB,stroke:#9CA3AF,color:#374151
+  style Rec1 fill:#F0F9FF,stroke:#0284C7,color:#075985
+```
+
+*Insight.* v1: the **clock** decided the next action. Gate math and narrative lived almost entirely in `results/`.
+
+### After — loop v2 (event-driven + wake ledger)
+
+```mermaid
+flowchart TB
+  subgraph Drive["Loop v2 · event driver · live"]
+    direction LR
+    Plan[plan.py next] --> Act[START · WAIT · PARSE<br/>DEFER · IDLE · SKIP]
+    Act --> Jobs[jobs[] · KEPT14 · z-gate]
+  end
+
+  subgraph Rec2["Record-keeping v2"]
+    direction LR
+    State[state.json key v2<br/>+ state.v1.json rollback] --> Led[history.log append-only]
+    Led --> CSV2[results/*.csv + eval-results.md]
+  end
+
+  subgraph Keep["Unchanged skeleton"]
+    direction LR
+    Skel[Sat / Sun / Mon<br/>submit-slot table] --> Hitl2[Human CreateSubmission<br/>≤1 / ISO week]
+  end
+
+  Drive --> Rec2
+  Jobs -.->|screens / confirms| Keep
+  CSV2 -->|LB ≥ best| Base[New base]
+
+  classDef live fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef record fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  classDef hold fill:#F3F4F6,stroke:#6B7280,color:#374151
+  class Plan,Act,Jobs,Base live
+  class State,Led,CSV2 record
+  class Hitl2 hitl
+  class Skel hold
+  style Drive fill:#ECFDF5,stroke:#059669,color:#065F46
+  style Rec2 fill:#F0F9FF,stroke:#0284C7,color:#075985
+  style Keep fill:#FEF2F2,stroke:#DC2626,color:#7F1D1D
+```
+
+*Insight.* v2: **jobs + `plan.py`** decide the next action; every wake appends `history.log`. Gate decisions use **KEPT14 + z-gate** (T2 / SINGLE / CONFIRM). Human CreateSubmission and the weekly slot rule did **not** move into automation. Schemas: [`factory/state-and-artifacts.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/state-and-artifacts.md) · climb narrative [[Claude-Cowork-Loop]].
+
+| | **v1 (before)** | **v2 (after · live)** |
+|---|---|---|
+| What picks work | Fixed Sat / Sun / Mon / status calendar | `plan.py next` over `jobs[]` |
+| Gate set | 30-task paired runs | **KEPT14** (V8 paired every run) |
+| Ship rule | Noise-band `decision_rule` | **z-gate** + hard checks (over-budget ≤ V8 mean + 2) |
+| Ledger | `results/` CSVs + `eval-results.md` | Same **plus** `history.log` + `state.json` `v2` |
+| Human | CreateSubmission · base · cadence policy | **Same** (consoles still never submit) |
+
 ## Product ReAct loop (ADK zip)
 
 Graded path only — what ships inside `submission.zip`:
