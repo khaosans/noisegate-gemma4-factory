@@ -48,17 +48,17 @@ The table above remains the **submit-slot skeleton**. Live record-keeping and wo
 ```mermaid
 flowchart LR
   subgraph Before["Before · v1 calendar"]
-    B1[Sat / Sun / Mon / status] --> B2[30-task gate · noise band]
-    B2 --> B3[results/ only]
+    B1["Sat / Sun / Mon / status"] --> B2["30-task gate · noise band"]
+    B2 --> B3["results/ only"]
   end
 
   subgraph After["After · v2 live"]
-    A1[plan.py → jobs KEPT14] --> A2[z-gate]
-    A2 --> A3[history.log + results/]
+    A1["plan.py to jobs KEPT14"] --> A2["z-gate"]
+    A2 --> A3["history.log + results/"]
   end
 
   Before -.->|evolved 2026-11-20| After
-  After --> Hitl[Human CreateSubmission<br/>unchanged]
+  After --> Hitl["Human CreateSubmission<br/>unchanged"]
 
   classDef retired fill:#F3F4F6,stroke:#6B7280,color:#374151
   classDef live fill:#D1FAE5,stroke:#047857,color:#064E3B

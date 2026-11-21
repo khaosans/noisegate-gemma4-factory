@@ -75,7 +75,7 @@ Talk track: [[Demo-Script]].
 | [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
 | [[Claude-Cowork-Loop]] | Schedule v1 skeleton + loop v2 ledger · Skills |
 | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
-| [[Future-Work]] | Next levers (hypotheses labeled) |
+| [[Future-Work]] | P0–P4 priority map · V22 confirm · V24 hypothesis |
 | [[Demo-Script]] | 3–5 min talk |
 
 ## Primary sources
