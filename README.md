@@ -143,7 +143,7 @@ print(decide([RunSummary.from_results(cand)], V8_HISTORY + [RunSummary.from_resu
 
 ## Future work
 
-Keep submit HITL. **Hypothesis (not shipped):** a tool-layer edit-by-call / deadline may beat prompt-only caps (V17 failed). Confirm V22 with a second paired run. Frugal repeats on the nine contested tasks. Calibration notes: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
+**P0** confirm V22 (second KEPT14 pair). **P1** screen **V24** tool-layer read-budget cap (hypothesis — not shipped; V17 prompt-only failed). Keep CreateSubmission HITL. Priority map: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
 
 ## What is not in this repo
 

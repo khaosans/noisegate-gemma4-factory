@@ -120,12 +120,12 @@ flowchart TB
 
   subgraph Rec1["Record-keeping v1"]
     direction LR
-    G30[30-task paired gate] --> Noise[decision_rule<br/>noise band ~±2.5]
-    Noise --> CSV1[results/*.csv + eval-results.md]
+    G30["30-task paired gate"] --> Noise["decision_rule<br/>noise band ~+/-2.5"]
+    Noise --> CSV1["results CSV + eval-results.md"]
   end
 
   Cal --> Rec1
-  Rec1 --> Hitl1[Human CreateSubmission<br/>≤1 / ISO week]
+  Rec1 --> Hitl1["Human CreateSubmission<br/>max 1 / ISO week"]
 
   classDef retired fill:#F3F4F6,stroke:#6B7280,color:#374151
   classDef record fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
@@ -145,24 +145,24 @@ flowchart TB
 flowchart TB
   subgraph Drive["Loop v2 · event driver · live"]
     direction LR
-    Plan[plan.py next] --> Act[START · WAIT · PARSE<br/>DEFER · IDLE · SKIP]
-    Act --> Jobs[jobs[] · KEPT14 · z-gate]
+    Plan["plan.py next"] --> Act["START · WAIT · PARSE<br/>DEFER · IDLE · SKIP"]
+    Act --> Jobs["jobs array · KEPT14 · z-gate"]
   end
 
   subgraph Rec2["Record-keeping v2"]
     direction LR
-    State[state.json key v2<br/>+ state.v1.json rollback] --> Led[history.log append-only]
-    Led --> CSV2[results/*.csv + eval-results.md]
+    State["state.json key v2<br/>+ state.v1.json rollback"] --> Led["history.log append-only"]
+    Led --> CSV2["results CSV + eval-results.md"]
   end
 
   subgraph Keep["Unchanged skeleton"]
     direction LR
-    Skel[Sat / Sun / Mon<br/>submit-slot table] --> Hitl2[Human CreateSubmission<br/>≤1 / ISO week]
+    Skel["Sat / Sun / Mon<br/>submit-slot table"] --> Hitl2["Human CreateSubmission<br/>max 1 / ISO week"]
   end
 
   Drive --> Rec2
   Jobs -.->|screens / confirms| Keep
-  CSV2 -->|LB ≥ best| Base[New base]
+  CSV2 -->|LB ge best| Base["New base"]
 
   classDef live fill:#D1FAE5,stroke:#047857,color:#064E3B
   classDef record fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
