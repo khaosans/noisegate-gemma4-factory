@@ -23,6 +23,8 @@ The Ops Console is a **demo / replay surface** over recorded factory state. It d
 
 From [`factory/runbook.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md). GPU quota resets weekly (by Sat 00:30 UTC).
 
+### Before — loop v1 calendar (still the submit-slot skeleton)
+
 | Day | Work |
 |---|---|
 | **Sat** | Build top queue items as C1/C2 (base + one change); Gate **Run A** screen |
@@ -32,7 +34,43 @@ From [`factory/runbook.md`](https://github.com/khaosans/noisegate-gemma4-factory
 
 Planned submission slots (from runbook): Nov 9, 16, 23, 30. No gate runs after Nov 30. Final deadline **2026-12-02**.
 
-Since 2026-11-20 the live loop runs as **loop v2** (event-driven job queue, KEPT14 task set, z-gate); the weekly table above is still the submit-slot skeleton. Current state (V22 confirm run J1 Sat 11-21; V24 tool-layer read-budget cap queued) lives in the runbook's "Current state" section. State/ledger schemas: [`factory/state-and-artifacts.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/state-and-artifacts.md).
+### After — loop v2 (live since 2026-11-20)
+
+The table above remains the **submit-slot skeleton**. Live record-keeping and work selection are **event-driven**:
+
+| Piece | Now |
+|---|---|
+| Driver | `jobs[]` in climb `state.json` (`v2`) · `plan.py next` → START / WAIT / PARSE / DEFER / IDLE / SKIP |
+| Gate | **KEPT14** task set · V8 paired every run · **z-gate** (T2 / SINGLE / CONFIRM) |
+| Ledger | Append-only `history.log` every wake · same `results/*.csv` + `eval-results.md` |
+| Rollback | `state.v1.json` kept; do not hand-edit state outside a wake |
+
+```mermaid
+flowchart LR
+  subgraph Before["Before · v1 calendar"]
+    B1[Sat / Sun / Mon / status] --> B2[30-task gate · noise band]
+    B2 --> B3[results/ only]
+  end
+
+  subgraph After["After · v2 live"]
+    A1[plan.py → jobs KEPT14] --> A2[z-gate]
+    A2 --> A3[history.log + results/]
+  end
+
+  Before -.->|evolved 2026-11-20| After
+  After --> Hitl[Human CreateSubmission<br/>unchanged]
+
+  classDef retired fill:#F3F4F6,stroke:#6B7280,color:#374151
+  classDef live fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  class B1,B2,B3 retired
+  class A1,A2,A3 live
+  class Hitl hitl
+  style Before fill:#F9FAFB,stroke:#9CA3AF,color:#374151
+  style After fill:#ECFDF5,stroke:#059669,color:#065F46
+```
+
+*Insight.* Explain **both**: v1 is the familiar week shape; v2 is how wakes actually pick jobs and append the ledger. Full before/after bands: [[Architecture]]. Current queue state (V22 confirm / V24 queued) lives in the runbook "Current state" section. Schemas: [`factory/state-and-artifacts.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/state-and-artifacts.md).
 
 ## Skills (procedural memory)
 

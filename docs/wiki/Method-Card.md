@@ -11,7 +11,7 @@ Coding agents fail quietly under a **fixed** model and tool harness: plausible p
 | Piece | Choice |
 |-------|--------|
 | Product | Single **Google ADK** ReAct agent on fixed `gemma-4-31b-it` (locate → edit → verify → `submit_patch`) |
-| Factory | Claude scheduled runbook: **exactly one** delta off base → paired 30-task Eval Gate → coded `decision_rule` |
+| Factory | Claude scheduled runbook: **exactly one** delta off base → paired Eval Gate → coded ship rule (**loop v2** since 2026-11-20: KEPT14 + z-gate + wake ledger; **v1** was calendar + 30-task noise band — both kept visible in [[Architecture]]) |
 | Default | **HOLD** when gain is inside measured noise (~±2.5 in-budget / 30; ~±0.05 public LB) |
 | Submit | Human CreateSubmission; ≤1 gated submit / ISO week; consoles never submit |
 | Course slice | LangGraph supervisor + guardrails (**not** in the Kaggle zip) |

@@ -71,9 +71,9 @@ Talk track: [[Demo-Script]].
 | Page | Purpose |
 |---|---|
 | [[Method-Card]] | One-page academic method (problem → gate → evidence) |
-| [[Architecture]] | Figure 1 · Gemma+harness · LangChain/LangGraph · noise/HITL |
+| [[Architecture]] | Figure 1 · cadence before/after · Gemma+harness · LangChain/LangGraph |
 | [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
-| [[Claude-Cowork-Loop]] | Schedule + Skills |
+| [[Claude-Cowork-Loop]] | Schedule v1 skeleton + loop v2 ledger · Skills |
 | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
 | [[Future-Work]] | Next levers (hypotheses labeled) |
 | [[Demo-Script]] | 3–5 min talk |
