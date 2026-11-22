@@ -388,29 +388,9 @@ Numbers from the capstone evaluation (gate through mid-November 2026). Not a liv
 
 ### A. Paired gate vs V8 noise band
 
-![NoiseGate Evaluation Band](assets/gate_noise_band.png)
+**Canonical chart + HOLD rules:** [[Trajectory-Eval-Rubric]] (noise-band PNG lives there only).
 
-V8 mean **7.33** in-budget / 30 · empirical noise ~**±2.5** (repeats 8, 6, 8). In-band = **HOLD**. Full caption, 4-tier rubric, and failure taxonomy: [[Trajectory-Eval-Rubric]].
-
-```mermaid
-flowchart LR
-  subgraph Band["V8 noise band ~±2.5 around 7.33"]
-    V8[V8 base 7.33]
-  end
-  V21[V21 6.0] -.-> Band
-  V18[V18 7.0] -.-> Band
-  V15[V15 8.5] -.-> Band
-  V22[V22 9.0] -.-> Band
-  V11[V11 10.0] -.-> Band
-
-  classDef noise fill:#FEF9C3,stroke:#A16207,color:#713F12
-  classDef inside fill:#F3F4F6,stroke:#6B7280,color:#374151
-  classDef falsepos fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
-  class V8 noise
-  class V21,V18,V15,V22 inside
-  class V11 falsepos
-  style Band fill:#FEFCE8,stroke:#CA8A04,color:#713F12
-```
+V8 mean **7.33** in-budget / 30 · empirical noise ~**±2.5** (repeats 8, 6, 8). In-band = **HOLD**.
 
 *Insight.* In-band = noise, not a ship signal. V11’s local 10 → LB **0.15**; V15 (public 0.22) → **0.17**. The gate is trusted to refuse false promotions.
 

@@ -2,7 +2,9 @@
 
 How NoiseGate decides **HOLD** vs real gains on the 30-task gate (28 calls / 480s).
 
-Full cell text + `TaskResult` field map: [`docs/TRAJECTORY_RUBRIC.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md). Chart source: [`harness/plot_gate_band.py`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/harness/plot_gate_band.py).
+**Canonical home** for the NoiseGate Evaluation Band chart and scoring summary. Other wiki pages link here instead of re-embedding the figure.
+
+Full cell text + `TaskResult` field map: [`docs/TRAJECTORY_RUBRIC.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md). Chart generator: [`harness/plot_gate_band.py`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/harness/plot_gate_band.py).
 
 ## When to HOLD
 
