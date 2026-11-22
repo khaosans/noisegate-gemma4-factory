@@ -72,6 +72,7 @@ Talk track: [[Demo-Script]].
 |---|---|
 | [[Method-Card]] | One-page academic method (problem → gate → evidence) |
 | [[Architecture]] | Figure 1 · runtimes trade-offs · Gemma+harness · LangChain/LangGraph |
+| [[Trajectory-Eval-Rubric]] | Noise-band chart · 4-tier scoring · failure taxonomy |
 | [[Submit-Policy]] | Why 1/UTC-day + 5-task / safety / external bars (design SoT) |
 | [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
 | [[Claude-Cowork-Loop]] | Schedule v1 skeleton + loop v2 ledger · Skills |
@@ -86,5 +87,6 @@ Talk track: [[Demo-Script]].
 | [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) | Concept → code |
 | [factory/runbook.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md) | Cadence + human decisions |
 | [wiki Ops-Console](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) | Main demo UI screens + deny list |
+| [docs/TRAJECTORY_RUBRIC.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md) | Trajectory rubric SoT (wiki: [[Trajectory-Eval-Rubric]]) |
 | [docs/safety-plan.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/safety-plan.md) | Safety → tests |
 | [GOALS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/GOALS.md) | OKRs |

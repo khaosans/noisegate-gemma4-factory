@@ -34,6 +34,7 @@ flowchart LR
 | Claim | Where |
 |-------|--------|
 | V8 base public **0.18**; HOLDs V14/V16–V19/V21/V23; V20 LB 0.13; V22 confirming; V24 queued | [README results](https://github.com/khaosans/noisegate-gemma4-factory#results-that-matter-for-shipping) · `results/` |
+| Noise band chart + 4-tier trajectory rubric | [[Trajectory-Eval-Rubric]] · [`docs/TRAJECTORY_RUBRIC.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md) |
 | Calibration: local vs LB agree/disagree | [[Architecture]] · `results/README.md` |
 | Safety: 55/55 adversarial blocked, 0/29 false positives | [[Requirements-Compliance]] · `evals/safety` · `docs/safety-plan.md` |
 | Concept → code map | [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) |

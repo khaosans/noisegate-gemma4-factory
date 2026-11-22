@@ -384,9 +384,13 @@ Safety proof on the local graph: **55/55** adversarial blocked, **0/29** false p
 
 ## Figure 2 — Noise band and telemetry
 
-Numbers from the capstone evaluation (gate through mid-November 2026). Not a live leaderboard scrape.
+Numbers from the capstone evaluation (gate through mid-November 2026). Not a live leaderboard scrape. Full scoring axes + failure taxonomy: [[Trajectory-Eval-Rubric]].
 
 ### A. Paired gate vs V8 noise band
+
+![NoiseGate Evaluation Band](assets/gate_noise_band.png)
+
+**NoiseGate Evaluation Band.** Evaluated candidate pass rates against the empirical V8 baseline noise band (**7.33 ± 2.5** in-budget solves out of 30 tasks). Because single-run stochastic variance spans about **±2.5** solves, any candidate landing within this band (such as V14, V16–V21, and V23) reflects measurement noise rather than structural capability gains and is strictly **HOLD**.
 
 V8 mean **7.33** in-budget / 30 · empirical noise ~**±2.5** (repeats 8, 6, 8).
 
