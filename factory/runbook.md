@@ -31,6 +31,7 @@ GPU quota resets weekly (by Sat 00:30 UTC).
 - **Other wakes — status only.** Record new scores; refresh dashboards.
 Skill order on a full week: `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
 State, ledger and file schemas: `state-and-artifacts.md`.
+Planned submission slots: Nov 9, 16, 23, 30 (calendar hints under **1 / UTC day** Submit-Policy; not a weekly-only cap).
 No gate runs after Nov 30.
 
 ## Cost guardrails
