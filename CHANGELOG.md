@@ -14,6 +14,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 - Future-Work wiki: P0–P4 priority Mermaid (V22 confirm → V24 → calibration → record_score → local demos); shipped items moved out of “next”
 
 ### Changed
+- README Architecture: drop duplicate Mermaid + product/factory table; animation + 5-step loop is the front-page visual (detail → wiki)
 - Runbook / Cowork / Architecture / Method-Card / Requirements / Ops-Console / README: retire factory 36 h · 3-per-week · wait-for-score caps; point at Submit-Policy
 - Architecture + Cowork wiki: **record-keeping cadence before/after** (loop v1 calendar vs loop v2 event-driven / KEPT14 / z-gate / wake ledger); both versions kept visible
 - Architecture wiki: **Gemma agent + Eval Gate harness** and **LangChain / LangGraph** Mermaid flows (named colored bands; course evidence stack marked not-in-zip)
