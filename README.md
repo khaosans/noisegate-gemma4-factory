@@ -66,11 +66,11 @@ Gate through mid-November 2026 — not a live leaderboard scrape.
 | V23 | Graph tools removed | 7 | — | HOLD |
 | V24 | Tool-layer read-budget cap | — | — | Queued (next one-change hypothesis) |
 
-*Insight — why paired gate + HOLD.* V11 looked like a win locally and lost on the board; V15 proved the board itself is noisy. Eleven candidates tested, zero false-positive ships. The harness’s job is refusing luck, not predicting every LB point. Telemetry (N=390): median first edit at call 16/28 and 62% overruns → the bottleneck is a long read loop; prompt-only deadlines failed (V17), so the next lever is a **tool-layer** call cap. More: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [`results/`](results/).
+*Insight — why paired gate + HOLD.* V11 looked like a win locally and lost on the board; V15 proved the board itself is noisy. Eleven candidates tested, zero false-positive ships. The harness’s job is refusing luck, not predicting every LB point. Telemetry (N=390): median first edit at call 16/28 and 62% overruns → the bottleneck is a long read loop; prompt-only deadlines failed (V17), so the next lever is a **tool-layer** call cap. More: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Trajectory Eval Rubric](docs/TRAJECTORY_RUBRIC.md) · [`results/`](results/).
 
 ## Requirements map
 
-[`CONCEPTS.md`](CONCEPTS.md) · [`docs/safety-plan.md`](docs/safety-plan.md) · [Requirements Compliance wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Requirements-Compliance)
+[`CONCEPTS.md`](CONCEPTS.md) · [`docs/safety-plan.md`](docs/safety-plan.md) · [Trajectory Eval Rubric](docs/TRAJECTORY_RUBRIC.md) · [Requirements Compliance wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Requirements-Compliance)
 
 Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence only — not in the competition submission. Why three runtimes share one policy layer: [Architecture — Policy vs. Agent Runtimes](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture#policy-vs-agent-runtimes-why-this-stack).
 
@@ -79,7 +79,7 @@ Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence
 | Path | What it is |
 |---|---|
 | [`product/`](product/) | Agent configs, candidates, zip builder |
-| [`harness/`](harness/) | Trajectory parse, evaluators, decision rule |
+| [`harness/`](harness/) · [`docs/TRAJECTORY_RUBRIC.md`](docs/TRAJECTORY_RUBRIC.md) | Trajectory parse, rubric, evaluators, decision rule |
 | [`factory/`](factory/) | Runbook, Project instructions, Skills |
 | [`factory_console/`](factory_console/) | Legacy local console (not used for demos; main UI = Claude Ops Console) |
 | [`supervisor/`](supervisor/) · [`guardrails/`](guardrails/) · [`agentops/`](agentops/) | Course slice (not in Kaggle zip) |
