@@ -41,11 +41,11 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-*Insight.* Layer 1 decides **whether to spend GPU / the weekly slot**; Layer 2 only solves tasks. Ops is audit + HITL — never CreateSubmission.
+*Insight.* Layer 1 decides **whether to spend GPU / a UTC-day submit slot**; Layer 2 only solves tasks. Ops is audit + HITL — never CreateSubmission. Current bars: [[Submit-Policy]].
 
 | Band | What it does |
 |---|---|
-| **Factory (4 roles)** | Patch = base + one change (SHA-256). Eval = 30-task paired gate. Watchdog = failures + GPU. Submit Governor = noise gate + weekly slot. |
+| **Factory (4 roles)** | Patch = base + one change (SHA-256). Eval = paired / screen gate. Watchdog = failures + GPU. Submit Governor = [[Submit-Policy]] bars + 1/UTC-day. |
 | **Product** | Gemma 4 ReAct under ≤28 calls / ≤480s / fixed seed. Configs V8–V23. |
 | **Ops Console** | State file + append-only ledger; replay + approval. **Never** CreateSubmission. |
 
@@ -67,7 +67,7 @@ flowchart TB
   GA --> GB[Eval Gate B<br/>leader vs V8 · else next pair]
   GB --> WD{Submit Governor<br/>decision_rule.py}
   WD -->|HOLD| RH[Report to humans]
-  WD -->|SUBMIT| CS[Human CreateSubmission<br/>≤ 1 / ISO week]
+  WD -->|SUBMIT| CS[Human CreateSubmission<br/>1 / UTC day]
   CS --> Wait[~1.5 days scoring]
   Wait --> RS[record-score + ledger]
   RS -->|LB ≥ best| NB[New base]
@@ -101,11 +101,11 @@ flowchart LR
   class Hitl hitl
 ```
 
-*Insight.* Status-only wakes refresh scores without inventing submits; ~1.5d scoring lag → ≤1 gated submit / ISO week.
+*Insight.* Status-only wakes refresh scores without inventing submits. Host scoring lag (~1.5d) is observation only — submit cadence SoT: [[Submit-Policy]] (**1 / UTC day** + quality bars).
 
 ## Record-keeping cadence — before vs after
 
-**Live since 2026-11-20: loop v2.** The Sat/Sun/Mon table above is still the **submit-slot skeleton** (≤1 gated CreateSubmission / ISO week). What changed is how wakes **choose work** and how **ledger / gate math** are recorded. Keep both diagrams when explaining the factory — v1 is how we used to run; v2 is how we record now.
+**Live since 2026-11-20: loop v2.** The Sat/Sun/Mon table is still a useful **work skeleton**. What changed in loop v2 is how wakes **choose work** and how **ledger / gate math** are recorded. Separately (2026-11-21), **submit cadence** dropped homemade weekly caps — see [[Submit-Policy]]. Keep the diagrams below when explaining the factory ledger — v1 is how we used to run; v2 is how we record now.
 
 ### Before — loop v1 (calendar-driven)
 
@@ -125,7 +125,7 @@ flowchart TB
   end
 
   Cal --> Rec1
-  Rec1 --> Hitl1["Human CreateSubmission<br/>max 1 / ISO week"]
+  Rec1 --> Hitl1["Human CreateSubmission"]
 
   classDef retired fill:#F3F4F6,stroke:#6B7280,color:#374151
   classDef record fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
@@ -155,9 +155,9 @@ flowchart TB
     Led --> CSV2["results CSV + eval-results.md"]
   end
 
-  subgraph Keep["Unchanged skeleton"]
+  subgraph Keep["Human + host limits"]
     direction LR
-    Skel["Sat / Sun / Mon<br/>submit-slot table"] --> Hitl2["Human CreateSubmission<br/>max 1 / ISO week"]
+    Skel["Sat / Sun / Mon<br/>work skeleton"] --> Hitl2["Human CreateSubmission<br/>1 / UTC day"]
   end
 
   Drive --> Rec2
@@ -177,15 +177,15 @@ flowchart TB
   style Keep fill:#FEF2F2,stroke:#DC2626,color:#7F1D1D
 ```
 
-*Insight.* v2: **jobs + `plan.py`** decide the next action; every wake appends `history.log`. Gate decisions use **KEPT14 + z-gate** (T2 / SINGLE / CONFIRM). Human CreateSubmission and the weekly slot rule did **not** move into automation. Schemas: [`factory/state-and-artifacts.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/state-and-artifacts.md) · climb narrative [[Claude-Cowork-Loop]].
+*Insight.* v2: **jobs + `plan.py`** decide the next action; every wake appends `history.log`. Gate decisions use **KEPT14 + z-gate**. CreateSubmission stays human; **slot math** is host **1 / UTC day** + [[Submit-Policy]] bars (not the old ISO-week factory caps). Schemas: [`factory/state-and-artifacts.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/state-and-artifacts.md) · climb narrative [[Claude-Cowork-Loop]].
 
 | | **v1 (before)** | **v2 (after · live)** |
 |---|---|---|
 | What picks work | Fixed Sat / Sun / Mon / status calendar | `plan.py next` over `jobs[]` |
 | Gate set | 30-task paired runs | **KEPT14** (V8 paired every run) |
-| Ship rule | Noise-band `decision_rule` | **z-gate** + hard checks (over-budget ≤ V8 mean + 2) |
+| Ship rule | Noise-band `decision_rule` | **z-gate** + hard checks; see also [[Submit-Policy]] screens |
 | Ledger | `results/` CSVs + `eval-results.md` | Same **plus** `history.log` + `state.json` `v2` |
-| Human | CreateSubmission · base · cadence policy | **Same** (consoles still never submit) |
+| Human | CreateSubmission · base · policy | **Same** (consoles never submit; **1 / UTC day**) |
 
 ## Product ReAct loop (ADK zip)
 
@@ -231,7 +231,7 @@ flowchart TB
   end
 
   Patch -.->|same config on 30-task gate| Log
-  Prop --> Hitl[Human CreateSubmission · ≤1 / week]
+  Prop --> Hitl[Human CreateSubmission · 1 / UTC day]
 
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
   classDef harness fill:#D1FAE5,stroke:#047857,color:#064E3B
@@ -402,7 +402,7 @@ flowchart LR
 | **HITL gate** | Full 10-hour gate, Kaggle submission, failed recovery | Explicit human approval; overrides audited (e.g. V20) |
 | **Hard standing guardrails** | Duplicate-hash resubmit, post-deadline runs, deleting notebooks/submissions | Forbidden; final submission human-reserved |
 
-*Insight — why HITL tiers.* Cheap steps automate; expensive or irreversible steps require a person. That is how the factory stays autonomous without gambling the weekly slot or deleting artifacts.
+*Insight — why HITL tiers.* Cheap steps automate; expensive or irreversible steps require a person. That is how the factory stays autonomous without gambling a CreateSubmission slot or deleting artifacts.
 
 The Claude Ops Console (**main** demo UI) may illustrate query / replay / approval — it **must not** CreateSubmission or start a Kaggle gate. See [[Ops-Console]].
 

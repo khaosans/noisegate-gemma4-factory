@@ -24,7 +24,7 @@ How this repo meets course and competition expectations without pasting propriet
 ## Competition constraints (reflected in process)
 
 - Fixed model: `gemma-4-31b-it` — no weight swaps in the graded agent.
-- One submission per UTC day; scoring ~1.5 days; factory self-limits to ≤1 gated submit / ISO week.
+- One submission per UTC day (Kaggle); scoring ~1.5 days. Factory no longer adds 36 h / 3-per-week / wait-for-score locks — see [[Submit-Policy]].
 - Candidates are base + **exactly one** change; zip SHA-256 verified before gate trust.
 - No competition data, weights, or credentials in the repo.
 - Graded ship path: **ADK SuperAgent zip** built by `product/build_submission.py`.

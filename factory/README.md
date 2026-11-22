@@ -1,7 +1,8 @@
 # Factory: the loop that builds, judges, and ships the product
 
 Claude runs the climb loop inside a claude.ai Project on scheduled wakes. It proposes candidates,
-builds them on Kaggle, runs the Eval Gate, applies the decision rule, and submits at most once a week.
+builds them on Kaggle, runs the Eval Gate, applies the decision rule / Submit-Policy bars, and
+submits at most once per UTC day (human CreateSubmission).
 Humans set the base, the cadence, and the final selections.
 
 Diagram story (Figure 1 three-band + weekly turn): [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Claude Cowork Loop](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop).

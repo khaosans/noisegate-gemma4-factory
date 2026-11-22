@@ -1,6 +1,9 @@
 # 005. One gated submission per week, two runs per decision
 
-**Status:** Accepted (2026-11-07, human decision)
+**Status:** Partially superseded (2026-11-21). **Quality tiers / paired evidence** remain; the
+**homemade cadence caps** (≤1 submit / ISO week, and later 36 h / 3-per-week / wait-for-score) were
+retired in favor of Kaggle’s **1 / UTC day** + [[Submit-Policy]](../wiki/Submit-Policy.md) bars.
+Original acceptance: 2026-11-07 (human decision).
 
 ## Context
 Gate noise ±2–3 tasks/30, leaderboard noise ±0.05, 30 GPU-quota hours per week, ~11 h per run.

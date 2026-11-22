@@ -38,7 +38,7 @@ flowchart TB
   style Later fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-*Insight.* Finish the open confirm job before inventing new hypotheses. CreateSubmission stays human.
+*Insight.* Finish open confirm jobs before inventing new hypotheses. CreateSubmission stays human; slot law is [[Submit-Policy]] (1 / UTC day + bars).
 
 | Priority | Item | Status |
 |---|---|---|

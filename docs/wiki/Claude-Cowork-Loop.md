@@ -14,7 +14,7 @@ In-repo procedures: [`factory/`](https://github.com/khaosans/noisegate-gemma4-fa
 |---|---|
 | Import / Save & Run All on SuperAgent notebook | Needs logged-in Kaggle UI |
 | Start Eval Gate on 4× L4 | GPU quota + notebook auth |
-| CreateSubmission | Human-reserved; daily/weekly limits |
+| CreateSubmission | Human-reserved; **1 / UTC day** + [[Submit-Policy]] bars |
 | Dashboard refresh after scoring | Session + judgment on unexpected UI |
 
 The Ops Console is a **demo / replay surface** over recorded factory state. It deliberately cannot start gates or submit.
@@ -23,20 +23,20 @@ The Ops Console is a **demo / replay surface** over recorded factory state. It d
 
 From [`factory/runbook.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md). GPU quota resets weekly (by Sat 00:30 UTC).
 
-### Before — loop v1 calendar (still the submit-slot skeleton)
+### Work skeleton (UTC) — still useful for planning
 
 | Day | Work |
 |---|---|
 | **Sat** | Build top queue items as C1/C2 (base + one change); Gate **Run A** screen |
 | **Sun** | Gate **Run B**: leader vs V8 (or next pair if both below V8 mean) |
-| **Mon** | Apply `decision_rule.py`; on SUBMIT ask a human to approve CreateSubmission; ≤1 gated submit / ISO week |
+| **Mon** | Apply decision rule / z-gate; on pass ask a human to CreateSubmission (**1 / UTC day**) |
 | Other wakes | Status only: record scores, refresh dashboards |
 
-Planned submission slots (from runbook): Nov 9, 16, 23, 30. No gate runs after Nov 30. Final deadline **2026-12-02**.
+Submit **cadence and bars** (not the old ISO-week factory caps): [[Submit-Policy]]. Final deadline **2026-12-02**.
 
 ### After — loop v2 (live since 2026-11-20)
 
-The table above remains the **submit-slot skeleton**. Live record-keeping and work selection are **event-driven**:
+The table above remains a **work skeleton**. Live record-keeping and work selection are **event-driven**:
 
 | Piece | Now |
 |---|---|

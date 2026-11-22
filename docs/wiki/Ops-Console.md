@@ -58,10 +58,15 @@ flowchart LR
   Results[results/ CSV + ledger] -.->|may lag artifact| React
 ```
 
+## Policy & Self-Heal panel
+
+The artifact’s **Policy** copy mirrors climb submit-governor / `LOOP` rules: **1 CreateSubmission per UTC day**, V8-derived **5-task** bar, **7-task safety** only for tool/edit-mechanics flags, strict-win + settings transplant for external configs, and pre-flight (incl. ≤ 11.2 h). Design rationale (why those choices): [[Submit-Policy]].
+
 ## What you can show
 
-- Factory loop story: one delta → paired gate → **HOLD** inside noise  
-- Human approval before costly ledger writes (HITL narrative)  
+- Factory loop story: one delta → screen / HOLD → human submit  
+- Policy panel: host cadence + risk-tiered bars (not homemade weekly caps)  
+- Human approval before CreateSubmission (HITL)  
 - Separation of product (Gemma ReAct) vs factory governance  
 - Full demo from the artifact alone (no local console required)
 
@@ -80,6 +85,7 @@ Scores only count when they appear in `results/` / climb SoT — never invent th
 | Concern | Docs |
 |---------|------|
 | Primary climb path | [[Claude-Cowork-Loop]] |
+| Submit cadence + bars | [[Submit-Policy]] |
 | Architecture bands | [[Architecture]] · [[Method-Card]] |
 | Demo talk track | [[Demo-Script]] |
 

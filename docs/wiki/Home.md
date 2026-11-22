@@ -4,7 +4,7 @@
 
 An autonomous **build → evaluate → submit** loop that separates real agent improvements from benchmark noise.
 
-The public notebook that shows **0.22** scored **0.17** when we submitted it. Baseline **V8** fluctuates **8 / 6 / 8** on the same 30 tasks. One planned submit / week + ~30 GPU hours → trusting a single score burns luck.
+The public notebook that shows **0.22** scored **0.17** when we submitted it. Baseline **V8** fluctuates **8 / 6 / 8** on the same 30 tasks. Host limit is **1 CreateSubmission / UTC day**; quality bars (not homemade weekly caps) decide who may use the slot — [[Submit-Policy]].
 
 | | |
 |---|---|
@@ -27,7 +27,7 @@ flowchart TB
     direction LR
     P[Patch<br/>1 delta + SHA-256] --> E[Eval<br/>30-task paired gate]
     E --> W[Watchdog<br/>failures + GPU]
-    W --> G[Submit Governor<br/>noise gate · 1/wk slot]
+    W --> G[Submit Governor<br/>bars · 1/UTC-day]
   end
 
   subgraph L2["Layer 2 — Product · Gemma 4 ReAct · offline 4× L4"]
@@ -72,6 +72,7 @@ Talk track: [[Demo-Script]].
 |---|---|
 | [[Method-Card]] | One-page academic method (problem → gate → evidence) |
 | [[Architecture]] | Figure 1 · cadence before/after · Gemma+harness · LangChain/LangGraph |
+| [[Submit-Policy]] | Why 1/UTC-day + 5-task / safety / external bars (design SoT) |
 | [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
 | [[Claude-Cowork-Loop]] | Schedule v1 skeleton + loop v2 ledger · Skills |
 | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
