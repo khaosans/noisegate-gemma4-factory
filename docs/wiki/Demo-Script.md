@@ -50,5 +50,5 @@ Audience: classmates / instructors. Goal: dual-system story, gate HOLD as the in
 ## Backup if the artifact link is down
 
 1. `pytest -q` + show `harness/decision_rule.py` decide() briefly.  
-2. Walk the Figure 1 Mermaid on [[Home]] / the [README](https://github.com/khaosans/noisegate-gemma4-factory#readme).  
+2. Walk Figure 1 (three bands) on [[Architecture]] / the [README](https://github.com/khaosans/noisegate-gemma4-factory#readme).  
 3. Open `results/gate_runs.csv` and name one HOLD row.

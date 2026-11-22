@@ -19,44 +19,15 @@ The public notebook that shows **0.22** scored **0.17** when we submitted it. Ba
 
 ## Architecture at a glance
 
-Factory governance above a Gemma 4 ReAct product; humans on the Ops Console for costly steps. Console never CreateSubmission.
+Three bands (diagram lives on [[Architecture#figure-1--three-bands]]):
 
-```mermaid
-flowchart TB
-  subgraph L1["Layer 1 — Autonomous Factory · Claude runbook 4×/week"]
-    direction LR
-    P[Patch<br/>1 delta + SHA-256] --> E[Eval<br/>30-task paired gate]
-    E --> W[Watchdog<br/>failures + GPU]
-    W --> G[Submit Governor<br/>bars · 1/UTC-day]
-  end
+| Band | Job |
+|---|---|
+| **Factory** | One delta → paired gate → coded HOLD/SUBMIT · 1/UTC-day |
+| **Product** | Gemma 4 ReAct · ≤28 calls / ≤480s / fixed seed |
+| **Ops Console** | Replay + HITL · **never** CreateSubmission |
 
-  subgraph L2["Layer 2 — Product · Gemma 4 ReAct · offline 4× L4"]
-    T[Shell · Read · Edit · Code-Graph]
-    C["≤28 calls · ≤480s · fixed seed · V8–V23"]
-  end
-
-  subgraph Ops["State & Human Ops Console"]
-    S[State file + event ledger]
-    H[Replay · approval gate]
-  end
-
-  E -->|runs candidates| L2
-  W -.->|observes| L2
-  G -->|HITL approve| Ops
-  L2 <--> Ops
-
-  classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
-  classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
-  classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
-  class P,E,W,G factory
-  class T,C product
-  class S,H ops
-  style L1 fill:#ECFDF5,stroke:#059669,color:#065F46
-  style L2 fill:#FFF7ED,stroke:#EA580C,color:#9A3412
-  style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
-```
-
-*Insight.* The surface that matters is the **noise gate** between Eval and Submit — gains inside V8’s **±2.5** band are **HOLD**. Chart + scoring: [[Trajectory-Eval-Rubric]] · stack detail: [[Architecture]].
+*Insight.* Gains inside V8’s **±2.5** band are **HOLD**. Chart + scoring: [[Trajectory-Eval-Rubric]] · full stack: [[Architecture]].
 
 ## Demo in under a minute
 
@@ -88,6 +59,6 @@ Streamlit / local console is **not** the demo path — see [[Local-And-Streamlit
 |---|---|
 | [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) | Concept → code |
 | [factory/runbook.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md) | Cadence + human decisions |
-| [docs/TRAJECTORY_RUBRIC.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md) | Full rubric field map (wiki summary: [[Trajectory-Eval-Rubric]]) |
+| [docs/TRAJECTORY_RUBRIC.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md) | Rubric field-map SoT (viewer: [[Trajectory-Eval-Rubric]]) |
 | [docs/safety-plan.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/safety-plan.md) | Safety → tests |
 | [GOALS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/GOALS.md) | OKRs |

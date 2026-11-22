@@ -26,7 +26,7 @@ Mode toggles: **Data** (Live vs Demo replay), **Mode** (Live Ops vs Dry-Run Sim)
 
 ![Ops Console HOLD and gate insight — noise band, quota, HITL before costly steps](assets/ops-console/react-ops-console-hold-or-gate.png)
 
-Why the factory refuses to ship: gains inside the V8 noise band **HOLD**; expensive steps need a human. Point here when explaining the eval-over-generator thesis.
+Why the factory refuses to ship: gains inside the V8 noise band **HOLD**; expensive steps need a human. Point here when explaining the eval-over-generator thesis. Quantitative band chart + scoring: [[Trajectory-Eval-Rubric]] (UI screenshot stays on this page only).
 
 ### Agents
 
