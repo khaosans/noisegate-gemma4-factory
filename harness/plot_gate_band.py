@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-import matplotlib.pyplot as plt
 
 ROOT = Path(__file__).resolve().parent.parent
 CSV_PATH = ROOT / "results" / "gate_runs.csv"
@@ -64,6 +63,8 @@ def load_candidate_data(csv_path: Path = CSV_PATH) -> tuple[list[str], list[floa
 
 
 def plot_gate_band(out_path: Path = OUT_PATH, csv_path: Path = CSV_PATH) -> Path:
+    import matplotlib.pyplot as plt
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     versions, values, verdicts = load_candidate_data(csv_path)
 

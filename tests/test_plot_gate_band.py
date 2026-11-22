@@ -26,6 +26,7 @@ def test_load_candidate_data():
 
 
 def test_plot_gate_band_outputs_valid_png(tmp_path: Path):
+    pytest.importorskip("matplotlib")
     out_file = tmp_path / "test_band.png"
     result_path = plot_gate_band(out_path=out_file, csv_path=CSV_PATH)
 
