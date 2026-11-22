@@ -12,8 +12,8 @@ How this repo meets course and competition expectations without pasting propriet
 | Context / sampling | `configs/sampling.yaml` | Thinking-budget cuts scored worse than V8 |
 | Skills / procedures | `factory/skills/` | Loadable climb procedures |
 | Persistent memory | `results/` | State survives between wakes |
-| Trajectory evaluation | `harness/trajectory.py`, `evaluators.py` | E1–E4 gate; E5–E9 diagnose |
-| Statistical rigor | `harness/decision_rule.py`, decision 005 | Two runs + paired net; noise band |
+| Trajectory evaluation | `harness/trajectory.py`, `evaluators.py`, [[Trajectory-Eval-Rubric]] | E1–E4 gate; E5–E9 diagnose; 4-tier rubric |
+| Statistical rigor | `harness/decision_rule.py`, decision 005, [[Trajectory-Eval-Rubric]] | Two runs + paired net; V8 band **7.33 ± 2.5** |
 | Runtime guardrails | `guardrails/`, `supervisor/graph.py` | Adversarial block rate in `evals/safety` |
 | Observability | `agentops/`, `docs/agentops.md` | JSONL + checkpoint metrics |
 | HITL (factory) | `factory/runbook.md`, decision 004 | Humans own base, cadence, final picks, submit |
