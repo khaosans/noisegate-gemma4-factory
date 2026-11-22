@@ -3,6 +3,7 @@
 - [[Home]]
 - [[Method-Card]]
 - [[Architecture]]
+- [[Submit-Policy]] *(cadence + bars)*
 - [[Ops-Console]] *(main UI)*
 - [[Claude-Cowork-Loop]]
 - [[Requirements-Compliance]]

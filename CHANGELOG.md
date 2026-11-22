@@ -8,7 +8,11 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 ## [Unreleased]
 
 ### Added
+- Wiki [[Submit-Policy]] — design SoT for loosened submit cadence (**1 / UTC day** only) and risk-tiered bars (5-task V8-derived · 7-task safety when tools/edit flagged · strict-win external · pre-flight ≤11.2 h)
 - Future-Work wiki: P0–P4 priority Mermaid (V22 confirm → V24 → calibration → record_score → local demos); shipped items moved out of “next”
+
+### Changed
+- Runbook / Cowork / Architecture / Method-Card / Requirements / Ops-Console / README: retire factory 36 h · 3-per-week · wait-for-score caps; point at Submit-Policy
 - Architecture + Cowork wiki: **record-keeping cadence before/after** (loop v1 calendar vs loop v2 event-driven / KEPT14 / z-gate / wake ledger); both versions kept visible
 - Architecture wiki: **Gemma agent + Eval Gate harness** and **LangChain / LangGraph** Mermaid flows (named colored bands; course evidence stack marked not-in-zip)
 

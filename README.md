@@ -7,7 +7,7 @@ An autonomous **build → evaluate → submit** loop that separates real agent i
 
 **Version `1.0.0-beta.1`** (Capstone beta — not GA) · **Souriya Khaosanga · Adil Shamim** · CMU SCS Agentic AI · Fall 2026 · Kaggle [*Gemma 4 Developer Agent*](https://www.kaggle.com/competitions/gemma-4-developer-agent)
 
-The public notebook that shows **0.22** on the board scored **0.17** when we submitted the same artifact. Locally, baseline **V8** solves **8, then 6, then 8** in-budget on the same 30 tasks. With **one planned Kaggle submission per week** and ~**30 GPU hours** of quota, trusting a single score spends the budget promoting luck.
+The public notebook that shows **0.22** on the board scored **0.17** when we submitted the same artifact. Locally, baseline **V8** solves **8, then 6, then 8** in-budget on the same 30 tasks. Kaggle allows **one CreateSubmission per UTC day**; NoiseGate still spends ~**30 GPU hours**/week of quota, so trusting a single screen without bars spends the budget promoting luck.
 
 > **Success:** ship a better agent only when evidence beats measured noise, at a known cost.  
 > **Out of scope:** fine-tuning Gemma; changing the competition harness.
@@ -25,7 +25,7 @@ The public notebook that shows **0.22** on the board scored **0.17** when we sub
 
 ## Architecture
 
-The product is a Gemma 4 ReAct coding agent under Kaggle’s call/time caps (issue-fixing tasks in the SWE-bench spirit; competition harness fixed). The factory is a scheduled Claude runbook that proposes **one** delta, gates it, and spends the weekly submit slot only when the gain clears measured noise. Humans own CreateSubmission — consoles never do.
+The product is a Gemma 4 ReAct coding agent under Kaggle’s call/time caps (issue-fixing tasks in the SWE-bench spirit; competition harness fixed). The factory is a scheduled Claude runbook that proposes **one** delta, screens it, and uses a UTC-day CreateSubmission slot only when [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy) bars pass. Humans own CreateSubmission — consoles never do.
 
 ```mermaid
 flowchart TB
@@ -33,7 +33,7 @@ flowchart TB
     direction LR
     P[Patch<br/>1 delta + SHA-256] --> E[Eval<br/>30-task paired gate]
     E --> W[Watchdog<br/>failures + GPU]
-    W --> G[Submit Governor<br/>noise gate · 1/wk slot]
+    W --> G[Submit Governor<br/>bars · 1/UTC-day]
   end
 
   subgraph L2["Layer 2 — Product · Gemma 4 ReAct · offline 4× L4"]
@@ -62,14 +62,14 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn the weekly slot. Ops gates costly actions — never CreateSubmission. [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) — also **Gemma + Eval Gate harness** and **LangChain / LangGraph** local-stack diagrams.
+*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn a UTC-day slot. Ops gates costly actions — never CreateSubmission. [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy).
 
 | | Product | Factory |
 |---|---|---|
 | Model | `gemma-4-31b-it` (competition-fixed) | Claude (scheduled runbook / Project) |
 | Job | Fix issues under call/time budget | One delta → gate → maybe ship |
 | Memory | Context window only | State file + append-only ledger + `results/` |
-| Submit path | ADK `submission.zip` on Kaggle | Humans approve; ≤1 gated submit / week |
+| Submit path | ADK `submission.zip` on Kaggle | Humans approve; **1 / UTC day** + quality bars |
 
 ## How we ran it
 
@@ -77,7 +77,7 @@ Production climb = **Claude Project + scheduled wakes**. Demo / ops narrative = 
 
 1. Cowork loads `factory/project-instructions.md`, the runbook, and `results/eval-results.md` each wake.
 2. Skills in [`factory/skills/`](factory/skills/): `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`. State/ledger schemas: [`factory/state-and-artifacts.md`](factory/state-and-artifacts.md).
-3. **Cadence (UTC):** Sat/Sun/Mon table = submit-slot skeleton. **Live loop v2** (since 2026-11-20): event-driven jobs, KEPT14, z-gate, wake ledger — see [Architecture before/after](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
+3. **Cadence (UTC):** Sat/Sun/Mon = work skeleton. **Submit law:** 1 / UTC day + [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy). **Loop v2** (since 2026-11-20): event-driven jobs, KEPT14, z-gate, wake ledger — [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 4. Kaggle login UI (notebook commit, gate start, CreateSubmission) stays on Claude’s authenticated session.
 
 **Main demo UI:** [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Claude Cowork Loop wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Claude-Cowork-Loop)

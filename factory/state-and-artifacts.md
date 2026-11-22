@@ -7,9 +7,9 @@ live loop state). The factory never writes into the climb repo from this repo's 
 **Cadence versions (record-keeping):** **loop v2** (live since 2026-11-20) is event-driven
 (`jobs[]`, `plan.py`, `history.log`, KEPT14 + z-gate). **loop v1** was calendar-only
 (Sat/Sun/Mon/status → 30-task noise-band gate → `results/` only); `state.v1.json` is the
-rollback copy. The weekly table remains the submit-slot skeleton; human CreateSubmission is
-unchanged. Wiki before/after diagrams: [`docs/wiki/Architecture.md`](../wiki/Architecture.md)
-· [`docs/wiki/Claude-Cowork-Loop.md`](../wiki/Claude-Cowork-Loop.md).
+rollback copy. **Submit law** (2026-11-21): 1 CreateSubmission / UTC day + quality bars —
+[`docs/wiki/Submit-Policy.md`](../wiki/Submit-Policy.md). The weekly table is a work skeleton only.
+Wiki: [`Architecture.md`](../wiki/Architecture.md) · [`Claude-Cowork-Loop.md`](../wiki/Claude-Cowork-Loop.md).
 
 | Artifact | Location | Access | Written by |
 |---|---|---|---|

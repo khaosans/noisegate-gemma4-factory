@@ -19,9 +19,10 @@ using Gemma.
 ## Operating the climb loop (scheduled wakes)
 - Read on every wake: `runbook.md` (start with "Current state"), `results/eval-results.md`,
   `state-and-artifacts.md`.
-- Cadence (UTC): Sat build + Gate A · Sun Gate B · Mon decide + optional submit · other wakes status-only.
+- Cadence (UTC): Sat/Sun/Mon work skeleton · other wakes status-only. **Submit law:** 1 CreateSubmission
+  per UTC day (Kaggle) + bars in `docs/wiki/Submit-Policy.md` (no factory 36 h / 3-per-week / wait-for-score).
 - Skills, in order: `build-candidate` → `run-eval-gate` → `weekly-decision` → `record-score`.
-- CreateSubmission is human-in-the-loop: ≤ 1 gated submission per ISO week, only on a decision-rule pass,
-  only after explicit human approval. Never on HOLD, never to fill a slot.
+- CreateSubmission is human-in-the-loop: only on a bar pass + explicit human yes; consoles never submit.
+  Never on HOLD. See `docs/wiki/Submit-Policy.md`.
 - Do not change the submission contract: `gemma-4-31b-it`, ≤ 28 tool calls, ≤ 480 s, `submission.zip` writer.
 - End every wake with the 5-line report from the runbook.

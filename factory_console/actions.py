@@ -242,8 +242,16 @@ def judge_gate_log(text: str | None = None, candidate: str | None = None, baseli
 WEEKDAY_JOBS = {
     5: "Saturday: build the top two untried queue items as C1 and C2, verify source and SHA-256, start Gate Run A.",
     6: "Sunday: pick the leader from Run A and start Gate Run B against V8.",
-    0: "Monday: apply the decision rule. Submit only on a pass.",
+    0: "Monday: apply the decision rule / Submit-Policy bars. Submit only on a pass (1 / UTC day).",
 }
+
+
+def _planned_nov_slots(runbook: str, year: int) -> list[dt.date]:
+    """Optional calendar hints from the runbook. Missing line → no slot warnings."""
+    m = re.search(r"Planned submission slots: Nov ([\d, ]+)", runbook)
+    if not m:
+        return []
+    return [dt.date(year, 11, int(d)) for d in m.group(1).replace(" ", "").split(",") if d]
 
 
 def status(today: str | None = None) -> dict:
@@ -257,8 +265,7 @@ def status(today: str | None = None) -> dict:
     held = sorted({r["candidate"] for r in cands if r["verdict"] == "HOLD"})
     last_run = max(r["date"] for r in runs)
     last_log = max((e["date"] for e in log_entries(limit=100) if e["date"]), default="")
-    slots = [dt.date(deadline.year, 11, int(d)) for d in
-             re.search(r"Planned submission slots: Nov ([\d, ]+)", runbook).group(1).replace(" ", "").split(",")]
+    slots = _planned_nov_slots(runbook, deadline.year)
     placeholders = [f for f in ("agent.yaml", "configs/sampling.yaml", "eval_config.yaml", "prompts/system.md")
                     if "TODO" in _read(f"product/superagent/{f}")]
     warnings = []
