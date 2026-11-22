@@ -8,6 +8,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 ## [Unreleased]
 
 ### Added
+- `docs/archive/` — submitted Assignment 7.1 Final Capstone Report PDF (stale snapshot; live SoT remains wiki / README)
 - README architecture loop animation: muted looping WebP (`assets/noisegate-architecture.webp`, ~900px · 15 fps · &lt;2.5 MB) + muted MP4 fallback; 5-step pipeline bullets under the hero loop
 - Architecture wiki: **Policy vs. Agent Runtimes** Mermaid + trade-off table (ADK product · LangGraph local · factory wakes); Requirements-Compliance + Demo-Script + README aligned
 - Wiki [[Submit-Policy]] — design SoT for loosened submit cadence (**1 / UTC day** only) and risk-tiered bars (5-task V8-derived · 7-task safety when tools/edit flagged · strict-win external · pre-flight ≤11.2 h)

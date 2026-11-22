@@ -86,6 +86,7 @@ Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence
 | [`evals/`](evals/) · [`results/`](results/) | Safety cases · gate / LB bookkeeping |
 | [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [`docs/wiki/`](docs/wiki/) | Preferred viewer · editor SoT |
 | [`GOALS.md`](GOALS.md) · [`CONCEPTS.md`](CONCEPTS.md) · [`docs/decisions/`](docs/decisions/) | OKRs · concept map · ADRs |
+| [`docs/archive/`](docs/archive/) | Submitted course PDFs (**stale** snapshots — not live SoT) |
 
 ## Quick start
 
