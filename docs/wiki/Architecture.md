@@ -320,6 +320,68 @@ flowchart TB
 
 Ship contrast: [[Requirements-Compliance]] (ADK zip vs this stack).
 
+## Policy vs. Agent Runtimes (Why This Stack)
+
+One plain-Python governance layer; three runtimes. The model **proposes**; code **decides** — but *where* that code can sit differs by host.
+
+```mermaid
+flowchart TB
+  subgraph Policy["Shared plain-Python governance"]
+    direction LR
+    G[guardrails/] --> D[harness/decision_rule.py]
+    D --> P[factory/plan.py]
+    Note["The model proposes · code decides"]
+  end
+
+  subgraph Product["Product · Kaggle ADK host · submission.zip"]
+    ADK["Single-agent ReAct<br/>gemma-4-31b-it · 4x L4"]
+    Cap["Budget: max 28 calls · max 480s · fixed seed"]
+    Own["Host owns outer loop<br/>supervisor cannot intercept mid-run"]
+    ADK --> Cap --> Own
+  end
+
+  subgraph Local["Local reference · LangGraph · supervisor/"]
+    Graph["intake to agent to guard to execute<br/>to verify / escalate to finalize"]
+    Hook["In-loop interception · call counters<br/>hitl interrupt · evals/safety"]
+    Graph --> Hook
+  end
+
+  subgraph Factory["Factory · event-driven wakes · factory/"]
+    Wake["plan.py + state.json v2 + history.log"]
+    Hitl["Claude runbook wakes<br/>CreateSubmission 1 / UTC day"]
+    Wake --> Hitl
+  end
+
+  Policy --> Product
+  Policy --> Local
+  Policy --> Factory
+
+  classDef policy fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
+  classDef lg fill:#F3E8FF,stroke:#7E22CE,color:#581C87
+  classDef factory fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  class G,D,P,Note policy
+  class ADK,Cap,Own product
+  class Graph,Hook lg
+  class Wake factory
+  class Hitl hitl
+  style Policy fill:#ECFDF5,stroke:#059669,color:#065F46
+  style Product fill:#FFF7ED,stroke:#EA580C,color:#9A3412
+  style Local fill:#FAF5FF,stroke:#9333EA,color:#581C87
+  style Factory fill:#F0F9FF,stroke:#0284C7,color:#075985
+```
+
+*Insight.* On Kaggle the outer ReAct loop is **host-owned**, so prompt-only deadlines (V17) were ignored and the next lever is a **tool-layer** budget cue. LangGraph proves in-loop interception locally without pretending it ships in the zip. The factory stays a file-backed wake loop with human CreateSubmission ([[Submit-Policy]]).
+
+| Choice | Why |
+|---|---|
+| **Single-agent ADK + plain Python** (not CrewAI) | Multi-agent role chatter burns the **28-call / 480s** budget (median first edit already **16/28**, N=390) and breaks the one-ADK-zip contract. |
+| **LangGraph in `supervisor/` only** | Live factory stays lightweight (`plan.py` + `decision_rule.py`). The standalone graph proves stateful orchestration + code-enforced guardrails for course evidence — not as the Kaggle supervisor. |
+| **Not A2A; MCP optional later** | Bands talk through deterministic ledgers (`state.json`, `history.log`, CSVs) + HITL — not real-time agent negotiation. MCP could later standardize local tool schemas without adding an orchestration tax. |
+
+Safety proof on the local graph: **55/55** adversarial blocked, **0/29** false positives (`evals/safety`).
+
 ## Figure 2 — Noise band and telemetry
 
 Numbers from the capstone evaluation (gate through mid-November 2026). Not a live leaderboard scrape.
@@ -451,11 +513,12 @@ flowchart LR
 
 | Surface | Ships |
 |---|---|
-| Kaggle | Product ADK zip only |
+| Kaggle | Product ADK zip only (**Product runtime** above) |
 | Demo | Claude Ops Console (**main**) · this wiki |
-| Course evidence (non-zip) | LangGraph supervisor, guardrails, AgentOps |
+| Course evidence (non-zip) | LangGraph supervisor, guardrails, AgentOps (**Local reference runtime**) |
+| Climb ops | Factory wake loop + [[Submit-Policy]] (**Factory runtime**) |
 
-See also: [[Claude-Cowork-Loop]], [[Ops-Console]], [[Requirements-Compliance]].
+Policy vs runtimes framing: [[#Policy vs. Agent Runtimes (Why This Stack)]]. See also: [[Claude-Cowork-Loop]], [[Ops-Console]], [[Requirements-Compliance]].
 
 ## References
 

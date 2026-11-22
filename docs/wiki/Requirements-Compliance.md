@@ -31,39 +31,56 @@ How this repo meets course and competition expectations without pasting propriet
 
 ## ADK zip vs LangGraph supervisor
 
-| | Competition submission | Course / safety slice |
-|---|---|---|
-| Runtime | Kaggle ADK agent | Local LangGraph supervisor |
-| Path | `product/` | `supervisor/` + `guardrails/` + `agentops/` |
-| Purpose | Leaderboard score | Budgets, tool policy, escalate, traces |
-| In zip? | Yes | No |
+Same **plain-Python policy** (`guardrails/`, `harness/decision_rule.py`, factory ledger math) frames both the hosted Kaggle ADK loop and the local LangGraph reference — they differ in *runtime*, not in governance intent. Full “policy → three runtimes” framing: [[Architecture#Policy vs. Agent Runtimes (Why This Stack)]].
+
+| | Product runtime (Kaggle) | Local reference runtime | Factory runtime |
+|---|---|---|---|
+| Runtime | Kaggle ADK host + `submission.zip` | LangGraph `supervisor/` | Event-driven wakes (`plan.py` + `state.json`) |
+| Path | `product/` | `supervisor/` + `guardrails/` + `agentops/` | `factory/` + `harness/` |
+| Purpose | Leaderboard score | In-loop budgets, escalate, traces | Screen → HOLD/SUBMIT · HITL CreateSubmission |
+| In zip? | Yes | No | No |
 
 ```mermaid
 flowchart TB
-  subgraph Ship["Graded Kaggle ship path"]
+  subgraph Policy["Shared plain-Python policy"]
+    GR[guardrails + decision_rule]
+  end
+
+  subgraph Ship["Product runtime · Kaggle"]
     ADK[One Google ADK agent] --> Zip[submission.zip]
     Zip --> Host[Kaggle ADK host]
   end
 
-  subgraph Course["Course evidence — not in zip"]
+  subgraph Course["Local reference · not in zip"]
     LG[LangGraph supervisor]
-    GR[guardrails + budgets]
     AO[agentops traces]
-    LG --> GR --> AO
+    LG --> AO
   end
 
-  ProductCfg[product/] --> Ship
-  Supervisor[supervisor/] --> Course
+  subgraph Factory["Factory runtime"]
+    Plan[plan.py + ledger] --> Hitl[CreateSubmission HITL]
+  end
+
+  GR --> Ship
+  GR --> Course
+  GR --> Factory
 
   classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
-  classDef course fill:#F3F4F6,stroke:#6B7280,color:#374151
-  class ADK,Zip,Host,ProductCfg product
-  class LG,GR,AO,Supervisor course
+  classDef course fill:#F3E8FF,stroke:#7E22CE,color:#581C87
+  classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
+  classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
+  classDef hitl fill:#FEE2E2,stroke:#B91C1C,color:#7F1D1D
+  class ADK,Zip,Host product
+  class LG,AO course
+  class GR,Plan factory
+  class Hitl hitl
+  style Policy fill:#ECFDF5,stroke:#059669,color:#065F46
   style Ship fill:#FFF7ED,stroke:#EA580C,color:#9A3412
-  style Course fill:#F9FAFB,stroke:#6B7280,color:#374151
+  style Course fill:#FAF5FF,stroke:#9333EA,color:#581C87
+  style Factory fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-*Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract. Full band diagrams: [[Architecture]] (Gemma + harness · LangChain / LangGraph).
+*Insight.* Score the **ADK zip** for competition competence. LangGraph is course evidence only — Decision 007 keeps it out of the ship contract. Shared policy does **not** imply the supervisor can intercept Kaggle’s outer loop mid-run.
 
 ## HITL summary
 

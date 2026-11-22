@@ -8,6 +8,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 ## [Unreleased]
 
 ### Added
+- Architecture wiki: **Policy vs. Agent Runtimes** Mermaid + trade-off table (ADK product · LangGraph local · factory wakes); Requirements-Compliance + Demo-Script + README aligned
 - Wiki [[Submit-Policy]] — design SoT for loosened submit cadence (**1 / UTC day** only) and risk-tiered bars (5-task V8-derived · 7-task safety when tools/edit flagged · strict-win external · pre-flight ≤11.2 h)
 - Future-Work wiki: P0–P4 priority Mermaid (V22 confirm → V24 → calibration → record_score → local demos); shipped items moved out of “next”
 

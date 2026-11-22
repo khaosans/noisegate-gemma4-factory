@@ -104,7 +104,7 @@ Gate through mid-November 2026 — not a live leaderboard scrape.
 
 [`CONCEPTS.md`](CONCEPTS.md) · [`docs/safety-plan.md`](docs/safety-plan.md) · [Requirements Compliance wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Requirements-Compliance)
 
-Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence only — not in the competition submission.
+Graded ship path = **ADK agent zip**. LangGraph `supervisor/` is course evidence only — not in the competition submission. Why three runtimes share one policy layer: [Architecture — Policy vs. Agent Runtimes](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture#policy-vs-agent-runtimes-why-this-stack).
 
 ## Repository map
 

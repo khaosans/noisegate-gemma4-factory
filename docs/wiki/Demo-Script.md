@@ -32,7 +32,7 @@ Audience: classmates / instructors. Goal: dual-system story, gate HOLD as the in
 
 - Point at [[Method-Card]] or [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) / [[Requirements-Compliance]]: trajectory eval, statistical gate, HITL.
 - One line on goldens: **55/55** adversarial blocked, **0/29** false positives (`evals/safety`).
-- Mention LangGraph supervisor as **course** evidence, not the Kaggle zip.
+- **Runtimes talking point (2–3 sentences):** We separate **policy** (plain Python) from **runtime**. That lets us ship a lean single-agent ADK zip to Kaggle under 28 calls / 480s — without CrewAI-style multi-agent chatter — while proving stateful guardrails and `hitl` interrupts locally in LangGraph `supervisor/` as course evidence, not as the competition supervisor. Detail: [[Architecture#Policy vs. Agent Runtimes (Why This Stack)]].
 
 ### 4:00–5:00 — Cowork primary climb loop
 

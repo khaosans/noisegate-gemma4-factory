@@ -71,7 +71,7 @@ Talk track: [[Demo-Script]].
 | Page | Purpose |
 |---|---|
 | [[Method-Card]] | One-page academic method (problem → gate → evidence) |
-| [[Architecture]] | Figure 1 · cadence before/after · Gemma+harness · LangChain/LangGraph |
+| [[Architecture]] | Figure 1 · runtimes trade-offs · Gemma+harness · LangChain/LangGraph |
 | [[Submit-Policy]] | Why 1/UTC-day + 5-task / safety / external bars (design SoT) |
 | [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
 | [[Claude-Cowork-Loop]] | Schedule v1 skeleton + loop v2 ledger · Skills |
