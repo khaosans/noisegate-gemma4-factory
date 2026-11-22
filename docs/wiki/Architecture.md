@@ -518,7 +518,7 @@ flowchart LR
 | Course evidence (non-zip) | LangGraph supervisor, guardrails, AgentOps (**Local reference runtime**) |
 | Climb ops | Factory wake loop + [[Submit-Policy]] (**Factory runtime**) |
 
-Policy vs runtimes framing: [[#Policy vs. Agent Runtimes (Why This Stack)]]. See also: [[Claude-Cowork-Loop]], [[Ops-Console]], [[Requirements-Compliance]].
+Policy vs runtimes framing: [Policy vs. Agent Runtimes (Why This Stack)](#policy-vs-agent-runtimes-why-this-stack). See also: [[Claude-Cowork-Loop]], [[Ops-Console]], [[Requirements-Compliance]].
 
 ## References
 

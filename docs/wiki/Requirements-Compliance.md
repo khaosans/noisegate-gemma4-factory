@@ -31,7 +31,7 @@ How this repo meets course and competition expectations without pasting propriet
 
 ## ADK zip vs LangGraph supervisor
 
-Same **plain-Python policy** (`guardrails/`, `harness/decision_rule.py`, factory ledger math) frames both the hosted Kaggle ADK loop and the local LangGraph reference — they differ in *runtime*, not in governance intent. Full “policy → three runtimes” framing: [[Architecture#Policy vs. Agent Runtimes (Why This Stack)]].
+Same **plain-Python policy** (`guardrails/`, `harness/decision_rule.py`, factory ledger math) frames both the hosted Kaggle ADK loop and the local LangGraph reference — they differ in *runtime*, not in governance intent. Full “policy → three runtimes” framing: [Policy vs. Agent Runtimes (Why This Stack)](Architecture#policy-vs-agent-runtimes-why-this-stack).
 
 | | Product runtime (Kaggle) | Local reference runtime | Factory runtime |
 |---|---|---|---|

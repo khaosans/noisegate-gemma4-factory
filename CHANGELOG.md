@@ -18,6 +18,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 - Architecture wiki: **Gemma agent + Eval Gate harness** and **LangChain / LangGraph** Mermaid flows (named colored bands; course evidence stack marked not-in-zip)
 
 ### Fixed
+- Wiki links: replace Obsidian-style `[[#…]]` / `[[Architecture#…]]` with GitHub-Wiki-safe markdown anchors for **Policy vs. Agent Runtimes** (was a red missing-page link)
 - Architecture Mermaid: loop v2 node label no longer embeds `jobs[]` (GitHub parse error); quoted labels on cadence diagrams
 - `factory/state-and-artifacts.md` — schemas/paths for loop state, append-only wake ledger, `results/` files, and the read-only climb scoreboard bridge
 - Runbook "Current state (2026-11-20)": V8–V23 evaluated, V22 awaiting second paired run (J1), V24 tool-layer read-budget cap queued
