@@ -4,7 +4,7 @@
 
 An autonomous **build → evaluate → submit** loop that separates real agent improvements from benchmark noise.
 
-The public notebook that shows **0.22** scored **0.17** when we submitted it. Baseline **V8** fluctuates **8 / 6 / 8** on the same 30 tasks. Host limit is **1 CreateSubmission / UTC day**; quality bars (not homemade weekly caps) decide who may use the slot — [[Submit-Policy]].
+The public notebook that shows **0.22** scored **0.17** when we submitted it. Baseline **V8** fluctuates **8 / 6 / 8** on the same 30 tasks. Host limit is **1 CreateSubmission / UTC day**; quality bars decide who may use the slot — [[Submit-Policy]].
 
 | | |
 |---|---|
@@ -13,9 +13,9 @@ The public notebook that shows **0.22** scored **0.17** when we submitted it. Ba
 | Best public (base) | **0.18** (V8) |
 | Repo | [noisegate-gemma4-factory](https://github.com/khaosans/noisegate-gemma4-factory) |
 | Video | https://youtu.be/-EiKv_MafOY |
-| Ops Console (**main UI**) | [artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · docs [[Ops-Console]] |
+| Ops Console (main UI) | [artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW) · [[Ops-Console]] |
 
-**Score SoT:** factory base here is **V8 @ 0.18**. Sibling [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) climb tips use `docs/scoreboard.json` (may differ, e.g. tip best **0.10**) — not the same artifact ledger.
+**Score SoT:** factory base is **V8 @ 0.18**. Sibling [`cmu-agentic-ai`](https://github.com/khaosans/cmu-agentic-ai) climb tips use a separate ledger (`docs/scoreboard.json`) — do not conflate.
 
 ## Architecture at a glance
 
@@ -56,37 +56,38 @@ flowchart TB
   style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
 ```
 
-*Insight.* The surface that matters is the **noise gate** between Eval and Submit — gains inside V8’s ±2.5 band HOLD. [[Architecture]].
+*Insight.* The surface that matters is the **noise gate** between Eval and Submit — gains inside V8’s **±2.5** band are **HOLD**. Chart + scoring: [[Trajectory-Eval-Rubric]] · stack detail: [[Architecture]].
 
 ## Demo in under a minute
 
-1. Open the [[Ops-Console]] Claude artifact (**main UI**).
-2. Show a HOLD above the V8 noise band (V18 / V21 / V17).
-3. Climb login path = Claude Skills — not the console for CreateSubmission.
+1. Open the [[Ops-Console]] Claude artifact (main UI).
+2. Show a **HOLD** inside the V8 noise band (**7.33 ± 2.5** / 30) — [[Trajectory-Eval-Rubric]].
+3. Climb / CreateSubmission path = Claude Skills ([[Claude-Cowork-Loop]]), not the console.
 
-Talk track: [[Demo-Script]].
+Full talk track: [[Demo-Script]].
 
 ## Pages
 
-| Page | Purpose |
-|---|---|
-| [[Method-Card]] | One-page academic method (problem → gate → evidence) |
-| [[Architecture]] | Figure 1 · runtimes trade-offs · Gemma+harness · LangChain/LangGraph |
-| [[Trajectory-Eval-Rubric]] | Noise-band chart · 4-tier scoring · failure taxonomy |
-| [[Submit-Policy]] | Why 1/UTC-day + 5-task / safety / external bars (design SoT) |
-| [[Ops-Console]] | **Main** Claude Agent Ops Console (screens + deny list) vs Cowork |
-| [[Claude-Cowork-Loop]] | Schedule v1 skeleton + loop v2 ledger · Skills |
-| [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
-| [[Future-Work]] | P0–P4 priority map · V22 confirm · V24 hypothesis |
-| [[Demo-Script]] | 3–5 min talk |
+| Section | Page | Use when you need… |
+|---|---|---|
+| Start | [[Method-Card]] | One-page problem → method → evidence |
+| Start | [[Demo-Script]] | 3–5 min talk track |
+| How it works | [[Architecture]] | Figures, runtimes, policy vs ADK/LangGraph |
+| How it works | [[Trajectory-Eval-Rubric]] | Noise-band chart, 4-tier scoring, failure modes |
+| How it works | [[Submit-Policy]] | 1/UTC-day + quality bars before HITL submit |
+| Operate | [[Ops-Console]] | Main demo UI screens + deny list |
+| Operate | [[Claude-Cowork-Loop]] | Sat/Sun/Mon Skills + loop v2 ledger |
+| Evidence | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
+| Evidence | [[Future-Work]] | P0–P4 map · V22 confirm · V24 hypothesis |
 
-## Primary sources
+Streamlit / local console is **not** the demo path — see [[Local-And-Streamlit]] only if you need that caveat.
+
+## Primary sources (repo)
 
 | Doc | Role |
 |---|---|
 | [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) | Concept → code |
 | [factory/runbook.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/factory/runbook.md) | Cadence + human decisions |
-| [wiki Ops-Console](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) | Main demo UI screens + deny list |
-| [docs/TRAJECTORY_RUBRIC.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md) | Trajectory rubric SoT (wiki: [[Trajectory-Eval-Rubric]]) |
+| [docs/TRAJECTORY_RUBRIC.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/TRAJECTORY_RUBRIC.md) | Full rubric field map (wiki summary: [[Trajectory-Eval-Rubric]]) |
 | [docs/safety-plan.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/safety-plan.md) | Safety → tests |
 | [GOALS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/GOALS.md) | OKRs |

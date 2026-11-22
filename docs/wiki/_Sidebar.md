@@ -1,14 +1,23 @@
-**NoiseGate**
+**Start here**
 
 - [[Home]]
 - [[Method-Card]]
-- [[Architecture]]
-- [[Trajectory-Eval-Rubric]] *(noise band + scoring)*
-- [[Submit-Policy]] *(cadence + bars)*
-- [[Ops-Console]] *(main UI)*
-- [[Claude-Cowork-Loop]]
-- [[Requirements-Compliance]]
 - [[Demo-Script]]
+
+**How it works**
+
+- [[Architecture]]
+- [[Trajectory-Eval-Rubric]]
+- [[Submit-Policy]]
+
+**Operate**
+
+- [[Ops-Console]]
+- [[Claude-Cowork-Loop]]
+
+**Evidence & next**
+
+- [[Requirements-Compliance]]
 - [[Future-Work]]
 
 **External**

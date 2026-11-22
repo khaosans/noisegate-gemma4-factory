@@ -1,6 +1,6 @@
 # Method card
 
-One-page academic summary. Detail: [[Architecture]] · [[Requirements-Compliance]] · [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md).
+One-page academic summary. Detail: [[Architecture]] · [[Trajectory-Eval-Rubric]] · [[Requirements-Compliance]] · [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md).
 
 ## Problem
 
