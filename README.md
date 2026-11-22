@@ -23,65 +23,21 @@ The public notebook that shows **0.22** on the board scored **0.17** when we sub
 
 **Explore:** [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Method card](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Method-Card) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
 
+## Architecture
+
+Factory above product: Claude proposes **one** SHA-256 delta; Gemma 4 ReAct runs the gate under **≤28 calls** / **≤480s**; humans alone own CreateSubmission (**1 / UTC day**). Consoles never submit.
+
 <p align="center">
   <img src="assets/noisegate-architecture.webp" alt="NoiseGate Autonomous Factory Architecture Loop" width="900" />
 </p>
 
-Loop stages (muted WebP · [MP4 fallback](assets/noisegate-architecture.mp4)):
-
 1. **Propose** — Claude runbook ships one delta + SHA-256 candidate.
-2. **Sandbox** — Gemma 4 ReAct runs the paired 30-task gate under **≤28 calls** / **≤480s**.
-3. **Govern** — Submit Governor noise-vs-signal gate (V8 band **7.33 ± 2.5**); HOLD on in-band luck.
-4. **HITL** — Human CreateSubmission only (**1 / UTC day**) after bars pass.
+2. **Sandbox** — Gemma 4 ReAct on the paired 30-task gate (**≤28 calls** / **≤480s**).
+3. **Govern** — Submit Governor noise-vs-signal (V8 band **7.33 ± 2.5**); HOLD on in-band luck.
+4. **HITL** — Human CreateSubmission only (**1 / UTC day**) after [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy) bars pass.
 5. **Ledger** — State & event ledger records the wake; loop resets for the next job.
 
-## Architecture
-
-The product is a Gemma 4 ReAct coding agent under Kaggle’s call/time caps (issue-fixing tasks in the SWE-bench spirit; competition harness fixed). The factory is a scheduled Claude runbook that proposes **one** delta, screens it, and uses a UTC-day CreateSubmission slot only when [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy) bars pass. Humans own CreateSubmission — consoles never do.
-
-```mermaid
-flowchart TB
-  subgraph L1["Layer 1 — Autonomous Factory · Claude runbook 4×/week"]
-    direction LR
-    P[Patch<br/>1 delta + SHA-256] --> E[Eval<br/>30-task paired gate]
-    E --> W[Watchdog<br/>failures + GPU]
-    W --> G[Submit Governor<br/>bars · 1/UTC-day]
-  end
-
-  subgraph L2["Layer 2 — Product · Gemma 4 ReAct · offline 4× L4"]
-    T[Shell · Read · Edit · Code-Graph]
-    C["≤28 calls · ≤480s · fixed seed · V8–V23"]
-  end
-
-  subgraph Ops["State & Human Ops Console"]
-    S[State file + event ledger]
-    H[Replay · approval gate]
-  end
-
-  E -->|runs candidates| L2
-  W -.->|observes| L2
-  G -->|HITL approve| Ops
-  L2 <--> Ops
-
-  classDef factory fill:#D1FAE5,stroke:#047857,color:#064E3B
-  classDef product fill:#FFEDD5,stroke:#C2410C,color:#7C2D12
-  classDef ops fill:#E0F2FE,stroke:#0369A1,color:#0C4A6E
-  class P,E,W,G factory
-  class T,C product
-  class S,H ops
-  style L1 fill:#ECFDF5,stroke:#059669,color:#065F46
-  style L2 fill:#FFF7ED,stroke:#EA580C,color:#9A3412
-  style Ops fill:#F0F9FF,stroke:#0284C7,color:#075985
-```
-
-*Insight.* Eval / Submit Governor sit above the product so a lucky run cannot burn a UTC-day slot. Ops gates costly actions — never CreateSubmission. [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy).
-
-| | Product | Factory |
-|---|---|---|
-| Model | `gemma-4-31b-it` (competition-fixed) | Claude (scheduled runbook / Project) |
-| Job | Fix issues under call/time budget | One delta → gate → maybe ship |
-| Memory | Context window only | State file + append-only ledger + `results/` |
-| Submit path | ADK `submission.zip` on Kaggle | Humans approve; **1 / UTC day** + quality bars |
+Muted WebP · [MP4 fallback](assets/noisegate-architecture.mp4). Mermaid bands, product-vs-factory table, cadence v1→v2, and policy-vs-runtimes: [Architecture wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture).
 
 ## How we ran it
 
