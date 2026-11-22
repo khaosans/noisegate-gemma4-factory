@@ -23,6 +23,18 @@ The public notebook that shows **0.22** on the board scored **0.17** when we sub
 
 **Explore:** [Wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Home) · [Method card](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Method-Card) · [Ops Console docs](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Ops-Console) · [Architecture](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Architecture) · [Video](https://youtu.be/-EiKv_MafOY) · [Ops Console artifact](https://claude.ai/artifact/6R7YzcGjHzh3U6dreF9YsW)
 
+<p align="center">
+  <img src="assets/noisegate-architecture.webp" alt="NoiseGate Autonomous Factory Architecture Loop" width="900" />
+</p>
+
+Loop stages (muted WebP · [MP4 fallback](assets/noisegate-architecture.mp4)):
+
+1. **Propose** — Claude runbook ships one delta + SHA-256 candidate.
+2. **Sandbox** — Gemma 4 ReAct runs the paired 30-task gate under **≤28 calls** / **≤480s**.
+3. **Govern** — Submit Governor noise-vs-signal gate (V8 band **7.33 ± 2.5**); HOLD on in-band luck.
+4. **HITL** — Human CreateSubmission only (**1 / UTC day**) after bars pass.
+5. **Ledger** — State & event ledger records the wake; loop resets for the next job.
+
 ## Architecture
 
 The product is a Gemma 4 ReAct coding agent under Kaggle’s call/time caps (issue-fixing tasks in the SWE-bench spirit; competition harness fixed). The factory is a scheduled Claude runbook that proposes **one** delta, screens it, and uses a UTC-day CreateSubmission slot only when [Submit-Policy](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Submit-Policy) bars pass. Humans own CreateSubmission — consoles never do.
