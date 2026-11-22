@@ -18,7 +18,7 @@ Audience: classmates / instructors. Goal: dual-system story, gate HOLD as the in
 
 ### 0:45–2:00 — HOLD as the insight
 
-- Walk one delta → paired gate → **HOLD** inside the V8 noise band (use the HOLD / gate close-up on [[Ops-Console]]).
+- Walk one delta → paired gate → **HOLD** inside the V8 noise band (**7.33 ± 2.5** / 30) — HOLD close-up on [[Ops-Console]]; chart + rubric on [[Trajectory-Eval-Rubric]].
 - Punchline: “The factory’s most useful act was refusing to ship.”
 - Say explicitly: this console never CreateSubmission; humans / Cowork own that.
 
@@ -30,7 +30,7 @@ Audience: classmates / instructors. Goal: dual-system story, gate HOLD as the in
 
 ### 3:00–4:00 — Gate hold ↔ requirements
 
-- Point at [[Method-Card]] or [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) / [[Requirements-Compliance]]: trajectory eval, statistical gate, HITL.
+- Point at [[Method-Card]], [[Trajectory-Eval-Rubric]], or [CONCEPTS.md](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/CONCEPTS.md) / [[Requirements-Compliance]]: trajectory eval, statistical gate, HITL.
 - One line on goldens: **55/55** adversarial blocked, **0/29** false positives (`evals/safety`).
 - **Runtimes talking point (2–3 sentences):** We separate **policy** (plain Python) from **runtime**. That lets us ship a lean single-agent ADK zip to Kaggle under 28 calls / 480s — without CrewAI-style multi-agent chatter — while proving stateful guardrails and `hitl` interrupts locally in LangGraph `supervisor/` as course evidence, not as the competition supervisor. Detail: [Policy vs. Agent Runtimes (Why This Stack)](Architecture#policy-vs-agent-runtimes-why-this-stack).
 
