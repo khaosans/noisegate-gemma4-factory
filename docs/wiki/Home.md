@@ -49,7 +49,7 @@ Full talk track: [[Demo-Script]].
 | Operate | [[Ops-Console]] | Main demo UI screens + deny list |
 | Operate | [[Claude-Cowork-Loop]] | Sat/Sun/Mon Skills + loop v2 ledger |
 | Evidence | [[Requirements-Compliance]] | ADK zip vs LangGraph · HITL · goldens |
-| Evidence | [[Future-Work]] | P0–P4 map · V22 confirm · V24 hypothesis |
+| Evidence | [[Future-Work]] | P0–P4 map · V22 confirm · V24 hypothesis · [pre–Dec 2 sprint](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/sprint-pre-dec2.md) |
 
 Streamlit / local console is **not** the demo path — see [[Local-And-Streamlit]] only if you need that caveat.
 

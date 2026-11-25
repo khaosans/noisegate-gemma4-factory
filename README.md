@@ -112,7 +112,7 @@ print(decide([RunSummary.from_results(cand)], V8_HISTORY + [RunSummary.from_resu
 
 ## Future work
 
-**P0** confirm V22 (second KEPT14 pair). **P1** screen **V24** tool-layer read-budget cap (hypothesis — not shipped; V17 prompt-only failed). Keep CreateSubmission HITL. Priority map: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
+**Deadline 2026-12-02 23:59 UTC.** **P0** confirm V22 (second KEPT14 pair). **P1** screen **V24** tool-layer read-budget cap (hypothesis — not shipped; V17 prompt-only failed). CreateSubmission stays HITL. Sprint checklist + public/private surface: [`docs/sprint-pre-dec2.md`](docs/sprint-pre-dec2.md). Priority map: [Future Work wiki](https://github.com/khaosans/noisegate-gemma4-factory/wiki/Future-Work).
 
 ## What is not in this repo
 

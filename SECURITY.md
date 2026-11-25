@@ -9,6 +9,13 @@ This is a research / class product repo (MIT). For security concerns about this 
 - Kaggle credentials, API tokens, Anthropic / cloud keys
 - Competition task data, hidden tests, or model weights
 - Emeritus / CMU proprietary syllabus text (course IP stays out of this product repo)
+- Tuned prompt sweeps, ensemble weights, heuristic dumps, or leakage finds (private sibling `cmu-agentic-ai` only — see [`docs/sprint-pre-dec2.md`](docs/sprint-pre-dec2.md))
+
+## Public vs private (transparency)
+
+**Public here:** harness, loaders, eval math, baselines / noise band, architecture, coded guardrails, ship-path ADK configs needed to rebuild `submission.zip`.
+
+**Private elsewhere:** competitive climb tips, raw scoreboard writes, GPU tokens, experimental prompt/heuristic sweeps. Consoles never CreateSubmission.
 
 ## Trust boundaries (factory)
 
