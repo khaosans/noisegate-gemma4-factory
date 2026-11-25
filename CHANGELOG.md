@@ -8,6 +8,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 ## [Unreleased]
 
 ### Added
+- `docs/sprint-pre-dec2.md` — public pre–Dec 2 sprint checklist (HITL remaining, public/private surface, guardrails inventory, blocked sync bundles, local pytest notes)
 - `docs/archive/` — submitted Assignment 7.1 Final Capstone Report PDF (stale snapshot; live SoT remains wiki / README)
 - README architecture loop animation: muted looping WebP (`assets/noisegate-architecture.webp`, ~900px · 15 fps · &lt;2.5 MB) + muted MP4 fallback; 5-step pipeline bullets under the hero loop
 - Architecture wiki: **Policy vs. Agent Runtimes** Mermaid + trade-off table (ADK product · LangGraph local · factory wakes); Requirements-Compliance + Demo-Script + README aligned
@@ -15,6 +16,7 @@ Versioning is Capstone **beta SemVer** (`X.Y.Z-beta.N`) until an explicit human 
 - Future-Work wiki: P0–P4 priority Mermaid (V22 confirm → V24 → calibration → record_score → local demos); shipped items moved out of “next”
 
 ### Changed
+- Future-Work / README / SECURITY: Dec 2 deadline + transparency (no secret-sauce dumps on public NoiseGate); note missing Checkpoint 6.1 / SWE-bench sync bundles
 - README Architecture: drop duplicate Mermaid + product/factory table; animation + 5-step loop is the front-page visual (detail → wiki)
 - Runbook / Cowork / Architecture / Method-Card / Requirements / Ops-Console / README: retire factory 36 h · 3-per-week · wait-for-score caps; point at Submit-Policy
 - Architecture + Cowork wiki: **record-keeping cadence before/after** (loop v1 calendar vs loop v2 event-driven / KEPT14 / z-gate / wake ledger); both versions kept visible

@@ -2,6 +2,8 @@
 
 What is next on the NoiseGate climb — ordered by ship risk. None of these expand the competition MVP past the frozen ADK zip path. Cadence context (loop v1 vs v2): [[Architecture]] · [[Claude-Cowork-Loop]].
 
+**Deadline:** competition closes **2026-12-02 23:59 UTC**. Public sprint checklist + HITL remaining: [`docs/sprint-pre-dec2.md`](https://github.com/khaosans/noisegate-gemma4-factory/blob/main/docs/sprint-pre-dec2.md).
+
 ## Priority map
 
 ```mermaid
@@ -102,3 +104,11 @@ If graders need a non-competition narrative: LangSmith (or AgentOps) traces + on
 - Re-implementing Agent OS here
 - Treating Ops Console numbers as live inventable scores (replay only)
 - Expanding MVP past the frozen ADK ship path
+- Publishing tuned prompt sweeps, ensemble weights, or leakage finds on this public surface (private sibling `cmu-agentic-ai` only)
+
+## Blocked imports (do not invent)
+
+| Bundle / branch | Status |
+|---|---|
+| Checkpoint 6.1 (`feat/checkpoint-6-1-governance`) | Sync folder missing on cloud VMs — patch-quality / soft-tier / review packets not on `main` yet |
+| SWE-bench Lite pre-gate (`feat/swebench-pregate`) | Same — runner not imported; do not recreate from chat notes |
